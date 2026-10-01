@@ -3,10 +3,8 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(({ command }) => {
-  // Use /TakaSafe/ base path for GitHub Pages production builds, or ./ for relative fallback
-  const isBuild = command === 'build';
-  const base = process.env.VITE_BASE_PATH || (isBuild ? '/TakaSafe/' : './');
+export default defineConfig(() => {
+  const base = process.env.VITE_BASE_PATH || '/';
 
   return {
     base,
@@ -17,6 +15,8 @@ export default defineConfig(({ command }) => {
       },
     },
     server: {
+      host: '0.0.0.0',
+      port: 3000,
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
