@@ -11,16 +11,26 @@ import {
   ChevronRight,
   ShieldCheck,
   Sparkles,
+  Smartphone,
+  Globe,
+  PiggyBank,
+  GraduationCap,
+  Shield,
+  Building2,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 interface UpayHeroServicesProps {
   onServiceSelect?: (serviceName: string) => void;
+  onOpenModal?: (modalType: string) => void;
   lang: 'EN' | 'BN';
 }
 
-export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSelect, lang }) => {
+export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSelect, onOpenModal, lang }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [showAllServices, setShowAllServices] = useState<boolean>(false);
 
   const totalSlides = 3;
 
@@ -86,7 +96,10 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                 </p>
 
                 <div className="mt-5 flex items-center justify-center md:justify-start gap-4">
-                  <button className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                  <button
+                    onClick={() => (onOpenModal ? onOpenModal('ABOUT_US') : onServiceSelect?.('Cash In'))}
+                    className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
                     <span>{lang === 'BN' ? 'বিস্তারিত দেখুন' : 'Read More'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -95,7 +108,10 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               </div>
 
               {/* Right Visual Card */}
-              <div className="w-64 h-48 sm:w-80 sm:h-56 bg-white/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-amber-300 shadow-xl flex flex-col justify-between relative overflow-hidden">
+              <div
+                onClick={() => onOpenModal?.('ABOUT_US')}
+                className="w-64 h-48 sm:w-80 sm:h-56 bg-white/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-amber-300 shadow-xl flex flex-col justify-between relative overflow-hidden cursor-pointer hover:border-amber-400 transition-colors"
+              >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#0054A6]">TakaSafe Digital Trust</span>
                   <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full">
@@ -119,15 +135,16 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
             </div>
           </div>
 
-          {/* SLIDE 2: চার্জ 0 টাকা / Zero Charge Cash Out (From 0:24 - 0:26 in video) */}
-          <div className="w-full shrink-0 relative bg-gradient-to-r from-emerald-100/90 via-sky-50 to-amber-50/80 py-10 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[360px] flex items-center">
-            {/* Nature / Greenery Horizon Graphic */}
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-emerald-600/10 to-transparent pointer-events-none" />
+          {/* SLIDE 2: চার্জ 0 টাকা / Zero Charge Cash Out (Sleek Modern Digital Banking Visual) */}
+          <div className="w-full shrink-0 relative bg-gradient-to-r from-amber-50/90 via-sky-50/70 to-blue-50/80 py-10 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[360px] flex items-center">
+            {/* Ambient Radiant Glow Accents */}
+            <div className="absolute -top-10 right-1/3 w-80 h-80 bg-amber-300/25 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-10 right-10 w-96 h-96 bg-[#0054A6]/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-              {/* Left Headline */}
+              {/* Left Headline & Features */}
               <div className="flex-1 text-center md:text-left">
-                <div className="inline-flex items-center gap-1.5 bg-emerald-600 text-white font-bold px-3 py-1 rounded-full text-xs mb-3 shadow-sm">
+                <div className="inline-flex items-center gap-1.5 bg-[#0054A6] text-white font-bold px-3.5 py-1 rounded-full text-xs mb-3 shadow-sm">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                   <span>{lang === 'BN' ? 'জিরো ক্যাশ-আউট চার্জ' : 'Zero Cash-Out Charge'}</span>
                 </div>
@@ -136,7 +153,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                   <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0054A6] tracking-tight">
                     {lang === 'BN' ? 'চার্জ' : 'Charge'}
                   </h2>
-                  <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-amber-500 drop-shadow-sm">
+                  <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#FAB915] drop-shadow-sm">
                     ০
                   </span>
                   <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0054A6]">
@@ -144,20 +161,31 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                   </span>
                 </div>
 
-                {/* Offer Sub-card (Matching the video at 0:25) */}
-                <div className="mt-4 bg-white/80 backdrop-blur-sm p-3.5 rounded-2xl border border-emerald-200/80 max-w-lg inline-block text-left shadow-sm">
-                  <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
-                    {lang === 'BN'
-                      ? 'TakaSafe এটিএম ও পার্টনার পয়েন্ট থেকে ক্যাশ আউট করুন ZERO চার্জে!'
-                      : 'Cash out from any TakaSafe ATM & authorized point nationwide with ZERO service charge!'}
-                  </p>
-                  <span className="text-[11px] text-slate-500 block mt-1">
-                    {lang === 'BN' ? 'দেশের যেকোনো অনুমোদিত বুথ থেকে নিশ্চিন্তে টাকা তুলুন।' : 'Enjoy 100% free cash withdrawals with no hidden deductions.'}
-                  </span>
+                {/* Offer Sub-card with Clean Checkmarks */}
+                <div className="mt-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-sm max-w-lg inline-block text-left space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-900">
+                    <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-black">✓</span>
+                    <span>
+                      {lang === 'BN'
+                        ? 'TakaSafe এটিএম ও পার্টনার পয়েন্ট থেকে ক্যাশ আউট সম্পূর্ণ ফ্রি!'
+                        : 'Cash out from any TakaSafe ATM & partner point with ZERO fee!'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-black">✓</span>
+                    <span>
+                      {lang === 'BN'
+                        ? 'দেশের ১৫,০০০+ এটিএম বুথ থেকে নিশ্চিন্তে টাকা তুলুন।'
+                        : 'Accepted at 15,000+ ATM booths nationwide with no hidden deductions.'}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="mt-5 flex items-center justify-center md:justify-start gap-4">
-                  <button className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                  <button
+                    onClick={() => (onOpenModal ? onOpenModal('LIMITS_CHARGES') : onServiceSelect?.('Cash Out'))}
+                    className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
                     <span>{lang === 'BN' ? 'বিস্তারিত দেখুন' : 'Read More'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -165,167 +193,83 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                 </div>
               </div>
 
-              {/* Right Graphic: Modern Glass Architectural ATM Booth & 3D Plush Mascot (Matching video at 0:25) */}
-              <div className="w-80 h-64 sm:w-96 sm:h-72 relative flex items-end justify-center select-none">
-                {/* Background Lush Tree & Nature Foliage (From original commercial at 0:25) */}
-                <div className="absolute left-2 bottom-6 z-0 pointer-events-none opacity-80">
-                  <div className="relative">
-                    {/* Bush / Trees clusters */}
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-t from-emerald-600 via-emerald-500 to-green-400 absolute -top-8 -left-4 blur-[0.5px] shadow-sm" />
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-t from-emerald-700 via-green-600 to-lime-400 absolute -top-12 left-6 blur-[0.5px]" />
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-t from-green-700 to-emerald-400 absolute -top-6 left-16" />
-                  </div>
-                </div>
+              {/* Right Graphic: Sleek Modern Smartphone & Floating 3D Financial Badges */}
+              <div className="w-72 h-64 sm:w-96 sm:h-72 relative flex items-center justify-center select-none">
+                {/* Floating Background Glass Glow */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-amber-200/30 via-sky-100/40 to-blue-200/30 rounded-full blur-2xl pointer-events-none" />
 
-                {/* Ground Granite Pavement Base */}
-                <div className="absolute -bottom-1 left-6 right-6 h-5 bg-gradient-to-b from-slate-300 via-slate-400 to-slate-500 rounded-full blur-[1px] opacity-70 transform scale-x-110 shadow-lg z-0" />
-
-                {/* Architectural Modern Glass ATM Booth Kiosk */}
-                <div className="relative z-10 -translate-x-6 bottom-2 w-36 h-56 bg-slate-900/90 rounded-2xl border-2 border-slate-400 shadow-2xl overflow-hidden flex flex-col backdrop-blur-md">
-                  {/* Roof Top Brand Canopy / Header Signage */}
-                  <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-600 p-2 border-b-2 border-red-700 shadow-md text-center relative overflow-hidden">
-                    {/* Subtle shine sweep */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12" />
-                    <div className="text-[10px] font-black text-white tracking-widest uppercase flex items-center justify-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      <span>TakaSafe ATM</span>
-                    </div>
-                    <div className="text-[7px] text-red-100 font-semibold uppercase tracking-wider">
-                      24/7 CASH OUT · 0% FEE
-                    </div>
+                {/* Modern Smartphone Mockup */}
+                <div className="w-52 sm:w-56 h-64 bg-slate-950 rounded-[32px] p-2.5 shadow-2xl border-4 border-slate-700/80 relative z-10 flex flex-col justify-between overflow-hidden">
+                  {/* Phone Speaker & Notch */}
+                  <div className="w-16 h-3 bg-slate-800 rounded-full mx-auto mb-1 flex items-center justify-center">
+                    <div className="w-2.5 h-1 bg-slate-700 rounded-full" />
                   </div>
 
-                  {/* Glass Booth Cabin Body with Interior Machine & Reflections */}
-                  <div className="relative flex-1 bg-gradient-to-b from-sky-950/60 via-slate-900/80 to-slate-950 p-2 flex flex-col justify-between">
-                    {/* Interior Ceiling Downlight Cone */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-16 bg-gradient-to-b from-amber-200/20 to-transparent blur-sm pointer-events-none" />
+                  {/* App Screen Content */}
+                  <div className="flex-1 bg-gradient-to-b from-[#003875] via-[#0054A6] to-[#002855] rounded-[22px] p-3 text-white flex flex-col justify-between relative overflow-hidden border border-white/10">
+                    {/* Screen Header */}
+                    <div className="flex items-center justify-between text-[10px] text-blue-200">
+                      <span className="font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                        <span>ATM Cash-Out</span>
+                      </span>
+                      <span className="bg-amber-400 text-blue-950 font-black px-1.5 py-0.2 rounded text-[8px]">
+                        0% CHARGE
+                      </span>
+                    </div>
 
-                    {/* Realistic Glass Reflection Slanted Stripes */}
-                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
-                    <div className="absolute -inset-x-10 top-6 h-12 bg-white/5 -rotate-45 pointer-events-none" />
-
-                    {/* Stainless Steel Vertical Mullions & Door Frame */}
-                    <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-gradient-to-b from-slate-300 via-slate-500 to-slate-300 shadow-sm" />
-                    <div className="absolute top-0 bottom-0 right-1 w-0.5 bg-gradient-to-b from-slate-300 via-slate-500 to-slate-300 shadow-sm" />
-                    {/* Chrome Door Handle */}
-                    <div className="absolute right-2 top-20 w-1 h-10 bg-gradient-to-b from-white via-slate-200 to-slate-400 rounded-full shadow border border-slate-500" />
-
-                    {/* The ATM Terminal Inside the Booth */}
-                    <div className="relative z-10 w-full bg-gradient-to-b from-slate-800 via-slate-800 to-slate-900 rounded-xl border border-slate-700 p-2 shadow-inner flex flex-col items-center gap-1.5">
-                      {/* ATM Display Screen */}
-                      <div className="w-full bg-[#0a192f] rounded-lg border border-sky-500/40 p-1.5 shadow-md flex flex-col items-center justify-center relative overflow-hidden">
-                        <div className="text-[7px] font-bold text-sky-400 tracking-wider">TakaSafe DIGITAL</div>
-                        <div className="text-[11px] font-black text-amber-300 tracking-tight leading-none my-0.5">
-                          ৳০ চার্জ
-                        </div>
-                        <div className="text-[6.5px] text-emerald-400 font-mono flex items-center gap-0.5">
-                          <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
-                          <span>READY FOR CASH</span>
-                        </div>
+                    {/* Central Withdrawal Amount Card */}
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-2.5 border border-white/20 text-center my-auto">
+                      <span className="text-[9px] text-blue-200 uppercase tracking-wider block font-semibold">
+                        Withdrawal Amount
+                      </span>
+                      <div className="text-xl font-black text-white font-mono mt-0.5">
+                        ৳ 5,000<span className="text-xs text-blue-200">.00</span>
                       </div>
-
-                      {/* Card Insertion Slot & Receipt */}
-                      <div className="w-full flex items-center justify-between px-1">
-                        <div className="flex flex-col items-center">
-                          <span className="text-[5px] text-slate-400 uppercase">Card</span>
-                          <div className="w-6 h-1 bg-emerald-400 rounded-full shadow-sm animate-pulse" />
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <span className="text-[5px] text-slate-400 uppercase">Receipt</span>
-                          <div className="w-5 h-0.5 bg-slate-300 rounded" />
-                        </div>
-                      </div>
-
-                      {/* Tactile Keypad */}
-                      <div className="w-14 grid grid-cols-3 gap-0.5 p-0.5 bg-slate-950 rounded border border-slate-700">
-                        {[...Array(9)].map((_, i) => (
-                          <div key={i} className="h-1 bg-slate-700 rounded-xs" />
-                        ))}
-                      </div>
-
-                      {/* Cash Dispenser Slot with Illuminated Glow */}
-                      <div className="w-full bg-slate-950 rounded border border-emerald-500/40 p-1 flex items-center justify-between shadow-inner">
-                        <span className="text-[6px] font-black text-emerald-400 tracking-wider">CASH OUT</span>
-                        <div className="w-10 h-1.5 bg-gradient-to-r from-emerald-500 via-amber-300 to-emerald-500 rounded-full shadow-sm animate-pulse" />
+                      
+                      {/* Zero Fee Tag */}
+                      <div className="mt-1.5 inline-flex items-center gap-1 bg-emerald-500/25 border border-emerald-400/50 px-2 py-0.5 rounded-full">
+                        <span className="text-[8px] text-emerald-300 font-bold">Fee:</span>
+                        <span className="text-[8px] text-slate-300 line-through">৳75</span>
+                        <span className="text-[9px] text-emerald-300 font-black">৳0.00 (FREE)</span>
                       </div>
                     </div>
 
-                    {/* Booth Floor Mat */}
-                    <div className="w-full h-2 bg-gradient-to-r from-slate-800 via-red-900 to-slate-800 rounded text-center text-[5px] text-white/50 uppercase tracking-widest font-mono">
-                      WELCOME
+                    {/* Instant QR Scanner Frame */}
+                    <div className="bg-black/30 rounded-lg p-2 border border-white/10 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-amber-400 flex items-center justify-center text-blue-950 font-black text-xs">
+                          QR
+                        </div>
+                        <div className="leading-tight">
+                          <span className="text-[9px] font-bold text-white block">Instant Scan</span>
+                          <span className="text-[7.5px] text-blue-200">Tap or Scan at ATM</span>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-mono text-emerald-400 font-bold">READY</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Lovable 3D Plush Yellow "0" Mascot Character (Directly from video 0:25) */}
-                <div className="relative z-20 translate-x-4 bottom-2 flex flex-col items-center">
-                  <div className="relative group cursor-pointer transition-transform hover:scale-105 duration-300">
-                    {/* Waving Left Arm */}
-                    <div className="absolute -left-4 top-14 w-6 h-11 bg-gradient-to-b from-amber-300 to-amber-500 rounded-full -rotate-45 border-2 border-amber-200 shadow-md origin-top-right transform -rotate-12 animate-bounce" />
-
-                    {/* Waving Right Arm */}
-                    <div className="absolute -right-4 top-10 w-6 h-11 bg-gradient-to-b from-amber-300 to-amber-500 rounded-full rotate-45 border-2 border-amber-200 shadow-md origin-top-left" />
-
-                    {/* 3D Plush Furry Body Shaped like Big 0 */}
-                    <div className="w-40 h-50 rounded-[48px] bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 border-4 border-amber-200 shadow-2xl flex flex-col items-center justify-between p-3.5 relative overflow-hidden">
-                      {/* Top Volumetric Specular Highlight */}
-                      <div className="absolute top-1 left-4 right-4 h-8 bg-gradient-to-b from-white/40 to-transparent rounded-t-[40px] pointer-events-none" />
-
-                      {/* Mascot Face: Big Pixar Eyes & Cheerful Smile */}
-                      <div className="flex flex-col items-center mt-1">
-                        {/* Eyes */}
-                        <div className="flex items-center gap-5">
-                          {/* Left Eye */}
-                          <div className="w-5 h-7 rounded-full bg-slate-950 border-2 border-white shadow-sm flex items-center justify-center relative overflow-hidden">
-                            <div className="w-2.5 h-3.5 rounded-full bg-white absolute top-1 right-1" />
-                            <div className="w-1 h-1 rounded-full bg-white absolute bottom-1.5 left-1.5" />
-                          </div>
-                          {/* Right Eye */}
-                          <div className="w-5 h-7 rounded-full bg-slate-950 border-2 border-white shadow-sm flex items-center justify-center relative overflow-hidden">
-                            <div className="w-2.5 h-3.5 rounded-full bg-white absolute top-1 right-1" />
-                            <div className="w-1 h-1 rounded-full bg-white absolute bottom-1.5 left-1.5" />
-                          </div>
-                        </div>
-
-                        {/* Rosy Cheeks */}
-                        <div className="flex items-center justify-between w-24 -mt-2">
-                          <div className="w-3.5 h-2 rounded-full bg-rose-400/40 blur-[1px]" />
-                          <div className="w-3.5 h-2 rounded-full bg-rose-400/40 blur-[1px]" />
-                        </div>
-
-                        {/* Warm Cheerful Open Smile */}
-                        <div className="w-7 h-3.5 rounded-b-full bg-slate-900 border-t-2 border-amber-600 flex items-center justify-center overflow-hidden -mt-1 shadow-inner">
-                          <div className="w-4 h-2 rounded-t-full bg-rose-500 mt-1.5" />
-                        </div>
-                      </div>
-
-                      {/* Inner 0 Hole with 3D Golden Taka Emblem */}
-                      <div className="w-16 h-20 rounded-3xl bg-gradient-to-b from-white via-amber-50 to-amber-100 border-2 border-amber-300 shadow-inner flex flex-col items-center justify-center relative my-1">
-                        <span className="text-2xl font-black text-amber-600 drop-shadow-sm">৳০</span>
-                        <span className="text-[7.5px] font-black text-[#0054A6] uppercase tracking-wider">
-                          NO CHARGE
-                        </span>
-                      </div>
-
-                      {/* Soft Shading Base */}
-                      <div className="w-full text-center">
-                        <span className="text-[8px] font-black text-amber-900/60 uppercase tracking-widest">
-                          TAKASAFE BUDDY
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Cute Puffy Feet */}
-                    <div className="flex items-center justify-center gap-6 -mt-2">
-                      <div className="w-8 h-4 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-200 shadow-md" />
-                      <div className="w-8 h-4 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-200 shadow-md" />
-                    </div>
+                {/* Floating Glass Pill 1: Top Right */}
+                <div className="absolute -top-1 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-xl border border-emerald-200/80 flex items-center gap-2 animate-bounce">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                    ৳০
                   </div>
+                  <div className="leading-tight">
+                    <span className="text-[10px] font-black text-slate-900 block">Zero Fee Active</span>
+                    <span className="text-[8px] text-emerald-600 font-bold">100% Free Withdrawal</span>
+                  </div>
+                </div>
 
-                  {/* Official Zero Charge Pill Badge */}
-                  <div className="mt-1 flex items-center gap-1.5 bg-gradient-to-r from-[#0054A6] to-[#003d7a] text-white text-[11px] font-black px-4 py-1 rounded-full shadow-lg border border-amber-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                    <span>ZERO CHARGE GUARANTEE</span>
+                {/* Floating Glass Pill 2: Bottom Left */}
+                <div className="absolute -bottom-2 -left-2 sm:left-2 z-20 bg-[#0054A6] text-white px-3 py-2 rounded-2xl shadow-xl border border-blue-400/40 flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-xl bg-amber-400 text-blue-950 flex items-center justify-center font-black text-xs">
+                    🏧
+                  </div>
+                  <div className="leading-tight">
+                    <span className="text-[10px] font-bold text-white block">15,000+ ATMs</span>
+                    <span className="text-[8px] text-amber-300 font-medium">Nationwide Network</span>
                   </div>
                 </div>
               </div>
@@ -455,7 +399,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
       </div>
 
       {/* OUR SERVICES SECTION (Matching Image 4) */}
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+      <div id="services-section" className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="text-center max-w-xl mx-auto mb-10">
           <h2 className="text-2xl sm:text-3xl font-black text-[#0054A6] tracking-wide uppercase">
             {lang === 'BN' ? 'আমাদের সেবাসমূহ' : 'OUR SERVICES'}
@@ -467,7 +411,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           </p>
         </div>
 
-        {/* 6 Services Grid matching wireframe Image 4 */}
+        {/* 6 Core Services Grid matching wireframe Image 4 */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
           {/* 1. Cash In */}
           <div
@@ -557,10 +501,111 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           </div>
         </div>
 
-        {/* View More Button */}
+        {/* Expanded Services Grid (Revealed on View More) */}
+        {showAllServices && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mt-6 animate-in fade-in slide-in-from-top-4 duration-300">
+            {/* 7. Mobile Recharge */}
+            <div
+              onClick={() => onServiceSelect?.('Mobile Recharge')}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-teal-50 group-hover:bg-teal-100 flex items-center justify-center mb-3 transition-colors text-teal-600">
+                <Smartphone className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'মোবাইল রিচার্জ' : 'Mobile Recharge'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">GP, BL, Robi, Airtel</span>
+            </div>
+
+            {/* 8. Remittance */}
+            <div
+              onClick={() => (onOpenModal ? onOpenModal('LIMITS_CHARGES') : onServiceSelect?.('Remittance'))}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-cyan-50 group-hover:bg-cyan-100 flex items-center justify-center mb-3 transition-colors text-cyan-600">
+                <Globe className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'রেমিট্যান্স' : 'Remittance'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">2.5% Gov Incentive</span>
+            </div>
+
+            {/* 9. Micro-Savings */}
+            <div
+              onClick={() => (onOpenModal ? onOpenModal('ABOUT_US') : onServiceSelect?.('Savings'))}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-rose-50 group-hover:bg-rose-100 flex items-center justify-center mb-3 transition-colors text-rose-600">
+                <PiggyBank className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'সঞ্চয় / ডিপিএস' : 'Micro-Savings'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">UCB Taqwa Islamic</span>
+            </div>
+
+            {/* 10. Education Fees */}
+            <div
+              onClick={() => (onOpenModal ? onOpenModal('LIMITS_CHARGES') : onServiceSelect?.('Education'))}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center mb-3 transition-colors text-amber-600">
+                <GraduationCap className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'শিক্ষা ফি' : 'Education Fees'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">Colleges & Universities</span>
+            </div>
+
+            {/* 11. Insurance / Takaful */}
+            <div
+              onClick={() => (onOpenModal ? onOpenModal('ABOUT_US') : onServiceSelect?.('Insurance'))}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mb-3 transition-colors text-blue-600">
+                <Shield className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'বীমা প্রিমিয়াম' : 'Insurance'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">Life & Health Takaful</span>
+            </div>
+
+            {/* 12. Business Settlement */}
+            <div
+              onClick={() => (onOpenModal ? onOpenModal('BUSINESS') : onServiceSelect?.('Business'))}
+              className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center mb-3 transition-colors text-slate-700">
+                <Building2 className="w-8 h-8" />
+              </div>
+              <span className="text-sm font-bold text-slate-800 group-hover:text-[#0054A6]">
+                {lang === 'BN' ? 'বিজনেস পেমেন্ট' : 'Enterprise B2B'}
+              </span>
+              <span className="text-[11px] text-slate-500 mt-0.5">Payroll & Bulk MFS</span>
+            </div>
+          </div>
+        )}
+
+        {/* View More / View Less Button */}
         <div className="mt-8 text-center">
-          <button className="bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-bold px-8 py-2.5 rounded-full text-xs tracking-wide shadow-md transition-all">
-            {lang === 'BN' ? 'আরও দেখুন' : 'View More'}
+          <button
+            onClick={() => setShowAllServices(!showAllServices)}
+            className="inline-flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-bold px-8 py-2.5 rounded-full text-xs tracking-wide shadow-md transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <span>
+              {showAllServices
+                ? lang === 'BN' ? 'কম দেখুন' : 'Show Less'
+                : lang === 'BN' ? 'আরও দেখুন' : 'View More Services'}
+            </span>
+            {showAllServices ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>

@@ -74,19 +74,20 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
       {/* Top Header & Interactive Toggles */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
               <Activity className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 flex-wrap">
                 <span>
                   {lang === 'BN' ? 'লেনদেনের ঝুঁকি সূচকের গতিধারা' : 'Transaction Risk & Anomaly Trends Over Time'}
                 </span>
-                <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                  Recharts Live
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>LIVE STREAM</span>
                 </span>
               </h3>
               <p className="text-xs text-slate-500">
@@ -99,12 +100,12 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
         </div>
 
         {/* Range Selectors & Filter Toggles */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Time range pills */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Time range segmented control */}
           <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-semibold">
             <button
               onClick={() => setTimeRange('24H')}
-              className={`px-2.5 py-1 rounded-lg transition-colors ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === '24H'
                   ? 'bg-white text-blue-900 shadow-xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -114,18 +115,18 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
             </button>
             <button
               onClick={() => setTimeRange('BURST')}
-              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 timeRange === 'BURST'
                   ? 'bg-rose-600 text-white shadow-xs font-bold'
                   : 'text-slate-600 hover:text-rose-700'
               }`}
             >
-              <AlertTriangle className="w-3 h-3" />
+              <AlertTriangle className="w-3.5 h-3.5" />
               <span>Attack Burst (02:00–05:00)</span>
             </button>
             <button
               onClick={() => setTimeRange('ACTIVE')}
-              className={`px-2.5 py-1 rounded-lg transition-colors ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === 'ACTIVE'
                   ? 'bg-white text-blue-900 shadow-xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -136,26 +137,28 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
           </div>
 
           {/* Metric Visibility Toggles */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setShowAlerts(!showAlerts)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                 showAlerts
-                  ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold'
-                  : 'bg-white text-slate-400 border-slate-200'
+                  ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold shadow-2xs'
+                  : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              Critical Alerts ({showAlerts ? 'ON' : 'OFF'})
+              <span className={`w-2 h-2 rounded-full ${showAlerts ? 'bg-amber-500' : 'bg-slate-300'}`}></span>
+              <span>Critical Alerts</span>
             </button>
             <button
               onClick={() => setShowVelocity(!showVelocity)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                 showVelocity
-                  ? 'bg-sky-50 text-sky-900 border-sky-300 font-bold'
-                  : 'bg-white text-slate-400 border-slate-200'
+                  ? 'bg-sky-50 text-sky-900 border-sky-300 font-bold shadow-2xs'
+                  : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              Velocity Index ({showVelocity ? 'ON' : 'OFF'})
+              <span className={`w-2 h-2 rounded-full ${showVelocity ? 'bg-sky-500' : 'bg-slate-300'}`}></span>
+              <span>Velocity Index</span>
             </button>
           </div>
         </div>

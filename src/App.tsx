@@ -11,6 +11,7 @@ import { OperatorDashboard } from './components/operator/OperatorDashboard';
 import { CustomerAppView } from './components/customer/CustomerAppView';
 import { StorylineRunner } from './components/storyline/StorylineRunner';
 import { InvestigationModal } from './components/investigation/InvestigationModal';
+import { UpayInfoModal } from './components/common/UpayInfoModal';
 import {
   MOCK_TRANSACTIONS,
   CURRENT_CUSTOMER,
@@ -35,6 +36,7 @@ export default function App() {
   const [auditLogs, setAuditLogs] = useState<any[]>(INITIAL_AUDIT_LOGS);
   const [selectedTxnForInvestigation, setSelectedTxnForInvestigation] = useState<Transaction | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
   // Fetch initial audit logs from server if available (e.g. local/Express dev), else fallback cleanly
   useEffect(() => {
@@ -236,9 +238,12 @@ export default function App() {
       <UpayHeader
         activeView={activeView}
         setActiveView={setActiveView}
+        operatorTab={operatorTab}
+        setOperatorTab={setOperatorTab}
         lang={lang}
         setLang={setLang}
         criticalAlertCount={criticalCount}
+        onOpenModal={(modal) => setActiveModal(modal)}
       />
 
       {/* Upay Hero & Official Services Grid (Matching user wireframe photos 3, 4) */}
@@ -250,6 +255,7 @@ export default function App() {
             setActiveView('OPERATOR');
           }
         }}
+        onOpenModal={(modal) => setActiveModal(modal)}
         lang={lang}
       />
 
@@ -268,6 +274,7 @@ export default function App() {
             onActivateMonitoring={handleActivateMonitoring}
             auditLogs={auditLogs}
             initialTab={operatorTab}
+            onTabChange={(tab) => setOperatorTab(tab)}
             lang={lang}
           />
         )}
@@ -309,8 +316,25 @@ export default function App() {
         />
       )}
 
+      {/* Upay Info & Feature Modals */}
+      <UpayInfoModal
+        modalType={activeModal}
+        onClose={() => setActiveModal(null)}
+        lang={lang}
+        onNavigateView={(v) => {
+          setActiveView(v);
+          setActiveModal(null);
+        }}
+      />
+
       {/* Upay Official Footer (Matching user wireframe photo 5) */}
-      <UpayFooter />
+      <UpayFooter
+        onOpenModal={(modal) => setActiveModal(modal)}
+        onNavigateHome={() => {
+          setActiveView('OPERATOR');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
     </div>
   );
 }

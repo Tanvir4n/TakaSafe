@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Transaction,
   CustomerBaseline,
@@ -11,12 +11,14 @@ import { MuleVisionGraph } from './MuleVisionGraph';
 import { DisasterResilienceSimulator } from './DisasterResilienceSimulator';
 import { EarlyWarningRadar } from './EarlyWarningRadar';
 import { TransactionRiskTrendChart } from './TransactionRiskTrendChart';
+import { GeospatialIntelligenceMap } from './GeospatialIntelligenceMap';
 import {
   ShieldCheck,
   AlertTriangle,
   Network,
   CloudLightning,
   Radar,
+  Globe,
   Sliders,
   FileCheck2,
   Search,
@@ -41,6 +43,7 @@ interface OperatorDashboardProps {
   onActivateMonitoring: (division: string) => void;
   auditLogs: any[];
   initialTab?: string;
+  onTabChange?: (tab: string) => void;
   lang: 'EN' | 'BN';
 }
 
@@ -56,9 +59,17 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   onActivateMonitoring,
   auditLogs,
   initialTab = 'OVERVIEW',
+  onTabChange,
   lang,
 }) => {
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+
+  useEffect(() => {
+    if (initialTab && initialTab !== activeTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
   const [filterBand, setFilterBand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [auditSearchQuery, setAuditSearchQuery] = useState<string>('');
@@ -164,7 +175,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   });
 
   return (
-    <div className="space-y-6">
+    <div id="operator-workspace" className="space-y-6 scroll-mt-24">
       {/* Top Level Metric Cockpit Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -245,15 +256,19 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           { id: 'MULEVISION', label: '2. MuleVision (Graph)', icon: Network },
           { id: 'RESILIENCE', label: '3. Disaster Resilience Mode', icon: CloudLightning },
           { id: 'RADAR', label: '4. Early-Warning Radar', icon: Radar },
-          { id: 'POLICY', label: '5. Policy Weights & Action Engine', icon: Sliders },
-          { id: 'AUDIT', label: '6. Audit Logs & Compliance', icon: FileCheck2 },
+          { id: 'GEOSPATIAL', label: '5. Geospatial Intelligence', icon: Globe },
+          { id: 'POLICY', label: '6. Policy Weights & Action Engine', icon: Sliders },
+          { id: 'AUDIT', label: '7. Audit Logs & Compliance', icon: FileCheck2 },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                onTabChange?.(tab.id);
+              }}
               className={`flex items-center gap-2 py-3 px-4 font-bold text-xs rounded-t-xl transition-all whitespace-nowrap ${
                 isActive
                   ? 'bg-white text-[#0054A6] border-t-2 border-l border-r border-[#0054A6] border-t-[#0054A6] -mb-[1px] shadow-sm'
@@ -420,6 +435,17 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
       {/* Tab 4: Early-Warning Radar */}
       {activeTab === 'RADAR' && (
         <EarlyWarningRadar metrics={regionalMetrics} onActivateMonitoring={onActivateMonitoring} />
+      )}
+
+      {/* Tab 5: Geospatial Intelligence (D3 Geographic Heatmap) */}
+      {activeTab === 'GEOSPATIAL' && (
+        <GeospatialIntelligenceMap
+          regionalMetrics={regionalMetrics}
+          agents={agents}
+          onActivateMonitoring={onActivateMonitoring}
+          onDispatchLiquidity={onDispatchLiquidity}
+          lang={lang}
+        />
       )}
 
       {/* Tab 5: Policy Weights & Action Engine Mapping */}

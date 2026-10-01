@@ -131,3 +131,24 @@ export interface StorylineStep {
   moduleHighlight: 'OVERVIEW' | 'SCAMSHIELD' | 'MULEVISION' | 'RADAR' | 'RESILIENCE' | 'INVESTIGATION';
   activeScenarioData?: any;
 }
+
+export type UserRole = 'ADMIN' | 'USER';
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: UserRole;
+  designation: string;
+  avatar?: string;
+  permissions: {
+    canViewOperatorDashboard: boolean;
+    canFreezeWallets: boolean;
+    canDispatchLiquidity: boolean;
+    canTunePolicyWeights: boolean;
+    canExportAuditLogs: boolean;
+    canPerformInvestigationActions: boolean;
+  };
+}
+

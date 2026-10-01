@@ -1,15 +1,32 @@
 import React from 'react';
 import { MessageSquare, Mail, Phone, MapPin, Clock } from 'lucide-react';
 
-export const UpayFooter: React.FC = () => {
+interface UpayFooterProps {
+  onOpenModal?: (modalType: string) => void;
+  onNavigateHome?: () => void;
+}
+
+export const UpayFooter: React.FC<UpayFooterProps> = ({
+  onOpenModal,
+  onNavigateHome,
+}) => {
+  const handleLogoClick = () => {
+    if (onNavigateHome) onNavigateHome();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="bg-[#262626] text-slate-300 text-xs pt-12 pb-8 border-t-4 border-[#FAB915]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
           {/* Column 1: Brand & Purpose */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1">
+            <button
+              onClick={handleLogoClick}
+              className="flex items-center gap-2 mb-4 text-left group cursor-pointer focus:outline-none"
+              title="TakaSafe Home"
+            >
+              <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1 group-hover:scale-105 transition-transform">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <path
                     d="M 22 45 C 22 75 78 75 78 45"
@@ -28,10 +45,15 @@ export const UpayFooter: React.FC = () => {
                   <circle cx="50" cy="30" r="8" fill="#E11D48" />
                 </svg>
               </div>
-              <div className="flex items-center">
-                <span className="text-xl font-black text-white">TakaSafe</span>
+              <div className="flex items-baseline tracking-tight select-none">
+                <span className="font-['Hind_Siliguri','Noto_Sans_Bengali',sans-serif] text-xl font-black text-[#FAB915] leading-none transition-colors group-hover:text-amber-300">
+                  টাকা
+                </span>
+                <span className="font-['Times_New_Roman',Times,serif] text-[22px] font-bold text-white leading-none ml-1 tracking-tight">
+                  Safe
+                </span>
               </div>
-            </div>
+            </button>
             <p className="text-slate-400 text-[12px] leading-relaxed">
               TakaSafe is aiming to help aspirers achieve their goals through easy, secure and innovative Digital Financial Solutions.
             </p>
@@ -41,10 +63,15 @@ export const UpayFooter: React.FC = () => {
           <div className="lg:col-span-2 space-y-3">
             <h4 className="text-amber-400 font-bold tracking-wider uppercase text-xs mb-3">GET IN TOUCH</h4>
             
-            <div className="flex items-start gap-2.5">
+            <button
+              onClick={() => onOpenModal?.('LIVE_CHAT')}
+              className="flex items-center gap-2.5 hover:text-amber-300 transition-colors cursor-pointer text-left w-full focus:outline-none"
+            >
               <MessageSquare className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-              <span>Live Chat</span>
-            </div>
+              <span className="font-semibold underline decoration-amber-400/50 underline-offset-2">
+                Live Chat Support (24/7 Assistant)
+              </span>
+            </button>
 
             <div className="flex items-start gap-2.5">
               <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -68,17 +95,27 @@ export const UpayFooter: React.FC = () => {
 
             <div className="flex items-center gap-2.5">
               <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-              <span className="font-semibold text-white">16268</span>
+              <a href="tel:16268" className="font-semibold text-white hover:text-amber-300 transition-colors">
+                16268
+              </a>
               <span className="text-slate-400">/</span>
-              <span>09610916268</span>
+              <a href="tel:09610916268" className="hover:text-amber-300 transition-colors">
+                09610916268
+              </a>
             </div>
 
-            <div className="flex items-start gap-2.5 text-[11px] text-slate-400">
+            <div
+              onClick={() => onOpenModal?.('SERVICE_LOCATIONS')}
+              className="flex items-start gap-2.5 text-[11px] text-slate-400 hover:text-white cursor-pointer transition-colors"
+            >
               <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <span>Plot CWS (A) -1, Road 34, Gulshan Avenue, Dhaka - 1212, Bangladesh</span>
             </div>
 
-            <div className="flex items-start gap-2.5 text-[11px] text-slate-400 bg-black/20 p-2.5 rounded-lg border border-slate-700/50">
+            <div
+              onClick={() => onOpenModal?.('SERVICE_LOCATIONS')}
+              className="flex items-start gap-2.5 text-[11px] text-slate-400 bg-black/20 p-2.5 rounded-lg border border-slate-700/50 hover:border-amber-400/50 cursor-pointer transition-all"
+            >
               <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
                 <span className="text-white font-medium">TakaSafe Point (Customer Service Center):</span> Plot No.3, Block-5E(H)8, Near Shooting Club Gulshan Avenue, Gulshan-1, Dhaka-1212 · <span className="text-amber-300">Timing: 9:30 am - 4:00 pm</span>
@@ -91,21 +128,21 @@ export const UpayFooter: React.FC = () => {
             <div>
               <h4 className="text-amber-400 font-bold tracking-wider uppercase text-xs mb-3">USEFUL LINKS</h4>
               <ul className="space-y-1.5 text-[12px] text-slate-400">
-                <li className="hover:text-white cursor-pointer">Limits and Charges</li>
-                <li className="hover:text-white cursor-pointer">Press Release</li>
-                <li className="hover:text-white cursor-pointer">Need Help?</li>
-                <li className="hover:text-white cursor-pointer">Partner</li>
-                <li className="hover:text-white cursor-pointer">Discontinued Agents</li>
+                <li onClick={() => onOpenModal?.('LIMITS_CHARGES')} className="hover:text-white cursor-pointer transition-colors">Limits and Charges</li>
+                <li onClick={() => onOpenModal?.('MEDIA')} className="hover:text-white cursor-pointer transition-colors">Press Release</li>
+                <li onClick={() => onOpenModal?.('NEED_HELP')} className="hover:text-white cursor-pointer transition-colors">Need Help?</li>
+                <li onClick={() => onOpenModal?.('PARTNER')} className="hover:text-white cursor-pointer transition-colors">Partner</li>
+                <li onClick={() => onOpenModal?.('DISCONTINUED_AGENTS')} className="hover:text-white cursor-pointer transition-colors">Discontinued Agents</li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-amber-400 font-bold tracking-wider uppercase text-xs mb-2">COMPANY INFO</h4>
               <ul className="space-y-1.5 text-[12px] text-slate-400">
-                <li className="hover:text-white cursor-pointer">Privacy Policy</li>
-                <li className="hover:text-white cursor-pointer">Terms and Conditions</li>
-                <li className="hover:text-white cursor-pointer">Who We Are</li>
-                <li className="hover:text-white cursor-pointer">Business Solution</li>
+                <li onClick={() => onOpenModal?.('PRIVACY_POLICY')} className="hover:text-white cursor-pointer transition-colors">Privacy Policy</li>
+                <li onClick={() => onOpenModal?.('TERMS')} className="hover:text-white cursor-pointer transition-colors">Terms and Conditions</li>
+                <li onClick={() => onOpenModal?.('ABOUT_US')} className="hover:text-white cursor-pointer transition-colors">Who We Are</li>
+                <li onClick={() => onOpenModal?.('BUSINESS')} className="hover:text-white cursor-pointer transition-colors">Business Solution</li>
               </ul>
             </div>
           </div>
@@ -116,16 +153,49 @@ export const UpayFooter: React.FC = () => {
             
             {/* Social Icons */}
             <div className="flex items-center gap-2 mb-4">
-              <span className="w-7 h-7 rounded-full bg-slate-800 hover:bg-blue-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors">f</span>
-              <span className="w-7 h-7 rounded-full bg-slate-800 hover:bg-blue-500 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors">in</span>
-              <span className="w-7 h-7 rounded-full bg-slate-800 hover:bg-red-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors">▶</span>
-              <span className="w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors">wa</span>
-              <span className="w-7 h-7 rounded-full bg-slate-800 hover:bg-sky-500 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors">imo</span>
+              <button
+                onClick={() => onOpenModal?.('MEDIA')}
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-blue-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors"
+                title="Facebook Community"
+              >
+                f
+              </button>
+              <button
+                onClick={() => onOpenModal?.('ABOUT_US')}
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-blue-500 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors"
+                title="LinkedIn Network"
+              >
+                in
+              </button>
+              <button
+                onClick={() => onOpenModal?.('MEDIA')}
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-red-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors"
+                title="YouTube Channel"
+              >
+                ▶
+              </button>
+              <button
+                onClick={() => onOpenModal?.('LIVE_CHAT')}
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors"
+                title="WhatsApp Direct"
+              >
+                wa
+              </button>
+              <button
+                onClick={() => onOpenModal?.('LIVE_CHAT')}
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-sky-500 text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-colors"
+                title="IMO Official"
+              >
+                imo
+              </button>
             </div>
 
             {/* Badges */}
             <div className="space-y-2">
-              <div className="bg-black hover:bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center gap-2 cursor-pointer transition-colors">
+              <div
+                onClick={() => onOpenModal?.('APP_DOWNLOAD')}
+                className="bg-black hover:bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center gap-2 cursor-pointer transition-all hover:border-amber-400"
+              >
                 <div className="text-xl">▶</div>
                 <div className="leading-tight">
                   <span className="text-[9px] uppercase text-slate-400 block">GET IT ON</span>
@@ -133,7 +203,10 @@ export const UpayFooter: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-black hover:bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center gap-2 cursor-pointer transition-colors">
+              <div
+                onClick={() => onOpenModal?.('APP_DOWNLOAD')}
+                className="bg-black hover:bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center gap-2 cursor-pointer transition-all hover:border-amber-400"
+              >
                 <div className="text-xl"></div>
                 <div className="leading-tight">
                   <span className="text-[9px] uppercase text-slate-400 block">Download on the</span>
@@ -144,7 +217,7 @@ export const UpayFooter: React.FC = () => {
 
             <div className="mt-4 pt-3 border-t border-slate-700/60 flex items-center gap-1.5 text-xs font-bold text-white">
               <span>Financial Trust & Resilience Platform</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
             </div>
           </div>
         </div>
