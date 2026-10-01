@@ -17,6 +17,7 @@ import {
   MULE_NETWORK_17,
   MOCK_AGENTS_BARISHAL,
   REGIONAL_RADAR_METRICS,
+  INITIAL_AUDIT_LOGS,
 } from './data/mockData';
 import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep } from './types';
 import { ShieldCheck, Info } from 'lucide-react';
@@ -31,18 +32,23 @@ export default function App() {
   const [muleCluster, setMuleCluster] = useState<MuleCluster>(MULE_NETWORK_17);
   const [agents, setAgents] = useState<AgentLiquidityNode[]>(MOCK_AGENTS_BARISHAL);
   const [regionalMetrics, setRegionalMetrics] = useState<RegionalRiskMetric[]>(REGIONAL_RADAR_METRICS);
-  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>(INITIAL_AUDIT_LOGS);
   const [selectedTxnForInvestigation, setSelectedTxnForInvestigation] = useState<Transaction | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Fetch initial audit logs from server
+  // Fetch initial audit logs from server if available (e.g. local/Express dev), else fallback cleanly
   useEffect(() => {
     fetch('/api/audit-logs')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.logs) setAuditLogs(data.logs);
+      .then((res) => {
+        if (!res.ok) throw new Error('Static host');
+        return res.json();
       })
-      .catch((err) => console.log('Could not fetch audit logs from backend:', err));
+      .then((data) => {
+        if (data && data.logs && data.logs.length > 0) setAuditLogs(data.logs);
+      })
+      .catch(() => {
+        // Safe fallback for static deployments like GitHub Pages
+      });
   }, []);
 
   const showToast = (msg: string) => {

@@ -560,3 +560,43 @@ export const DEMO_STORYLINE: StorylineStep[] = [
     moduleHighlight: 'INVESTIGATION',
   },
 ];
+
+export const INITIAL_AUDIT_LOGS = [
+  {
+    id: 'AUD-9021',
+    timestamp: '2026-10-01 09:42:15',
+    analyst: 'Sourov Kumar (Chief Risk Analyst)',
+    caseId: 'CASE-7718',
+    entityType: 'TRANSACTION',
+    entityId: 'TXN-90824',
+    actionTaken: 'HOLD_FOR_REVIEW',
+    riskScore: 94,
+    reason: 'Amount anomaly (BDT 80,000) & nocturnal timing at 03:20 AM',
+    notes: 'Triggered step-up SMS OTP and temporary 6-hour outbound hold.',
+  },
+  {
+    id: 'AUD-9020',
+    timestamp: '2026-10-01 08:15:30',
+    analyst: 'Md. Tanvir Hasan (SOC Ops)',
+    caseId: 'CASE-7704',
+    entityType: 'NETWORK',
+    entityId: 'W302',
+    actionTaken: 'FREEZE_WALLET',
+    riskScore: 92,
+    reason: 'Rapid circular pass-through flow of BDT 1.28M across 12 wallets',
+    notes: 'Frozen central aggregator wallet 01988-510294. Forwarded to AML Compliance.',
+  },
+  {
+    id: 'AUD-9019',
+    timestamp: '2026-10-01 07:30:00',
+    analyst: 'Automated Action Engine',
+    caseId: 'CASE-7699',
+    entityType: 'AGENT',
+    entityId: 'AGT-BAR-101',
+    actionTaken: 'DISPATCH_FLOAT',
+    riskScore: 65,
+    reason: 'Predicted cash-out float shortfall (-BDT 252,600) due to Cyclone surge',
+    notes: 'Notified Regional Distributor for morning cash replenishment.',
+  },
+];
+
