@@ -1,0 +1,6 @@
+{
+  "name": "TakaSafe - AI Financial Trust & Resilience Network",
+  "description": "Explainable AI-powered trust, fraud intelligence, scam protection & disaster-aware agent liquidity resilience for Mobile Financial Services (DIU CPC × upay Hackathon 2026).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
