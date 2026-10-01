@@ -8,30 +8,28 @@ export const UpayFooter: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
           {/* Column 1: Brand & Purpose */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center p-2 shrink-0 shadow-sm">
-                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
                   <path
-                    d="M 23 48 C 23 77 77 77 77 48"
+                    d="M 22 45 C 22 75 78 75 78 45"
                     fill="none"
                     stroke="#FAB915"
-                    strokeWidth="15"
+                    strokeWidth="14"
                     strokeLinecap="round"
                   />
                   <path
-                    d="M 36 53 C 36 71 64 71 64 53"
+                    d="M 34 52 C 34 72 66 72 66 52"
                     fill="none"
                     stroke="#0054A6"
-                    strokeWidth="11"
+                    strokeWidth="10"
                     strokeLinecap="round"
                   />
-                  <circle cx="50" cy="33" r="8.5" fill="#E11D48" />
+                  <circle cx="50" cy="30" r="8" fill="#E11D48" />
                 </svg>
               </div>
               <div className="flex items-center">
-                <span className="text-2xl font-[900] tracking-[-0.03em] text-white font-['Plus_Jakarta_Sans',sans-serif]">
-                  TakaSafe
-                </span>
+                <span className="text-xl font-black text-white">TakaSafe</span>
               </div>
             </div>
             <p className="text-slate-400 text-[12px] leading-relaxed">
@@ -51,8 +49,8 @@ export const UpayFooter: React.FC = () => {
             <div className="flex items-start gap-2.5">
               <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <a href="mailto:customerservice@upaybd.com" className="hover:text-amber-300 transition-colors">
-                  customerservice@upaybd.com
+                <a href="mailto:customerservice@takasafe.com" className="hover:text-amber-300 transition-colors">
+                  customerservice@takasafe.com
                 </a>
                 <span className="block text-[11px] text-slate-400">(For Customer Service only)</span>
               </div>
@@ -61,8 +59,8 @@ export const UpayFooter: React.FC = () => {
             <div className="flex items-start gap-2.5">
               <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <a href="mailto:info@upaybd.com" className="hover:text-amber-300 transition-colors">
-                  info@upaybd.com
+                <a href="mailto:info@takasafe.com" className="hover:text-amber-300 transition-colors">
+                  info@takasafe.com
                 </a>
                 <span className="block text-[11px] text-slate-400">(For Media Queries)</span>
               </div>
@@ -83,7 +81,7 @@ export const UpayFooter: React.FC = () => {
             <div className="flex items-start gap-2.5 text-[11px] text-slate-400 bg-black/20 p-2.5 rounded-lg border border-slate-700/50">
               <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <span className="text-white font-medium">upay point (Customer Service Center):</span> UCB Taqwa Islamic Branch, Plot No.3, Block-5E(H)8, Near Shooting Club Gulshan Avenue, Gulshan-1, Dhaka-1212 · <span className="text-amber-300">Timing: 9:30 am - 4:00 pm</span>
+                <span className="text-white font-medium">TakaSafe Point (Customer Service Center):</span> Plot No.3, Block-5E(H)8, Near Shooting Club Gulshan Avenue, Gulshan-1, Dhaka-1212 · <span className="text-amber-300">Timing: 9:30 am - 4:00 pm</span>
               </div>
             </div>
           </div>

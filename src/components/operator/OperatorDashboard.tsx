@@ -10,6 +10,7 @@ import {
 import { MuleVisionGraph } from './MuleVisionGraph';
 import { DisasterResilienceSimulator } from './DisasterResilienceSimulator';
 import { EarlyWarningRadar } from './EarlyWarningRadar';
+import { TransactionRiskTrendChart } from './TransactionRiskTrendChart';
 import {
   ShieldCheck,
   AlertTriangle,
@@ -25,6 +26,7 @@ import {
   Eye,
   Filter,
   ArrowUpRight,
+  Download,
 } from 'lucide-react';
 
 interface OperatorDashboardProps {
@@ -59,6 +61,8 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [filterBand, setFilterBand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [auditSearchQuery, setAuditSearchQuery] = useState<string>('');
+  const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
 
   // Tunable Policy Weights state (from Page 4 of the report)
   const [weights, setWeights] = useState({
@@ -98,6 +102,66 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
         return 'bg-emerald-100 text-emerald-800 border-emerald-200';
     }
   };
+
+  const handleDownloadAuditCSV = () => {
+    if (!auditLogs || auditLogs.length === 0) return;
+
+    const headers = [
+      'Audit_ID',
+      'Timestamp_BST',
+      'Authorized_Risk_Analyst',
+      'Case_ID',
+      'Target_Entity_Type',
+      'Target_Entity_ID',
+      'Intervention_Action_Taken',
+      'Fused_Risk_Score_0_100',
+      'Justification_Reason',
+      'Operational_Notes',
+      'Regulatory_Filing_Compliance',
+    ];
+
+    const rows = auditLogs.map((log) => [
+      `"${log.id || ''}"`,
+      `"${log.timestamp || ''}"`,
+      `"${(log.analyst || '').replace(/"/g, '""')}"`,
+      `"${log.caseId || ''}"`,
+      `"${log.entityType || ''}"`,
+      `"${log.entityId || ''}"`,
+      `"${log.actionTaken || ''}"`,
+      `"${log.riskScore ?? ''}"`,
+      `"${(log.reason || '').replace(/"/g, '""')}"`,
+      `"${(log.notes || '').replace(/"/g, '""')}"`,
+      `"COMPLIANT - Bangladesh Bank BFIU MFS Guidelines 2026"`,
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const dateStr = new Date().toISOString().slice(0, 10);
+    link.setAttribute('download', `TakaSafe_Regulatory_Audit_Logs_${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccess(true);
+    setTimeout(() => setDownloadSuccess(false), 4000);
+  };
+
+  const filteredAuditLogs = auditLogs.filter((log) => {
+    if (!auditSearchQuery) return true;
+    const q = auditSearchQuery.toLowerCase();
+    return (
+      (log.id && log.id.toLowerCase().includes(q)) ||
+      (log.analyst && log.analyst.toLowerCase().includes(q)) ||
+      (log.entityId && log.entityId.toLowerCase().includes(q)) ||
+      (log.caseId && log.caseId.toLowerCase().includes(q)) ||
+      (log.actionTaken && log.actionTaken.toLowerCase().includes(q)) ||
+      (log.notes && log.notes.toLowerCase().includes(q))
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -182,7 +246,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           { id: 'RESILIENCE', label: '3. Disaster Resilience Mode', icon: CloudLightning },
           { id: 'RADAR', label: '4. Early-Warning Radar', icon: Radar },
           { id: 'POLICY', label: '5. Policy Weights & Action Engine', icon: Sliders },
-          { id: 'AUDIT', label: '6. Compliance Audit Trail', icon: FileCheck2 },
+          { id: 'AUDIT', label: '6. Audit Logs & Compliance', icon: FileCheck2 },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -211,6 +275,9 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
       {/* Tab 1: Overview & Transaction Guardian */}
       {activeTab === 'OVERVIEW' && (
         <div className="space-y-6">
+          {/* Real-time Recharts Risk Trend Chart */}
+          <TransactionRiskTrendChart transactions={transactions} lang={lang} />
+
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             {/* Table Filters & Search */}
             <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50">
@@ -531,21 +598,63 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
         </div>
       )}
 
-      {/* Tab 6: Compliance Audit Trail */}
+      {/* Tab 6: Audit Logs & Regulatory Reporting */}
       {activeTab === 'AUDIT' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+          {/* Header Bar */}
+          <div className="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
             <div>
-              <h3 className="font-bold text-slate-900 text-base">
-                Human-in-the-Loop Audit Trail & Log
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Full chronological ledger of operator decisions, overrides, freezes, and float dispatches.
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-slate-900 text-base">
+                  Audit Logs & Regulatory Reporting
+                </h3>
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                  BFIU Compliant
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Full chronological ledger of operator decisions, overrides, freezes, and float dispatches for Bangladesh Bank regulatory reporting.
               </p>
             </div>
-            <span className="text-xs bg-slate-100 text-slate-700 font-mono font-bold px-2.5 py-1 rounded-lg">
-              {auditLogs.length} Entries Logged
-            </span>
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-xs bg-white text-slate-700 font-mono font-bold px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                {filteredAuditLogs.length} Records
+              </span>
+
+              {downloadSuccess ? (
+                <div className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm animate-in fade-in">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Report Downloaded!</span>
+                </div>
+              ) : (
+                <button
+                  onClick={handleDownloadAuditCSV}
+                  className="flex items-center gap-2 bg-[#0054A6] hover:bg-[#004080] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-[#003875]"
+                  title="Download complete audit logs as CSV for regulatory submission"
+                >
+                  <Download className="w-4 h-4 text-amber-300" />
+                  <span>Download Regulatory CSV</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Filter & Search Bar */}
+          <div className="p-3 bg-white border-b border-slate-200 flex items-center justify-between gap-3 text-xs">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                value={auditSearchQuery}
+                onChange={(e) => setAuditSearchQuery(e.target.value)}
+                placeholder="Filter logs by analyst, case ID, wallet, or action..."
+                className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#0054A6]"
+              />
+            </div>
+            <div className="text-[11px] text-slate-500">
+              Format: Standard UTF-8 CSV with Bangladesh Bank BFIU compliance headers
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -560,37 +669,45 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {auditLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="font-mono font-bold text-slate-900">{log.id}</div>
-                      <div className="text-[11px] text-slate-500">{log.timestamp}</div>
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-800">
-                      {log.analyst}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="font-mono font-bold text-slate-900">{log.entityId}</span>
-                      <span className="text-[10px] text-slate-500 block">{log.caseId}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`inline-block font-bold text-[10px] px-2.5 py-0.5 rounded-full ${
-                          log.actionTaken === 'FREEZE_WALLET'
-                            ? 'bg-rose-100 text-rose-700'
-                            : log.actionTaken === 'DISPATCH_FLOAT'
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-amber-100 text-amber-700'
-                        }`}
-                      >
-                        {log.actionTaken.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-slate-600 max-w-xs truncate">
-                      {log.notes}
+                {filteredAuditLogs.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-slate-400">
+                      No audit log entries matching your search.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredAuditLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="font-mono font-bold text-slate-900">{log.id}</div>
+                        <div className="text-[11px] text-slate-500">{log.timestamp}</div>
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-800">
+                        {log.analyst}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="font-mono font-bold text-slate-900">{log.entityId}</span>
+                        <span className="text-[10px] text-slate-500 block">{log.caseId}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`inline-block font-bold text-[10px] px-2.5 py-0.5 rounded-full ${
+                            log.actionTaken === 'FREEZE_WALLET'
+                              ? 'bg-rose-100 text-rose-700'
+                              : log.actionTaken === 'DISPATCH_FLOAT'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-amber-100 text-amber-700'
+                          }`}
+                        >
+                          {log.actionTaken.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 max-w-xs truncate">
+                        {log.notes}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

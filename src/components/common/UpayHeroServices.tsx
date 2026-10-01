@@ -165,118 +165,254 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                 </div>
               </div>
 
-              {/* Right Graphic: ATM Booth & Friendly Yellow 0 Mascot (Matching video at 0:25) */}
-              <div className="w-72 h-56 sm:w-88 sm:h-64 relative flex items-center justify-center">
-                {/* Simulated Modern ATM Booth */}
-                <div className="absolute left-4 bottom-2 w-28 h-44 bg-slate-900 rounded-xl border-4 border-slate-700 shadow-2xl p-2 flex flex-col justify-between">
-                  <div className="bg-red-600 text-white font-black text-[9px] text-center py-0.5 rounded tracking-wider">
-                    ATM BOOTH
-                  </div>
-                  <div className="bg-sky-950 h-16 rounded border border-sky-600/50 p-1 flex flex-col justify-center items-center">
-                    <span className="text-[8px] text-emerald-400 font-mono">0% FEE ACTIVE</span>
-                    <span className="text-[10px] text-white font-bold">READY</span>
-                  </div>
-                  <div className="bg-slate-800 h-6 rounded flex items-center justify-between px-2">
-                    <div className="w-10 h-1 bg-emerald-400 rounded-full animate-pulse" />
-                    <span className="text-[7px] text-slate-400 font-mono">CASH</span>
+              {/* Right Graphic: Modern Glass Architectural ATM Booth & 3D Plush Mascot (Matching video at 0:25) */}
+              <div className="w-80 h-64 sm:w-96 sm:h-72 relative flex items-end justify-center select-none">
+                {/* Background Lush Tree & Nature Foliage (From original commercial at 0:25) */}
+                <div className="absolute left-2 bottom-6 z-0 pointer-events-none opacity-80">
+                  <div className="relative">
+                    {/* Bush / Trees clusters */}
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-t from-emerald-600 via-emerald-500 to-green-400 absolute -top-8 -left-4 blur-[0.5px] shadow-sm" />
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-t from-emerald-700 via-green-600 to-lime-400 absolute -top-12 left-6 blur-[0.5px]" />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-t from-green-700 to-emerald-400 absolute -top-6 left-16" />
                   </div>
                 </div>
 
-                {/* Friendly Yellow Mascot holding '0' (From video 0:25) */}
-                <div className="relative z-10 translate-x-10 flex flex-col items-center">
-                  <div className="relative">
-                    {/* Big Fuzzy 0 Character Body */}
-                    <div className="w-36 h-44 rounded-[40px] bg-gradient-to-b from-amber-400 via-amber-400 to-amber-500 border-4 border-amber-300 shadow-2xl flex flex-col items-center justify-center relative p-3">
-                      {/* Eyes */}
-                      <div className="flex items-center gap-4 mt-2">
-                        <div className="w-4 h-5 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white translate-x-0.5 -translate-y-0.5" />
+                {/* Ground Granite Pavement Base */}
+                <div className="absolute -bottom-1 left-6 right-6 h-5 bg-gradient-to-b from-slate-300 via-slate-400 to-slate-500 rounded-full blur-[1px] opacity-70 transform scale-x-110 shadow-lg z-0" />
+
+                {/* Architectural Modern Glass ATM Booth Kiosk */}
+                <div className="relative z-10 -translate-x-6 bottom-2 w-36 h-56 bg-slate-900/90 rounded-2xl border-2 border-slate-400 shadow-2xl overflow-hidden flex flex-col backdrop-blur-md">
+                  {/* Roof Top Brand Canopy / Header Signage */}
+                  <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-600 p-2 border-b-2 border-red-700 shadow-md text-center relative overflow-hidden">
+                    {/* Subtle shine sweep */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12" />
+                    <div className="text-[10px] font-black text-white tracking-widest uppercase flex items-center justify-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <span>TakaSafe ATM</span>
+                    </div>
+                    <div className="text-[7px] text-red-100 font-semibold uppercase tracking-wider">
+                      24/7 CASH OUT · 0% FEE
+                    </div>
+                  </div>
+
+                  {/* Glass Booth Cabin Body with Interior Machine & Reflections */}
+                  <div className="relative flex-1 bg-gradient-to-b from-sky-950/60 via-slate-900/80 to-slate-950 p-2 flex flex-col justify-between">
+                    {/* Interior Ceiling Downlight Cone */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-16 bg-gradient-to-b from-amber-200/20 to-transparent blur-sm pointer-events-none" />
+
+                    {/* Realistic Glass Reflection Slanted Stripes */}
+                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
+                    <div className="absolute -inset-x-10 top-6 h-12 bg-white/5 -rotate-45 pointer-events-none" />
+
+                    {/* Stainless Steel Vertical Mullions & Door Frame */}
+                    <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-gradient-to-b from-slate-300 via-slate-500 to-slate-300 shadow-sm" />
+                    <div className="absolute top-0 bottom-0 right-1 w-0.5 bg-gradient-to-b from-slate-300 via-slate-500 to-slate-300 shadow-sm" />
+                    {/* Chrome Door Handle */}
+                    <div className="absolute right-2 top-20 w-1 h-10 bg-gradient-to-b from-white via-slate-200 to-slate-400 rounded-full shadow border border-slate-500" />
+
+                    {/* The ATM Terminal Inside the Booth */}
+                    <div className="relative z-10 w-full bg-gradient-to-b from-slate-800 via-slate-800 to-slate-900 rounded-xl border border-slate-700 p-2 shadow-inner flex flex-col items-center gap-1.5">
+                      {/* ATM Display Screen */}
+                      <div className="w-full bg-[#0a192f] rounded-lg border border-sky-500/40 p-1.5 shadow-md flex flex-col items-center justify-center relative overflow-hidden">
+                        <div className="text-[7px] font-bold text-sky-400 tracking-wider">TakaSafe DIGITAL</div>
+                        <div className="text-[11px] font-black text-amber-300 tracking-tight leading-none my-0.5">
+                          ৳০ চার্জ
                         </div>
-                        <div className="w-4 h-5 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white translate-x-0.5 -translate-y-0.5" />
+                        <div className="text-[6.5px] text-emerald-400 font-mono flex items-center gap-0.5">
+                          <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
+                          <span>READY FOR CASH</span>
                         </div>
                       </div>
-                      {/* Smile */}
-                      <div className="w-6 h-3 rounded-b-full border-b-2 border-slate-900 mt-1" />
-                      {/* Inner 0 Hole */}
-                      <div className="w-12 h-16 rounded-2xl bg-white/90 border-2 border-amber-200 mt-2 flex items-center justify-center font-black text-amber-600 text-lg shadow-inner">
-                        ৳0
+
+                      {/* Card Insertion Slot & Receipt */}
+                      <div className="w-full flex items-center justify-between px-1">
+                        <div className="flex flex-col items-center">
+                          <span className="text-[5px] text-slate-400 uppercase">Card</span>
+                          <div className="w-6 h-1 bg-emerald-400 rounded-full shadow-sm animate-pulse" />
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-[5px] text-slate-400 uppercase">Receipt</span>
+                          <div className="w-5 h-0.5 bg-slate-300 rounded" />
+                        </div>
+                      </div>
+
+                      {/* Tactile Keypad */}
+                      <div className="w-14 grid grid-cols-3 gap-0.5 p-0.5 bg-slate-950 rounded border border-slate-700">
+                        {[...Array(9)].map((_, i) => (
+                          <div key={i} className="h-1 bg-slate-700 rounded-xs" />
+                        ))}
+                      </div>
+
+                      {/* Cash Dispenser Slot with Illuminated Glow */}
+                      <div className="w-full bg-slate-950 rounded border border-emerald-500/40 p-1 flex items-center justify-between shadow-inner">
+                        <span className="text-[6px] font-black text-emerald-400 tracking-wider">CASH OUT</span>
+                        <div className="w-10 h-1.5 bg-gradient-to-r from-emerald-500 via-amber-300 to-emerald-500 rounded-full shadow-sm animate-pulse" />
                       </div>
                     </div>
 
-                    {/* Cute waving arms */}
-                    <div className="absolute -left-3 top-16 w-5 h-8 bg-amber-400 rounded-full -rotate-45 border-2 border-amber-300" />
-                    <div className="absolute -right-3 top-12 w-5 h-8 bg-amber-400 rounded-full rotate-45 border-2 border-amber-300" />
+                    {/* Booth Floor Mat */}
+                    <div className="w-full h-2 bg-gradient-to-r from-slate-800 via-red-900 to-slate-800 rounded text-center text-[5px] text-white/50 uppercase tracking-widest font-mono">
+                      WELCOME
+                    </div>
                   </div>
-                  <span className="mt-1 bg-[#0054A6] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow">
-                    ZERO CHARGE
-                  </span>
+                </div>
+
+                {/* Lovable 3D Plush Yellow "0" Mascot Character (Directly from video 0:25) */}
+                <div className="relative z-20 translate-x-4 bottom-2 flex flex-col items-center">
+                  <div className="relative group cursor-pointer transition-transform hover:scale-105 duration-300">
+                    {/* Waving Left Arm */}
+                    <div className="absolute -left-4 top-14 w-6 h-11 bg-gradient-to-b from-amber-300 to-amber-500 rounded-full -rotate-45 border-2 border-amber-200 shadow-md origin-top-right transform -rotate-12 animate-bounce" />
+
+                    {/* Waving Right Arm */}
+                    <div className="absolute -right-4 top-10 w-6 h-11 bg-gradient-to-b from-amber-300 to-amber-500 rounded-full rotate-45 border-2 border-amber-200 shadow-md origin-top-left" />
+
+                    {/* 3D Plush Furry Body Shaped like Big 0 */}
+                    <div className="w-40 h-50 rounded-[48px] bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 border-4 border-amber-200 shadow-2xl flex flex-col items-center justify-between p-3.5 relative overflow-hidden">
+                      {/* Top Volumetric Specular Highlight */}
+                      <div className="absolute top-1 left-4 right-4 h-8 bg-gradient-to-b from-white/40 to-transparent rounded-t-[40px] pointer-events-none" />
+
+                      {/* Mascot Face: Big Pixar Eyes & Cheerful Smile */}
+                      <div className="flex flex-col items-center mt-1">
+                        {/* Eyes */}
+                        <div className="flex items-center gap-5">
+                          {/* Left Eye */}
+                          <div className="w-5 h-7 rounded-full bg-slate-950 border-2 border-white shadow-sm flex items-center justify-center relative overflow-hidden">
+                            <div className="w-2.5 h-3.5 rounded-full bg-white absolute top-1 right-1" />
+                            <div className="w-1 h-1 rounded-full bg-white absolute bottom-1.5 left-1.5" />
+                          </div>
+                          {/* Right Eye */}
+                          <div className="w-5 h-7 rounded-full bg-slate-950 border-2 border-white shadow-sm flex items-center justify-center relative overflow-hidden">
+                            <div className="w-2.5 h-3.5 rounded-full bg-white absolute top-1 right-1" />
+                            <div className="w-1 h-1 rounded-full bg-white absolute bottom-1.5 left-1.5" />
+                          </div>
+                        </div>
+
+                        {/* Rosy Cheeks */}
+                        <div className="flex items-center justify-between w-24 -mt-2">
+                          <div className="w-3.5 h-2 rounded-full bg-rose-400/40 blur-[1px]" />
+                          <div className="w-3.5 h-2 rounded-full bg-rose-400/40 blur-[1px]" />
+                        </div>
+
+                        {/* Warm Cheerful Open Smile */}
+                        <div className="w-7 h-3.5 rounded-b-full bg-slate-900 border-t-2 border-amber-600 flex items-center justify-center overflow-hidden -mt-1 shadow-inner">
+                          <div className="w-4 h-2 rounded-t-full bg-rose-500 mt-1.5" />
+                        </div>
+                      </div>
+
+                      {/* Inner 0 Hole with 3D Golden Taka Emblem */}
+                      <div className="w-16 h-20 rounded-3xl bg-gradient-to-b from-white via-amber-50 to-amber-100 border-2 border-amber-300 shadow-inner flex flex-col items-center justify-center relative my-1">
+                        <span className="text-2xl font-black text-amber-600 drop-shadow-sm">৳০</span>
+                        <span className="text-[7.5px] font-black text-[#0054A6] uppercase tracking-wider">
+                          NO CHARGE
+                        </span>
+                      </div>
+
+                      {/* Soft Shading Base */}
+                      <div className="w-full text-center">
+                        <span className="text-[8px] font-black text-amber-900/60 uppercase tracking-widest">
+                          TAKASAFE BUDDY
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Cute Puffy Feet */}
+                    <div className="flex items-center justify-center gap-6 -mt-2">
+                      <div className="w-8 h-4 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-200 shadow-md" />
+                      <div className="w-8 h-4 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-200 shadow-md" />
+                    </div>
+                  </div>
+
+                  {/* Official Zero Charge Pill Badge */}
+                  <div className="mt-1 flex items-center gap-1.5 bg-gradient-to-r from-[#0054A6] to-[#003d7a] text-white text-[11px] font-black px-4 py-1 rounded-full shadow-lg border border-amber-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                    <span>ZERO CHARGE GUARANTEE</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* SLIDE 3: ScamShield AI Pre-Payment Protection */}
-          <div className="w-full shrink-0 relative bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white py-10 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[360px] flex items-center">
-            {/* Tech grid overlay */}
+          {/* SLIDE 3: ScamShield AI Pre-Payment Protection (Vibrant Upay Royal Blue & Gold Palette) */}
+          <div className="w-full shrink-0 relative bg-gradient-to-r from-[#002E66] via-[#0054A6] to-[#007AE6] text-white py-10 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[360px] flex items-center">
+            {/* Radiant Ambient Light Orbs */}
+            <div className="absolute -top-16 -right-16 w-80 h-80 rounded-full bg-amber-400/20 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-sky-300/25 blur-3xl pointer-events-none" />
+
+            {/* Subtle Tech Security Matrix Grid Pattern */}
             <div
-              className="absolute inset-0 opacity-10 pointer-events-none"
+              className="absolute inset-0 opacity-15 pointer-events-none"
               style={{
-                backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-                backgroundSize: '20px 20px',
+                backgroundImage: 'radial-gradient(circle, #ffffff 1.2px, transparent 1.2px)',
+                backgroundSize: '24px 24px',
               }}
             />
 
             <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
               <div className="flex-1 text-center md:text-left">
-                <div className="inline-flex items-center gap-1.5 bg-amber-400 text-blue-950 font-bold px-3 py-1 rounded-full text-xs mb-3 shadow">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>24/7 AI Trust & Resilience</span>
+                <div className="inline-flex items-center gap-1.5 bg-[#FAB915] text-[#003B75] font-black px-3.5 py-1.5 rounded-full text-xs mb-3 shadow-md border border-amber-300">
+                  <ShieldCheck className="w-4 h-4 text-[#003B75]" />
+                  <span>24/7 AI Trust & ScamShield</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-sm">
                   {lang === 'BN' ? 'ScamShield এআই সুরক্ষা' : 'ScamShield AI Protection'}
                 </h2>
                 <div className="mt-2 flex items-baseline justify-center md:justify-start gap-3">
-                  <span className="text-3xl sm:text-4xl font-black text-amber-300">
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#FAB915] drop-shadow-sm">
                     {lang === 'BN' ? 'নিরাপদ লেনদেন' : 'Safe Payments'}
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold text-blue-200">
+                  <span className="text-xl sm:text-2xl font-bold text-sky-100">
                     {lang === 'BN' ? 'প্রতিটি পদক্ষেপে' : 'Every Step'}
                   </span>
                 </div>
-                <p className="mt-2 text-xs sm:text-sm text-blue-200 max-w-lg leading-relaxed">
+                <p className="mt-3 text-xs sm:text-sm text-blue-50 max-w-lg leading-relaxed font-medium">
                   {lang === 'BN'
                     ? 'আপনার কষ্টের টাকাকে রাখুন সুরক্ষিত—প্রাক-পেমেন্ট এআই সতর্কতা, অস্বাভাবিক গতিবিধি নির্ণয় ও দুর্যোগকালীন এজেন্ট ব্যবস্থাপনা।'
                     : 'Pre-payment explainable scam warnings, money-mule detection, and disaster-aware agent liquidity resilience.'}
                 </p>
 
-                <div className="mt-5 flex items-center justify-center md:justify-start gap-4">
+                <div className="mt-6 flex items-center justify-center md:justify-start gap-4">
                   <button
                     onClick={() => onServiceSelect?.('Send Money')}
-                    className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                    className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 border border-amber-300"
                   >
                     <span>{lang === 'BN' ? 'সুরক্ষা যাচাই করুন' : 'Test ScamShield'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                  <div className="text-[11px] text-blue-300 italic">DIU CPC × upay AI DEV FEST 2026</div>
+                  <div className="text-xs text-sky-100 font-semibold bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                    DIU CPC × upay AI DEV FEST 2026
+                  </div>
                 </div>
               </div>
 
-              {/* Shield Graphic */}
-              <div className="w-64 h-48 sm:w-80 sm:h-56 bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/20 shadow-2xl flex flex-col justify-between">
-                <div className="flex items-center justify-between text-xs text-blue-200">
-                  <span>Guardian Core</span>
-                  <span className="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono text-[10px]">
+              {/* Luminous 3D Glass Trust Shield Card */}
+              <div className="w-72 h-60 sm:w-84 sm:h-64 bg-white/15 backdrop-blur-xl rounded-3xl p-5 border-2 border-white/40 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+                {/* Shiny top glass glare */}
+                <div className="absolute -top-10 -left-10 right-10 h-28 bg-white/15 rounded-full blur-xl pointer-events-none" />
+
+                <div className="flex items-center justify-between text-xs text-sky-100 relative z-10">
+                  <span className="font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span>TakaSafe Guardian Core</span>
+                  </span>
+                  <span className="bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold">
                     ONLINE 99.9%
                   </span>
                 </div>
-                <div className="flex flex-col items-center justify-center py-2">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-300 flex items-center justify-center shadow-lg text-blue-950">
-                    <ShieldCheck className="w-12 h-12" />
+
+                <div className="flex flex-col items-center justify-center py-2 relative z-10">
+                  {/* Concentric Pulse Rings */}
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-28 h-28 rounded-full bg-[#FAB915]/20 animate-pulse pointer-events-none" />
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#FAB915] via-amber-300 to-amber-200 flex items-center justify-center shadow-xl text-[#003B75] border-2 border-white/60">
+                      <ShieldCheck className="w-12 h-12 text-[#003B75]" />
+                    </div>
                   </div>
-                  <span className="text-xs font-bold text-white mt-2">Zero Fraud Compromise</span>
+                  <span className="text-sm font-black text-white mt-2.5 tracking-wide drop-shadow-sm">
+                    Zero Fraud Compromise
+                  </span>
                 </div>
-                <div className="text-center text-[11px] text-blue-300">
+
+                <div className="text-center text-[11px] font-semibold text-sky-100 bg-black/20 py-1.5 px-2 rounded-xl border border-white/10 relative z-10">
                   SHAP Explainability · Disaster Liquidity Mode
                 </div>
               </div>
