@@ -120,11 +120,13 @@ export const UpayFooter: React.FC<UpayFooterProps> = ({
 
             <div
               onClick={() => onOpenModal?.('SERVICE_LOCATIONS')}
-              className="flex items-start gap-2.5 text-[11px] text-slate-400 bg-black/20 p-2.5 rounded-lg border border-slate-700/50 hover:border-amber-400/50 cursor-pointer transition-all"
+              className="flex items-start gap-2.5 text-[11px] text-slate-400 hover:text-white cursor-pointer transition-colors"
             >
               <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <span className="text-white font-medium">TakaSafe Point (Customer Service Center):</span> Plot No.3, Block-5E(H)8, Near Shooting Club Gulshan Avenue, Gulshan-1, Dhaka-1212 · <span className="text-amber-300">Timing: 9:30 am - 4:00 pm</span>
+                <span className="text-white font-medium">TakaSafe Point (Customer Service Center):</span>{' '}
+                Plot No.3, Block-5E(H)8, Near Shooting Club Gulshan Avenue, Gulshan-1, Dhaka-1212 ·{' '}
+                <span className="text-amber-300">Timing: 9:30 am - 4:00 pm</span>
               </div>
             </div>
           </div>
@@ -223,7 +225,6 @@ export const UpayFooter: React.FC<UpayFooterProps> = ({
 
             <div className="mt-4 pt-3 border-t border-slate-700/60 flex items-center gap-1.5 text-xs font-bold text-white">
               <span>Financial Trust & Resilience Platform</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
             </div>
           </div>
         </div>

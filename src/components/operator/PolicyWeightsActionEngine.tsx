@@ -262,6 +262,13 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
     setTimeout(() => setTestedRuleId(null), 2500);
   };
 
+  // Helper to dynamically calculate precise two-tone slider track gradient
+  // Eliminates Chromium accent-color high-contrast discoloration
+  const getSliderTrackGradient = (val: number, min: number, max: number, colorHex: string) => {
+    const pct = Math.max(0, Math.min(100, Math.round(((val - min) / (max - min)) * 100)));
+    return `linear-gradient(to right, ${colorHex} 0%, ${colorHex} ${pct}%, var(--mfs-slider-unfilled, #e2e8f0) ${pct}%, var(--mfs-slider-unfilled, #e2e8f0) 100%)`;
+  };
+
   const filteredRules = actionFilter === 'ALL'
     ? ACTION_RULES
     : ACTION_RULES.filter((r) => r.domain === actionFilter);
@@ -431,7 +438,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.fraud}
                   onChange={(e) => handleWeightChange('fraud', Number(e.target.value))}
-                  className="w-full accent-emerald-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.fraud, 0.05, 0.50, '#059669'),
+                    color: '#059669',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Permissive)</span>
@@ -476,7 +487,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.anomaly}
                   onChange={(e) => handleWeightChange('anomaly', Number(e.target.value))}
-                  className="w-full accent-indigo-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.anomaly, 0.05, 0.40, '#4F46E5'),
+                    color: '#4F46E5',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Tolerant)</span>
@@ -521,7 +536,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.velocity}
                   onChange={(e) => handleWeightChange('velocity', Number(e.target.value))}
-                  className="w-full accent-amber-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.velocity, 0.05, 0.35, '#D97706'),
+                    color: '#D97706',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Low Spike)</span>
@@ -566,7 +585,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.device}
                   onChange={(e) => handleWeightChange('device', Number(e.target.value))}
-                  className="w-full accent-cyan-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.device, 0.05, 0.30, '#0891B2'),
+                    color: '#0891B2',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Permissive)</span>
@@ -611,7 +634,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.network}
                   onChange={(e) => handleWeightChange('network', Number(e.target.value))}
-                  className="w-full accent-purple-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.network, 0.05, 0.30, '#9333EA'),
+                    color: '#9333EA',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Isolated)</span>
@@ -656,7 +683,11 @@ export const PolicyWeightsActionEngine: React.FC<PolicyWeightsActionEngineProps>
                   step="0.05"
                   value={weights.scam}
                   onChange={(e) => handleWeightChange('scam', Number(e.target.value))}
-                  className="w-full accent-rose-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                  style={{
+                    background: getSliderTrackGradient(weights.scam, 0.05, 0.30, '#E11D48'),
+                    color: '#E11D48',
+                  }}
+                  className="mfs-policy-slider"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>5% (Minimal)</span>
