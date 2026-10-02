@@ -114,37 +114,56 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
     <header className="sticky top-0 z-50 bg-[#0054A6] text-white shadow-md border-b border-[#004080]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3">
-          {/* Brand Zone */}
+          {/* Brand Zone: Authentic MFS Animated Logo (Smile Spring, Dot Wink & Radiant Gold Bloom) */}
           <button
             onClick={handleLogoClick}
-            className="flex items-center gap-2.5 cursor-pointer text-left group shrink-0 focus:outline-none"
+            className="flex items-center gap-2.5 cursor-pointer text-left group shrink-0 focus:outline-none select-none transition-transform duration-300 ease-out active:scale-[0.97]"
             title="TakaSafe Home"
           >
-            {/* Logo Mark */}
-            <div className="relative w-10 h-10 bg-white rounded-full flex items-center justify-center p-1.5 shadow-sm transform group-hover:scale-105 transition-transform">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                <path
-                  d="M 22 45 C 22 75 78 75 78 45"
-                  fill="none"
-                  stroke="#FAB915"
-                  strokeWidth="14"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M 34 52 C 34 72 66 72 66 52"
-                  fill="none"
-                  stroke="#0054A6"
-                  strokeWidth="10"
-                  strokeLinecap="round"
-                />
-                <circle cx="50" cy="30" r="8" fill="#E11D48" />
-              </svg>
+            {/* Logo Mark with Ripple Pulse and Smile Bounce */}
+            <div className="relative w-10 h-10 shrink-0">
+              {/* Concentric Golden Radar Pulse Ring */}
+              <div className="absolute inset-0 rounded-full mfs-halo-pulse pointer-events-none" />
+
+              {/* White Icon Disc with Elastic Smile Bounce */}
+              <div className="relative w-full h-full bg-white rounded-full flex items-center justify-center p-1.5 shadow-sm mfs-icon-bounce transition-all duration-300 group-hover:shadow-[0_4px_18px_rgba(250,185,21,0.5),0_0_8px_rgba(250,185,21,0.4)]">
+                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+                  {/* Outer Smile Arc */}
+                  <path
+                    d="M 22 45 C 22 75 78 75 78 45"
+                    fill="none"
+                    stroke="#FAB915"
+                    strokeWidth="14"
+                    strokeLinecap="round"
+                    className="mfs-curve-flex origin-bottom"
+                  />
+                  {/* Inner Smile Arc */}
+                  <path
+                    d="M 34 52 C 34 72 66 72 66 52"
+                    fill="none"
+                    stroke="#0054A6"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    className="mfs-curve-flex origin-bottom"
+                  />
+                  {/* Cheerful Red Dot with Playful Wink / Bounce */}
+                  <circle
+                    cx="50"
+                    cy="30"
+                    r="8"
+                    fill="#E11D48"
+                    className="mfs-dot-wink origin-center"
+                  />
+                </svg>
+              </div>
             </div>
-            <div className="flex items-baseline tracking-tight select-none">
-              <span className="font-['Hind_Siliguri','Noto_Sans_Bengali',sans-serif] text-2xl font-black text-[#FAB915] leading-none transition-colors group-hover:text-amber-200">
+
+            {/* Typography with Golden Bloom Aura (No Color Change on Taka or Safe) */}
+            <div className="mfs-logo-text flex items-baseline tracking-tight select-none">
+              <span className="font-['Hind_Siliguri','Noto_Sans_Bengali',sans-serif] text-2xl font-black text-[#FAB915] leading-none">
                 টাকা
               </span>
-              <span className="font-['Times_New_Roman',Times,serif] text-[25px] font-bold text-white leading-none ml-1 tracking-tight group-hover:text-white transition-colors">
+              <span className="font-['Times_New_Roman',Times,serif] text-[25px] font-bold text-white leading-none ml-1 tracking-tight">
                 Safe
               </span>
             </div>

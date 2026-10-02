@@ -25,8 +25,8 @@ interface LoginPageProps {
 const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
   ADMIN: {
     id: 'USR-ADM-01',
-    name: 'Sourov Kumar',
-    email: 'sourov.kumar@takasafe.upay.bd',
+    name: 'Md. Tanvir Hasan',
+    email: 'tanvir.hasan@takasafe.upay.bd',
     phone: '+880 1712-401920',
     role: 'ADMIN',
     designation: 'Chief Risk Analyst & AML Supervisor',
@@ -328,7 +328,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
               }}
               className="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
             >
-              Demo Admin (Sourov Kumar)
+              Demo Admin (Md. Tanvir Hasan)
             </button>
             <button
               type="button"

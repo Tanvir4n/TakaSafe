@@ -727,7 +727,7 @@ export const INITIAL_AUDIT_LOGS = [
   {
     id: 'AUD-9021',
     timestamp: '2026-10-01 09:42:15',
-    analyst: 'Sourov Kumar (Chief Risk Analyst)',
+    analyst: 'Md. Tanvir Hasan (Chief Risk Analyst & AML Supervisor)',
     caseId: 'CASE-7718',
     entityType: 'TRANSACTION',
     entityId: 'TXN-90824',
@@ -739,7 +739,7 @@ export const INITIAL_AUDIT_LOGS = [
   {
     id: 'AUD-9020',
     timestamp: '2026-10-01 08:15:30',
-    analyst: 'Md. Tanvir Hasan (SOC Ops)',
+    analyst: 'Md. Tanvir Hasan (Chief Risk Analyst & AML Supervisor)',
     caseId: 'CASE-7704',
     entityType: 'NETWORK',
     entityId: 'W302',

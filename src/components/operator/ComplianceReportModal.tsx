@@ -262,7 +262,7 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
                   Authorized Risk Analyst
                 </span>
                 <span className="meta-val font-semibold text-slate-900">
-                  Sourov Kumar (Chief Risk Analyst)
+                  Md. Tanvir Hasan (Chief Risk Analyst & Head of AML Operations)
                 </span>
               </div>
               <div>
@@ -361,7 +361,7 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
                   Anti-Money Laundering Act, 2012 and Bangladesh Bank BFIU Circular No. 04/2026.
                 </div>
                 <div className="signoff-line mt-8 border-t border-dashed border-slate-400 pt-1 text-[10px] text-slate-600">
-                  <strong>Sourov Kumar</strong> — Chief Risk Analyst & AML Supervisor
+                  <strong>Md. Tanvir Hasan</strong> — Chief Risk Analyst & Head of AML Operations
                   <div className="text-slate-400">TakaSafe Digital Trust & SOC Unit</div>
                 </div>
               </div>
@@ -372,7 +372,7 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
                   Central AML Portal.
                 </div>
                 <div className="signoff-line mt-8 border-t border-dashed border-slate-400 pt-1 text-[10px] text-slate-600">
-                  <strong>Md. Tanvir Hasan</strong> — Head of MFS Operations & Fraud Governance
+                  <strong>Executive Compliance Desk</strong> — Managing Directorate & Fraud Governance
                   <div className="text-slate-400">Accredited by DIU CPC × upay</div>
                 </div>
               </div>

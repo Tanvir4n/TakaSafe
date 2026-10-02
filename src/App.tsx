@@ -28,7 +28,23 @@ export default function App() {
   const [activeView, setActiveView] = useState<'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN'>('OPERATOR');
   const [operatorTab, setOperatorTab] = useState<string>('OVERVIEW');
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>({
+    id: 'USR-ADM-01',
+    name: 'Md. Tanvir Hasan',
+    email: 'tanvir.hasan@takasafe.upay.bd',
+    phone: '+880 1712-401920',
+    role: 'ADMIN',
+    designation: 'Chief Risk Analyst & AML Supervisor',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    permissions: {
+      canViewOperatorDashboard: true,
+      canFreezeWallets: true,
+      canDispatchLiquidity: true,
+      canTunePolicyWeights: true,
+      canExportAuditLogs: true,
+      canPerformInvestigationActions: true,
+    },
+  });
 
   // Dark/Light Theme state with localStorage persistence
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -106,7 +122,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          analyst: 'Sourov Kumar (Chief Risk Analyst)',
+          analyst: currentUser?.name ? `${currentUser.name} (${currentUser.designation})` : 'Md. Tanvir Hasan (Chief Risk Analyst)',
           caseId: 'CASE-NET-17',
           entityType: 'NETWORK',
           entityId: walletId,
@@ -245,7 +261,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          analyst: 'Sourov Kumar (Chief Risk Analyst)',
+          analyst: currentUser?.name ? `${currentUser.name} (${currentUser.designation})` : 'Md. Tanvir Hasan (Chief Risk Analyst)',
           caseId: `CASE-${selectedTxnForInvestigation.id}`,
           entityType: 'TRANSACTION',
           entityId: selectedTxnForInvestigation.id,

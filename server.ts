@@ -46,7 +46,7 @@ const auditLogs: AuditLogEntry[] = [
   {
     id: 'AUD-9021',
     timestamp: '2026-10-01 09:42:15',
-    analyst: 'Sourov Kumar (Chief Risk Analyst)',
+    analyst: 'Md. Tanvir Hasan (Chief Risk Analyst & AML Supervisor)',
     caseId: 'CASE-7718',
     entityType: 'TRANSACTION',
     entityId: 'TXN-99824',
@@ -58,7 +58,7 @@ const auditLogs: AuditLogEntry[] = [
   {
     id: 'AUD-9020',
     timestamp: '2026-10-01 08:15:30',
-    analyst: 'Md. Tanvir Hasan (SOC Ops)',
+    analyst: 'Md. Tanvir Hasan (Chief Risk Analyst & AML Supervisor)',
     caseId: 'CASE-7704',
     entityType: 'NETWORK',
     entityId: 'Cluster-12',
@@ -108,7 +108,7 @@ app.post('/api/audit-action', (req: Request, res: Response) => {
     const newEntry: AuditLogEntry = {
       id: `AUD-${Math.floor(1000 + Math.random() * 9000)}`,
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      analyst: analyst || 'Analyst (3AM Runtime Console)',
+      analyst: analyst || 'Md. Tanvir Hasan (Chief Risk Analyst & AML Supervisor)',
       caseId,
       entityType: entityType || 'TRANSACTION',
       entityId: entityId || 'N/A',

@@ -121,7 +121,7 @@ export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
             </div>
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
               <span className="font-bold block">Team 3AM Runtime:</span>
-              <span>Sourov Kumar (Chief Risk Analyst) · Md. Sadman Al Islam Shabab (Model Architecture Lead) · Md. Tanvir Hasan (SOC Ops)</span>
+              <span>Md. Tanvir Hasan (Chief Risk Analyst & Lead) · Md. Sadman Al Islam Shabab (Model Architecture Lead) · Sourov Kumar (SOC Operations)</span>
             </div>
           </div>
         );
