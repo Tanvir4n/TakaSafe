@@ -23,6 +23,9 @@ import {
   Sliders,
   DollarSign,
   AlertOctagon,
+  Moon,
+  Sparkles,
+  Palette,
 } from 'lucide-react';
 
 interface GeospatialIntelligenceMapProps {
@@ -36,6 +39,7 @@ interface GeospatialIntelligenceMapProps {
 }
 
 export type HeatmapMode = 'COMBINED' | 'FRAUD_CLUSTERS' | 'TXN_DENSITY';
+export type MapVisualTheme = 'CLEAN_SLATE' | 'NAVY_CYBER' | 'OCEAN_BLUE';
 
 export interface DistrictCluster {
   id: string;
@@ -538,6 +542,7 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
   // View state
   const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('COMBINED');
+  const [mapTheme, setMapTheme] = useState<MapVisualTheme>('CLEAN_SLATE');
   const [selectedDivision, setSelectedDivision] = useState<string>('Barishal');
   const [selectedDistrict, setSelectedDistrict] = useState<DistrictCluster>(BANGLADESH_DISTRICT_CLUSTERS[0]);
   const [selectedAgent, setSelectedAgent] = useState<AgentLiquidityNode | null>(agents[0] || null);
@@ -568,12 +573,27 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
   const selectedMetric = regionalMetrics.find((m) => m.division === selectedDivision) || regionalMetrics[0];
 
-  // D3 Color Scales
+  // D3 Color Scales - High Precision MFS / Cybersecurity Spectrum
   const getRiskColor = (score: number) => {
+    if (mapTheme === 'NAVY_CYBER') {
+      const interpolator = d3
+        .scaleLinear<string>()
+        .domain([0, 30, 60, 80, 100])
+        .range(['#06B6D4', '#38BDF8', '#F59E0B', '#F43F5E', '#E11D48']);
+      return interpolator(score);
+    }
+    if (mapTheme === 'OCEAN_BLUE') {
+      const interpolator = d3
+        .scaleLinear<string>()
+        .domain([0, 30, 60, 80, 100])
+        .range(['#0EA5E9', '#2563EB', '#F59E0B', '#EF4444', '#B91C1C']);
+      return interpolator(score);
+    }
+    // CLEAN_SLATE: Vivid, rich MFS security spectrum (emerald -> electric sky -> amber -> crimson)
     const interpolator = d3
       .scaleLinear<string>()
-      .domain([0, 30, 60, 80, 100])
-      .range(['#10B981', '#0EA5E9', '#F59E0B', '#EF4444', '#B91C1C']);
+      .domain([0, 28, 55, 78, 100])
+      .range(['#059669', '#0284C7', '#D97706', '#DC2626', '#991B1B']);
     return interpolator(score);
   };
 
@@ -676,40 +696,40 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
   }, [transactions, projection]);
 
   return (
-    <div className="bg-[#090D16] text-slate-100 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden font-sans">
+    <div className="bg-white dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden font-sans">
       {/* Top Header Command Bar */}
-      <div className="px-6 py-4 border-b border-slate-800/80 bg-gradient-to-r from-[#0C1222] via-[#090D16] to-[#0A0E1A] flex flex-wrap items-center justify-between gap-4">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#0C1222] flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-inner">
+          <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center justify-center text-[#0054A6] dark:text-blue-400 shadow-2xs">
             <Globe className="w-5 h-5 animate-spin" style={{ animationDuration: '40s' }} />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
-              <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 <span>Geospatial Intelligence & District Heatmap Radar</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                   D3.js v7 Density Engine
                 </span>
               </h3>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1.5">
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
                 <span>Barishal-Patuakhali Surge Active</span>
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
               Real-time transaction density, cross-district fraud risk clusters, agent cash exhaustion, and cyclone vectors
             </p>
           </div>
         </div>
 
         {/* Heatmap Mode Selector Segmented Controls */}
-        <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        <div className="flex items-center gap-1 bg-white dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold shadow-2xs">
           <button
             onClick={() => setHeatmapMode('COMBINED')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
               heatmapMode === 'COMBINED'
-                ? 'bg-gradient-to-r from-rose-600 to-indigo-600 text-white font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#0054A6] text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Zap className="w-3.5 h-3.5 text-amber-300" />
@@ -719,19 +739,19 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
             onClick={() => setHeatmapMode('FRAUD_CLUSTERS')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
               heatmapMode === 'FRAUD_CLUSTERS'
-                ? 'bg-rose-600 text-white font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-rose-600 text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Flame className="w-3.5 h-3.5 text-rose-300" />
+            <Flame className="w-3.5 h-3.5 text-amber-300" />
             <span>Fraud Risk Clusters</span>
           </button>
           <button
             onClick={() => setHeatmapMode('TXN_DENSITY')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
               heatmapMode === 'TXN_DENSITY'
-                ? 'bg-indigo-600 text-white font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#0054A6] text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Activity className="w-3.5 h-3.5 text-cyan-300" />
@@ -739,14 +759,57 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
           </button>
         </div>
 
+        {/* Map Theme / Palette Selector */}
+        <div className="flex items-center gap-1 bg-white dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold shadow-2xs">
+          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase px-1 hidden md:inline">
+            Palette:
+          </span>
+          <button
+            onClick={() => setMapTheme('CLEAN_SLATE')}
+            className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+              mapTheme === 'CLEAN_SLATE'
+                ? 'bg-[#0054A6] text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+            title="Clean Slate MFS Map"
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Clean Slate</span>
+          </button>
+          <button
+            onClick={() => setMapTheme('NAVY_CYBER')}
+            className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+              mapTheme === 'NAVY_CYBER'
+                ? 'bg-[#0054A6] text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+            title="High-Tech Cyber Navy Cartography"
+          >
+            <Moon className="w-3.5 h-3.5" />
+            <span>Cyber Navy</span>
+          </button>
+          <button
+            onClick={() => setMapTheme('OCEAN_BLUE')}
+            className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+              mapTheme === 'OCEAN_BLUE'
+                ? 'bg-[#0054A6] text-white font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+            title="Oceanic Blue Precision"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Ocean Blue</span>
+          </button>
+        </div>
+
         {/* Layer Visibility Toggles */}
         <div className="flex items-center gap-1.5 text-xs">
           <button
             onClick={() => setLayerHeatmap(!layerHeatmap)}
-            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               layerHeatmap
-                ? 'bg-rose-950/60 text-rose-300 border-rose-500/40'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+                ? 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-500/40'
+                : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900/60 dark:text-slate-500 dark:border-slate-800'
             }`}
             title="Toggle Geographic Thermal Contours"
           >
@@ -756,10 +819,10 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
           <button
             onClick={() => setLayerTxnMarkers(!layerTxnMarkers)}
-            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               layerTxnMarkers
-                ? 'bg-amber-950/60 text-amber-300 border-amber-500/40'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+                ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-500/40'
+                : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900/60 dark:text-slate-500 dark:border-slate-800'
             }`}
             title="Toggle Live Transaction Markers & Flow Arcs"
           >
@@ -769,10 +832,10 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
           <button
             onClick={() => setLayerAgents(!layerAgents)}
-            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               layerAgents
-                ? 'bg-indigo-950/60 text-indigo-300 border-indigo-500/40'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+                ? 'bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-500/40'
+                : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900/60 dark:text-slate-500 dark:border-slate-800'
             }`}
             title="Toggle Agent Liquidity Nodes"
           >
@@ -782,10 +845,10 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
           <button
             onClick={() => setLayerDistrictClusters(!layerDistrictClusters)}
-            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               layerDistrictClusters
-                ? 'bg-cyan-950/60 text-cyan-300 border-cyan-500/40'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+                ? 'bg-cyan-100 text-cyan-900 border-cyan-300 dark:bg-cyan-950/60 dark:text-cyan-300 dark:border-cyan-500/40'
+                : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900/60 dark:text-slate-500 dark:border-slate-800'
             }`}
             title="Toggle District Intelligence Hubs"
           >
@@ -795,10 +858,10 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
           <button
             onClick={() => setLayerDisruption(!layerDisruption)}
-            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               layerDisruption
-                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+                ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/40'
+                : 'bg-white text-slate-600 border-slate-200 dark:bg-slate-900/60 dark:text-slate-500 dark:border-slate-800'
             }`}
             title="Toggle Climate Vectors"
           >
@@ -811,43 +874,54 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
       {/* Main Grid: D3 Map (7 cols) + Geographic Telemetry Dossier (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
         {/* Left Side: Interactive D3 Geographic Heatmap */}
-        <div className="lg:col-span-7 p-4 bg-[#050811] relative overflow-hidden flex items-center justify-center select-none">
-          {/* Subtle Grid Backdrop */}
+        <div
+          className={`lg:col-span-7 p-4 relative overflow-hidden flex items-center justify-center select-none border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 transition-colors duration-300 ${
+            mapTheme === 'NAVY_CYBER'
+              ? 'bg-gradient-to-br from-[#060A14] via-[#0B1220] to-[#040810]'
+              : mapTheme === 'OCEAN_BLUE'
+              ? 'bg-gradient-to-br from-[#EFF6FF] via-[#DBEAFE] to-[#BFDBFE] dark:from-[#061426] dark:via-[#0B1D35] dark:to-[#030B14]'
+              : 'bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] dark:from-[#0B1120] dark:via-[#0F172A] dark:to-[#080D1A]'
+          }`}
+        >
+          {/* Subtle Technical Engineering Blueprint Grid */}
           <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: 'radial-gradient(circle, #38BDF8 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
+              backgroundImage:
+                mapTheme === 'NAVY_CYBER'
+                  ? 'linear-gradient(to right, rgba(56, 189, 248, 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.12) 1px, transparent 1px)'
+                  : 'linear-gradient(to right, rgba(0, 84, 166, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 84, 166, 0.08) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
             }}
           />
 
           {/* Compass & Zoom Controls */}
           <div className="absolute top-4 right-4 z-10 flex flex-col gap-1.5">
-            <div className="p-2 bg-slate-900/90 rounded-xl border border-slate-800 text-[10px] font-mono text-slate-400 flex flex-col items-center shadow-lg">
-              <Compass className="w-5 h-5 text-indigo-400 mb-0.5" />
+            <div className="p-2 bg-white/95 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-slate-800 text-[10px] font-mono text-slate-700 dark:text-slate-400 flex flex-col items-center shadow-xs">
+              <Compass className="w-5 h-5 text-[#0054A6] dark:text-indigo-400 mb-0.5" />
               <span className="font-bold">N</span>
             </div>
 
-            <div className="bg-slate-900/90 rounded-xl border border-slate-800 overflow-hidden shadow-lg flex flex-col">
+            <div className="bg-white/95 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs flex flex-col">
               <button
                 onClick={handleZoomIn}
-                className="p-2 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Zoom In"
               >
                 <ZoomIn className="w-4 h-4" />
               </button>
-              <div className="h-[1px] bg-slate-800" />
+              <div className="h-[1px] bg-slate-200 dark:bg-slate-800" />
               <button
                 onClick={handleZoomOut}
-                className="p-2 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Zoom Out"
               >
                 <ZoomOut className="w-4 h-4" />
               </button>
-              <div className="h-[1px] bg-slate-800" />
+              <div className="h-[1px] bg-slate-200 dark:bg-slate-800" />
               <button
                 onClick={handleResetZoom}
-                className="p-2 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Reset Map View"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -856,13 +930,13 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
           </div>
 
           {/* Live Stream Telemetry Badge */}
-          <div className="absolute top-4 left-4 z-10 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800 text-[11px] font-mono flex items-center gap-2">
+          <div className="absolute top-4 left-4 z-10 bg-white/95 dark:bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-mono flex items-center gap-2 shadow-xs">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-slate-300">Live MFS Geostream:</span>
-            <span className="text-emerald-400 font-bold">22 Districts Synced</span>
+            <span className="text-slate-700 dark:text-slate-300 font-medium">Live MFS Geostream:</span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-bold">22 Districts Synced</span>
           </div>
 
           {/* Float Dispatch Toast Notification */}
@@ -1027,15 +1101,24 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
                 const fillColor = getRiskColor(metric.riskScore);
                 const pathD = pathGenerator(feature as any) || '';
 
+                const strokeColor = isSelected
+                  ? '#FFFFFF'
+                  : mapTheme === 'NAVY_CYBER'
+                  ? '#38BDF8'
+                  : mapTheme === 'OCEAN_BLUE'
+                  ? '#1D4ED8'
+                  : '#475569';
+
                 return (
                   <path
                     key={feature.properties.id}
                     d={pathD}
                     fill={fillColor}
-                    fillOpacity={isSelected ? 0.8 : 0.35}
-                    stroke={isSelected ? '#FFFFFF' : '#334155'}
-                    strokeWidth={isSelected ? 2.4 : 1.1}
-                    className="transition-all duration-200 cursor-pointer hover:fill-opacity-90"
+                    fillOpacity={isSelected ? 0.88 : mapTheme === 'NAVY_CYBER' ? 0.45 : 0.62}
+                    stroke={strokeColor}
+                    strokeWidth={isSelected ? 2.8 : 1.4}
+                    filter={isSelected ? 'url(#glow-marker-crit)' : undefined}
+                    className="transition-all duration-200 cursor-pointer hover:fill-opacity-95"
                     onClick={() => {
                       setSelectedDivision(divName);
                       const matchingDistrict = BANGLADESH_DISTRICT_CLUSTERS.find((d) => d.division === divName);
@@ -1243,30 +1326,52 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
               {/* 4. Division Text Labels */}
               {BANGLADESH_DIVISIONS_GEOJSON.features.map((feature: any) => {
                 const divName = feature.properties.name;
+                const isSelected = selectedDivision === divName;
                 const metric = regionalMetrics.find((m) => m.division === divName);
                 const bounds = pathGenerator.bounds(feature as any);
                 const x = (bounds[0][0] + bounds[1][0]) / 2;
                 const y = (bounds[0][1] + bounds[1][1]) / 2;
 
                 return (
-                  <g key={`lbl-${divName}`} transform={`translate(${x}, ${y})`} className="pointer-events-none">
+                  <g key={`lbl-${divName}`} transform={`translate(${x}, ${y})`} className="pointer-events-none select-none">
+                    {/* High-Contrast Badge Pill */}
+                    <rect
+                      x="-34"
+                      y="-12"
+                      width="68"
+                      height="23"
+                      rx="6"
+                      fill={isSelected ? '#0054A6' : mapTheme === 'NAVY_CYBER' ? '#091122' : '#FFFFFF'}
+                      stroke={isSelected ? '#FFFFFF' : mapTheme === 'NAVY_CYBER' ? '#38BDF8' : '#CBD5E1'}
+                      strokeWidth={isSelected ? '1.5' : '1'}
+                      opacity={mapTheme === 'NAVY_CYBER' ? 0.92 : 0.95}
+                    />
                     <text
                       textAnchor="middle"
-                      fill="#FFFFFF"
-                      fontSize="10"
-                      fontWeight="bold"
-                      className="drop-shadow"
+                      y="-1.5"
+                      fill={isSelected ? '#FFFFFF' : mapTheme === 'NAVY_CYBER' ? '#FFFFFF' : '#0F172A'}
+                      fontSize="9.5"
+                      fontWeight="800"
+                      className="font-sans"
                     >
                       {divName}
                     </text>
                     {metric && (
                       <text
-                        y="11"
+                        y="7.5"
                         textAnchor="middle"
-                        fill={metric.riskScore > 65 ? '#FCA5A5' : '#CBD5E1'}
-                        fontSize="8.5"
+                        fill={
+                          isSelected
+                            ? '#FDE047'
+                            : metric.riskScore > 65
+                            ? '#DC2626'
+                            : mapTheme === 'NAVY_CYBER'
+                            ? '#38BDF8'
+                            : '#0054A6'
+                        }
+                        fontSize="7.5"
                         fontFamily="monospace"
-                        fontWeight="semibold"
+                        fontWeight="bold"
                       >
                         {metric.riskScore}/100
                       </text>
@@ -1360,11 +1465,15 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
                       <text
                         y={isSelected ? 16 : 13}
                         textAnchor="middle"
-                        fill="#E2E8F0"
-                        fontSize="7.5"
+                        fill={mapTheme === 'NAVY_CYBER' ? '#F1F5F9' : '#0F172A'}
+                        stroke={mapTheme === 'NAVY_CYBER' ? '#040810' : '#FFFFFF'}
+                        strokeWidth="2.5"
+                        strokeLinejoin="round"
+                        paintOrder="stroke fill"
+                        fontSize="8"
                         fontFamily="monospace"
-                        fontWeight="semibold"
-                        className="pointer-events-none drop-shadow select-none"
+                        fontWeight="bold"
+                        className="pointer-events-none drop-shadow-xs select-none"
                       >
                         {district.name}
                       </text>
@@ -1554,8 +1663,8 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
           </svg>
 
           {/* Map Color Legend */}
-          <div className="absolute bottom-3 right-3 z-10 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800 text-[10px] text-slate-300 flex flex-col gap-1 shadow-lg">
-            <span className="font-bold text-white block">
+          <div className="absolute bottom-3 right-3 z-10 bg-white/95 dark:bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-[10px] text-slate-800 dark:text-slate-200 flex flex-col gap-1 shadow-xs">
+            <span className="font-bold text-slate-900 dark:text-white block">
               {heatmapMode === 'FRAUD_CLUSTERS'
                 ? 'Fraud Risk Density'
                 : heatmapMode === 'TXN_DENSITY'
@@ -1563,7 +1672,7 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
                 : 'Combined Risk & Density'}
             </span>
             <div className="flex items-center gap-1.5 font-mono">
-              <span className="text-[9px] text-slate-400">0 Safe</span>
+              <span className="text-[9px] text-slate-500 dark:text-slate-400">0 Safe</span>
               <div
                 className={`w-28 h-2 rounded-full ${
                   heatmapMode === 'FRAUD_CLUSTERS'
@@ -1573,15 +1682,15 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
                     : 'bg-gradient-to-r from-emerald-500 via-sky-500 via-amber-500 to-rose-600'
                 }`}
               />
-              <span className="text-[9px] text-rose-400 font-bold">100 Peak</span>
+              <span className="text-[9px] text-rose-600 dark:text-rose-400 font-bold">100 Peak</span>
             </div>
-            <div className="flex items-center justify-between text-[9px] text-slate-400 pt-0.5 border-t border-slate-800/80">
+            <div className="flex items-center justify-between text-[9px] text-slate-500 dark:text-slate-400 pt-0.5 border-t border-slate-200 dark:border-slate-800">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-rose-500 rotate-45 inline-block"></span>
                 <span>Txn Flow</span>
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0054A6] dark:bg-indigo-400 inline-block"></span>
                 <span>Agent Node</span>
               </span>
             </div>
@@ -1589,23 +1698,23 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
         </div>
 
         {/* Right Side: Geospatial Telemetry Dossier & Agent Dispatch Cockpit (5 cols) */}
-        <div className="lg:col-span-5 p-5 bg-[#0D1322] border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col justify-between overflow-y-auto max-h-[700px]">
+        <div className="lg:col-span-5 p-5 bg-slate-50/70 dark:bg-[#0D1322] border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 flex flex-col justify-between overflow-y-auto max-h-[700px] text-slate-900 dark:text-slate-100">
           <div className="space-y-4">
             {/* Division & District Header Dossier */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400">
                   DISTRICT CLUSTER: {selectedDistrict.name.toUpperCase()}
                 </span>
               </div>
               <span
                 className={`text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full border ${
                   selectedDistrict.fraudRiskScore >= 80
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    ? 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
                     : selectedDistrict.fraudRiskScore >= 50
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                    : 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
                 }`}
               >
                 {selectedDistrict.clusterType.replace(/_/g, ' ')}
@@ -1613,55 +1722,55 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
             </div>
 
             {/* Selected District Telemetry Card */}
-            <div className="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div className="bg-white dark:bg-slate-900/90 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
                     District Fraud Threat
                   </span>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-3xl font-black font-mono text-rose-500">
+                    <span className="text-3xl font-black font-mono text-rose-600 dark:text-rose-500">
                       {selectedDistrict.fraudRiskScore}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">/ 100</span>
+                    <span className="text-xs text-slate-400 font-mono">/ 100</span>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
                     Txn Velocity Density
                   </span>
                   <div className="flex items-baseline gap-1 mt-0.5 justify-end">
-                    <span className="text-2xl font-black font-mono text-indigo-400">
+                    <span className="text-2xl font-black font-mono text-[#0054A6] dark:text-indigo-400">
                       {selectedDistrict.txnDensityScore}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">/ 100</span>
+                    <span className="text-xs text-slate-400 font-mono">/ 100</span>
                   </div>
                 </div>
               </div>
 
               {/* Threat context description */}
-              <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
-                <span className="text-[10px] font-mono text-amber-400 font-bold block mb-0.5">
+              <div className="p-2.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/40 text-xs">
+                <span className="text-[10px] font-mono text-amber-900 dark:text-amber-400 font-bold block mb-0.5">
                   ACTIVE SYNDICATE/THREAT SIGNAL
                 </span>
-                <p className="text-slate-300 text-[11px] leading-relaxed">
+                <p className="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed">
                   {selectedDistrict.activeThreatDescription}
                 </p>
               </div>
 
               {/* Volume & Flow Metrics */}
               <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                <div className="bg-slate-950/50 p-2 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block">Hourly Volume (BDT)</span>
-                  <span className="text-sm font-bold text-white mt-0.5 block">
+                <div className="bg-slate-50 dark:bg-slate-950/50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Hourly Volume (BDT)</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white mt-0.5 block">
                     ৳{(selectedDistrict.hourlyVolumeBDT / 1000000).toFixed(2)}M
                   </span>
                   <span className="text-[10px] text-slate-500">Real-time throughput</span>
                 </div>
-                <div className="bg-slate-950/50 p-2 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block">Fraud Signals</span>
-                  <span className="text-sm font-bold text-rose-400 mt-0.5 block">
+                <div className="bg-slate-50 dark:bg-slate-950/50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Fraud Signals</span>
+                  <span className="text-sm font-bold text-rose-600 dark:text-rose-400 mt-0.5 block">
                     {selectedDistrict.fraudAlertsCount} Anomalies
                   </span>
                   <span className="text-[10px] text-slate-500">Above 30d baseline</span>
@@ -1671,39 +1780,39 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
             {/* Selected Transaction Inspector */}
             {selectedTxn && (
-              <div className="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-2">
+              <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="text-[11px] font-mono font-bold text-white">{selectedTxn.id}</span>
+                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="text-[11px] font-mono font-bold text-slate-900 dark:text-white">{selectedTxn.id}</span>
                   </div>
                   <span
                     className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
                       selectedTxn.riskBand === 'CRITICAL'
-                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                        ? 'bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
                         : selectedTxn.riskBand === 'HIGH'
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                        : 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
                     }`}
                   >
                     Risk {selectedTxn.fusedRiskScore}/100 ({selectedTxn.riskBand})
                   </span>
                 </div>
 
-                <div className="text-xs space-y-1 text-slate-300">
+                <div className="text-xs space-y-1 text-slate-600 dark:text-slate-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Amount:</span>
-                    <span className="font-mono font-bold text-white">৳{selectedTxn.amount.toLocaleString()}</span>
+                    <span className="text-slate-500 dark:text-slate-400">Amount:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">৳{selectedTxn.amount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-400">Flow Route:</span>
-                    <span className="font-medium text-slate-200 truncate max-w-[200px]">
+                    <span className="text-slate-500 dark:text-slate-400">Flow Route:</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[200px]">
                       {selectedTxn.senderLocation} → {selectedTxn.receiverLocation}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-400">Mule Association:</span>
-                    <span className={selectedTxn.isMuleConnected ? 'text-rose-400 font-bold' : 'text-slate-400'}>
+                    <span className="text-slate-500 dark:text-slate-400">Mule Association:</span>
+                    <span className={selectedTxn.isMuleConnected ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500'}>
                       {selectedTxn.isMuleConnected ? selectedTxn.muleClusterId || 'Network #17' : 'Clean Peer'}
                     </span>
                   </div>
@@ -1712,7 +1821,7 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
                 {onOpenInvestigation && (
                   <button
                     onClick={() => onOpenInvestigation(selectedTxn)}
-                    className="w-full mt-1.5 py-1.5 px-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow"
+                    className="w-full mt-1.5 py-2 px-3 bg-[#0054A6] hover:bg-[#004284] text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     <Eye className="w-3.5 h-3.5 text-amber-300" />
                     <span>Investigate in Explainable AI Guardian (SHAP)</span>
@@ -1723,19 +1832,19 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
             {/* Focused Agent Float Dossier */}
             {selectedAgent && (
-              <div className="p-3 bg-slate-900/90 rounded-2xl border border-indigo-500/30 space-y-2">
+              <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-blue-200 dark:border-blue-900/50 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-indigo-400" />
-                    <span className="font-bold text-white text-xs">{selectedAgent.name}</span>
+                    <MapPin className="w-4 h-4 text-[#0054A6] dark:text-indigo-400" />
+                    <span className="font-bold text-slate-900 dark:text-white text-xs">{selectedAgent.name}</span>
                   </div>
                   <span
                     className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
                       selectedAgent.riskStatus === 'CRITICAL_DEPLETION'
-                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                        ? 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
                         : selectedAgent.riskStatus === 'AT_RISK'
-                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                        : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                        ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                        : 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
                     }`}
                   >
                     {selectedAgent.riskStatus.replace(/_/g, ' ')}
@@ -1744,20 +1853,20 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
                 <div className="grid grid-cols-3 gap-2 text-xs pt-1">
                   <div>
-                    <span className="text-[9px] text-slate-400 block">Current Cash</span>
-                    <span className="font-mono font-bold text-white text-xs">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 block">Current Cash</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white text-xs">
                       ৳{(selectedAgent.currentCashFloat / 1000).toFixed(0)}k
                     </span>
                   </div>
                   <div>
-                    <span className="text-[9px] text-slate-400 block">Demand Surge</span>
-                    <span className="font-mono font-bold text-amber-400 text-xs">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 block">Demand Surge</span>
+                    <span className="font-mono font-bold text-amber-600 dark:text-amber-400 text-xs">
                       +{selectedAgent.forecastedDemandSurge}%
                     </span>
                   </div>
                   <div>
-                    <span className="text-[9px] text-slate-400 block">Runway</span>
-                    <span className="font-mono font-bold text-rose-400 text-xs">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 block">Runway</span>
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-xs">
                       {selectedAgent.liquidityRunwayHours}h
                     </span>
                   </div>
@@ -1765,9 +1874,9 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
                 <button
                   onClick={() => handleLocalDispatch(selectedAgent)}
-                  className="w-full mt-2 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow"
+                  className="w-full mt-2 py-2 px-3 bg-[#0054A6] hover:bg-[#004284] text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5 text-amber-300" />
                   <span>Dispatch BDT {(selectedAgent.shortfallAmount || 200000).toLocaleString()} Emergency Float</span>
                 </button>
               </div>
@@ -1775,10 +1884,10 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
           </div>
 
           {/* Action Zone at Bottom */}
-          <div className="mt-4 pt-3 border-t border-slate-800 space-y-2">
+          <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
               onClick={() => onActivateMonitoring(selectedDivision)}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 hover:from-rose-500 hover:to-rose-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs shadow-lg transition-all cursor-pointer border border-rose-500/50"
+              className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs shadow-xs hover:shadow transition-all cursor-pointer border border-rose-700/20"
             >
               <ShieldAlert className="w-4 h-4" />
               <span>Activate Level-3 Proactive Surveillance in {selectedDivision}</span>
@@ -1786,7 +1895,7 @@ export const GeospatialIntelligenceMap: React.FC<GeospatialIntelligenceMapProps>
 
             <div className="flex items-center justify-between text-[10px] text-slate-500 px-1 font-mono">
               <span>BFIU Geofence Stream: Active</span>
-              <span className="text-emerald-400 flex items-center gap-1">
+              <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                 <CheckCircle className="w-3 h-3" /> Live District GPS Ingestion
               </span>
             </div>

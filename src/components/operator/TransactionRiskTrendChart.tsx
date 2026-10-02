@@ -72,25 +72,25 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
   const peakPoint = chartData.find((d) => d.avgRiskScore === peakScore) || chartData[5];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+    <div className="bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 space-y-4 text-slate-900 dark:text-slate-100">
       {/* Top Header & Interactive Toggles */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0 border border-rose-200 dark:border-rose-900/50">
               <Activity className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 flex-wrap">
                 <span>
                   {lang === 'BN' ? 'লেনদেনের ঝুঁকি সূচকের গতিধারা' : 'Transaction Risk & Anomaly Trends Over Time'}
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 whitespace-nowrap">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span>LIVE STREAM</span>
                 </span>
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {lang === 'BN'
                   ? 'প্রতি ঘণ্টার গড় ঝুঁকি স্কোর (০-১০০), ক্রিটিক্যাল অ্যালার্ট ভলিউম এবং অস্বাভাবিক গতিবিধি মনিটরিং'
                   : 'Fused risk score (0-100), critical alert surges & multi-factor velocity progression'}
@@ -102,13 +102,13 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
         {/* Range Selectors & Filter Toggles */}
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {/* Time range segmented control */}
-          <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs font-semibold border border-slate-200/60 dark:border-slate-700/60">
             <button
               onClick={() => setTimeRange('24H')}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === '24H'
-                  ? 'bg-white text-blue-900 shadow-xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-[#0054A6] dark:text-blue-300 shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               24-Hour View
@@ -118,7 +118,7 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 timeRange === 'BURST'
                   ? 'bg-rose-600 text-white shadow-xs font-bold'
-                  : 'text-slate-600 hover:text-rose-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400'
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
@@ -128,8 +128,8 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               onClick={() => setTimeRange('ACTIVE')}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === 'ACTIVE'
-                  ? 'bg-white text-blue-900 shadow-xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-[#0054A6] dark:text-blue-300 shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Recent Window
@@ -142,8 +142,8 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               onClick={() => setShowAlerts(!showAlerts)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                 showAlerts
-                  ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold shadow-2xs'
-                  : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-bold shadow-2xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
               }`}
             >
               <span className={`w-2 h-2 rounded-full ${showAlerts ? 'bg-amber-500' : 'bg-slate-300'}`}></span>
@@ -153,8 +153,8 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               onClick={() => setShowVelocity(!showVelocity)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                 showVelocity
-                  ? 'bg-sky-50 text-sky-900 border-sky-300 font-bold shadow-2xs'
-                  : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-900 dark:text-sky-300 border-sky-300 dark:border-sky-800 font-bold shadow-2xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
               }`}
             >
               <span className={`w-2 h-2 rounded-full ${showVelocity ? 'bg-sky-500' : 'bg-slate-300'}`}></span>
@@ -165,41 +165,41 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
       </div>
 
       {/* KPI Highlight Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
         <div>
-          <span className="text-[11px] text-slate-500 font-medium block">Peak Risk Surge</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Peak Risk Surge</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-lg font-black font-mono text-rose-600">{peakPoint.avgRiskScore}/100</span>
+            <span className="text-lg font-black font-mono text-rose-600 dark:text-rose-500">{peakPoint.avgRiskScore}/100</span>
             <span className="text-[11px] text-slate-400 font-medium">at {peakPoint.time}</span>
           </div>
-          <span className="text-[10px] text-rose-700 font-semibold">Rafiqul Islam Incident (৳80,000)</span>
+          <span className="text-[10px] text-rose-700 dark:text-rose-400 font-semibold">Rafiqul Islam Incident (৳80,000)</span>
         </div>
 
         <div>
-          <span className="text-[11px] text-slate-500 font-medium block">Critical Alert Spike</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Critical Alert Spike</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-lg font-black font-mono text-amber-600">{peakPoint.criticalAlerts}</span>
+            <span className="text-lg font-black font-mono text-amber-600 dark:text-amber-400">{peakPoint.criticalAlerts}</span>
             <span className="text-[11px] text-slate-400">flagged txns</span>
           </div>
-          <span className="text-[10px] text-amber-700 font-semibold">Mule Cluster #17 Active</span>
+          <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold">Mule Cluster #17 Active</span>
         </div>
 
         <div>
-          <span className="text-[11px] text-slate-500 font-medium block">Guardian Baseline Threshold</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Guardian Baseline Threshold</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-lg font-black font-mono text-slate-700">65.0</span>
+            <span className="text-lg font-black font-mono text-slate-700 dark:text-slate-200">65.0</span>
             <span className="text-[11px] text-slate-400">cutoff</span>
           </div>
-          <span className="text-[10px] text-slate-500">Auto-Hold & Step-Up Rule</span>
+          <span className="text-[10px] text-slate-500 dark:text-slate-400">Auto-Hold & Step-Up Rule</span>
         </div>
 
         <div>
-          <span className="text-[11px] text-slate-500 font-medium block">Current Anomaly Status</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Current Anomaly Status</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-            <span className="text-sm font-bold text-slate-800">Stabilized (39.2)</span>
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Stabilized (39.2)</span>
           </div>
-          <span className="text-[10px] text-emerald-700 font-semibold">-58.3% from nocturnal peak</span>
+          <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">-58.3% from nocturnal peak</span>
         </div>
       </div>
 
@@ -405,19 +405,19 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
       </div>
 
       {/* Narrative Footer */}
-      <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+      <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <Clock className="w-3.5 h-3.5 text-slate-400" />
           <span>Surveillance Window: Rolling 24 Hours · Real-Time Micro-Batch Ingestion</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-slate-600">
+          <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-rose-500" /> Fused Score
           </span>
-          <span className="flex items-center gap-1 text-slate-600">
+          <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-amber-500" /> Flagged Incidents
           </span>
-          <span className="flex items-center gap-1 text-slate-600">
+          <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-sky-500" /> Velocity Surge
           </span>
         </div>

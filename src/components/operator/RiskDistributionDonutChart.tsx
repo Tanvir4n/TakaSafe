@@ -171,21 +171,21 @@ export const RiskDistributionDonutChart: React.FC<RiskDistributionDonutChartProp
   }, [slices]);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between space-y-4 font-sans h-full">
+    <div className="bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 flex flex-col justify-between space-y-4 font-sans h-full text-slate-900 dark:text-slate-100">
       {/* Header Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#0054A6]/10 text-[#0054A6] flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[#0054A6] dark:text-blue-400 border border-blue-200 dark:border-blue-800 flex items-center justify-center shrink-0">
             <PieChartIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span>{lang === 'BN' ? 'ঝুঁকি স্তরের বণ্টন' : 'Risk Level Distribution'}</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-700">
                 Recharts Donut
               </span>
             </h3>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               {lang === 'BN'
                 ? 'বর্তমান ফিডে লেনদেনের অনুপাত (ক্রিটিক্যাল, হাই, মিডিয়াম, লো)'
                 : 'Current feed share by severity (CRITICAL, HIGH, MEDIUM, LOW)'}
@@ -280,13 +280,13 @@ export const RiskDistributionDonutChart: React.FC<RiskDistributionDonutChartProp
 
         {/* Central Overlay Summary Metric inside the Donut hole */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center">
-          <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">
+          <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 font-mono tracking-wider">
             Total Monitored
           </span>
-          <span className="text-2xl font-black font-mono text-slate-900 leading-tight">
+          <span className="text-2xl font-black font-mono text-slate-900 dark:text-white leading-tight">
             {totalTxns}
           </span>
-          <span className="text-[10px] text-rose-600 font-bold font-mono">
+          <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold font-mono">
             {criticalAndHighCount} Critical/High
           </span>
         </div>
@@ -304,10 +304,10 @@ export const RiskDistributionDonutChart: React.FC<RiskDistributionDonutChartProp
               onClick={() => onSelectFilter?.(isSelected ? 'ALL' : slice.band)}
               className={`p-2 rounded-xl border text-xs flex items-center justify-between transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                  ? 'bg-[#0054A6] text-white border-[#0054A6] shadow-xs font-bold'
                   : isDimmed
-                  ? 'bg-slate-50/50 text-slate-400 border-slate-100 opacity-60 hover:opacity-100'
-                  : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80'
+                  ? 'bg-slate-50/50 dark:bg-slate-900/30 text-slate-400 dark:text-slate-500 border-slate-100 dark:border-slate-800 opacity-60 hover:opacity-100'
+                  : 'bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-slate-800'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -318,7 +318,7 @@ export const RiskDistributionDonutChart: React.FC<RiskDistributionDonutChartProp
                 <span className="font-bold text-[11px]">{slice.name}</span>
                 <span
                   className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-semibold ${
-                    isSelected ? 'bg-slate-800 text-slate-300' : 'bg-white text-slate-500 border border-slate-200'
+                    isSelected ? 'bg-blue-800 text-blue-100' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   Score {slice.scoreRange}

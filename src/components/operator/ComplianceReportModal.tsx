@@ -168,23 +168,23 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-white w-full max-w-5xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-[#0F172A] w-full max-w-5xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92vh] text-slate-900 dark:text-slate-100">
         {/* Modal Header Command Bar */}
-        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-4 shrink-0">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 flex items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#0054A6]/10 text-[#0054A6] flex items-center justify-center">
               <FileCheck2 className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-slate-900 text-base">
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
                   BFIU Regulatory Compliance & Audit Report
                 </h3>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                   Ready for Submission
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Official intervention dossier compliant with Bangladesh Bank Mobile Financial Services Guidelines 2026.
               </p>
             </div>
@@ -202,16 +202,16 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
 
             <button
               onClick={onDownloadCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold border border-slate-300 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 transition-all cursor-pointer"
               title="Download CSV Spreadsheet"
             >
-              <Download className="w-4 h-4 text-slate-600" />
+              <Download className="w-4 h-4 text-slate-600 dark:text-slate-400" />
               <span>Export CSV</span>
             </button>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+              className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -220,7 +220,7 @@ export const ComplianceReportModal: React.FC<ComplianceReportModalProps> = ({
         </div>
 
         {/* Modal Printable Content Body */}
-        <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-slate-100">
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-slate-100 dark:bg-slate-950/80">
           <div
             id="bfiu-printable-report"
             className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm text-slate-900 font-sans max-w-4xl mx-auto"

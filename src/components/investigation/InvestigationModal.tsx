@@ -107,24 +107,24 @@ All predictions are probabilistic decision-support signals. Final freezing or bl
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto">
       <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
         {/* Header */}
-        <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="p-6 bg-gradient-to-r from-[#0054A6] via-[#004A94] to-[#003875] text-white flex items-center justify-between border-b border-[#003366] shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+            <div className="w-10 h-10 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center text-[#FAB915] shadow-xs">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-slate-400">CASE #{transaction.id}</span>
-                <span className="text-[10px] bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded-full border border-rose-500/30">
+                <span className="text-xs font-mono text-blue-100 font-semibold">CASE #{transaction.id}</span>
+                <span className="text-[10px] bg-rose-500/25 text-rose-100 font-bold px-2 py-0.5 rounded-full border border-rose-400/40">
                   {transaction.riskBand} RISK
                 </span>
                 {transaction.isMuleConnected && (
-                  <span className="text-[10px] bg-purple-500/20 text-purple-300 font-bold px-2 py-0.5 rounded-full border border-purple-500/30">
+                  <span className="text-[10px] bg-amber-400/25 text-amber-200 font-bold px-2 py-0.5 rounded-full border border-amber-300/40">
                     MULE RING LINK
                   </span>
                 )}
               </div>
-              <h2 className="text-xl font-bold mt-0.5">
+              <h2 className="text-xl font-bold mt-0.5 tracking-tight text-white">
                 Explainable Investigation & Decision Dossier
               </h2>
             </div>
@@ -132,14 +132,14 @@ All predictions are probabilistic decision-support signals. Final freezing or bl
 
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Fused Risk</span>
-              <span className="text-2xl font-black font-mono text-rose-400">
+              <span className="text-[10px] text-blue-200 uppercase tracking-wider block font-medium">Fused Risk</span>
+              <span className="text-2xl font-black font-mono text-[#FAB915]">
                 {transaction.fusedRiskScore}/100
               </span>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-blue-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>

@@ -101,7 +101,7 @@ export const MuleVisionGraph: React.FC<MuleVisionGraphProps> = ({ cluster, onFre
   });
 
   return (
-    <div className="bg-white dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs overflow-hidden font-sans">
+    <div className="bg-white dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden font-sans">
       {/* Top Cyber Defense Command Bar */}
       <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#0C1222] flex flex-wrap items-center justify-between gap-3">
         {/* Title & Live Status */}
@@ -196,20 +196,20 @@ export const MuleVisionGraph: React.FC<MuleVisionGraphProps> = ({ cluster, onFre
 
       {/* Main Graph & Sidebar Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[490px]">
-        {/* Graph Canvas Visualizer (8 cols) */}
-        <div className="lg:col-span-8 p-3 sm:p-4 bg-[#F8FAFC] dark:bg-[#070B14] relative overflow-hidden flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800">
-          {/* Subtle Technical Engineering Grid */}
+        {/* Graph Canvas Visualizer (8 cols) - Crisp MFS Tech Canvas */}
+        <div className="lg:col-span-8 p-3 sm:p-4 bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] dark:from-[#0A0E1A] dark:via-[#0F1424] dark:to-[#080C16] relative overflow-hidden flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800">
+          {/* Subtle Precision Technical Engineering Grid */}
           <div
-            className="absolute inset-0 opacity-45 dark:opacity-20 pointer-events-none"
+            className="absolute inset-0 pointer-events-none"
             style={{
               backgroundImage:
-                'linear-gradient(to right, rgba(100, 116, 139, 0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(100, 116, 139, 0.15) 1px, transparent 1px)',
-              backgroundSize: '32px 32px',
+                'linear-gradient(to right, rgba(0, 84, 166, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 84, 166, 0.08) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
             }}
           />
 
           {/* Forensic Pipeline Stage Lane Indicators at Top */}
-          <div className="relative z-10 px-3 py-1.5 border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-xl mb-2 flex items-center justify-between text-[10px] font-mono font-bold shadow-2xs">
+          <div className="relative z-10 px-3 py-1.5 border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 backdrop-blur-md rounded-xl mb-2 flex items-center justify-between text-[10px] font-mono font-bold shadow-2xs">
             <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs" />
               <span>1. Inflows (Victims)</span>
@@ -621,7 +621,7 @@ export const MuleVisionGraph: React.FC<MuleVisionGraphProps> = ({ cluster, onFre
         </div>
 
         {/* Entity Intelligence Dossier & Inspector Panel (4 cols) */}
-        <div className="lg:col-span-4 p-4 bg-[#FAFBFD] dark:bg-[#0D1322] border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+        <div className="lg:col-span-4 p-4 bg-slate-50/70 dark:bg-[#0D1322] border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 flex flex-col justify-between">
           <div className="space-y-3">
             {/* Dossier Header */}
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-200 dark:border-slate-800">
