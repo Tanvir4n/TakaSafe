@@ -15,6 +15,7 @@ import { GeospatialIntelligenceMap } from './GeospatialIntelligenceMap';
 import { LiveWebSocketTicker } from './LiveWebSocketTicker';
 import { ComplianceReportModal } from './ComplianceReportModal';
 import { RiskDistributionDonutChart } from './RiskDistributionDonutChart';
+import { PolicyWeightsActionEngine } from './PolicyWeightsActionEngine';
 import {
   ShieldCheck,
   AlertTriangle,
@@ -565,180 +566,13 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
         />
       )}
 
-      {/* Tab 5: Policy Weights & Action Engine Mapping */}
+      {/* Tab 6: Policy Weights & Action Engine Mapping */}
       {activeTab === 'POLICY' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Policy Tuner */}
-          <div className="bg-white dark:bg-[#0F172A] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-slate-100">
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Policy Parameter Weights (Rfinal Formula)
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Rfinal = Σ wi · si, i ∈ {'{'}fraud, anomaly, device, velocity, network, scam{'}'}, Σwi = 1. Tunable prototype policies validated on synthetic data.
-              </p>
-            </div>
-
-            <div className="space-y-4 pt-2">
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_fraud (XGBoost Classifier Fraud Prob)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.fraud}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="0.5"
-                  step="0.05"
-                  value={weights.fraud}
-                  onChange={(e) => setWeights({ ...weights, fraud: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_anomaly (Isolation Forest Behaviour Baseline)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.anomaly}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="0.4"
-                  step="0.05"
-                  value={weights.anomaly}
-                  onChange={(e) => setWeights({ ...weights, anomaly: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_velocity (Short-window transaction velocity)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.velocity}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.3"
-                  step="0.05"
-                  value={weights.velocity}
-                  onChange={(e) => setWeights({ ...weights, velocity: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_device (Device mismatch & new IMEI/IP)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.device}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.3"
-                  step="0.05"
-                  value={weights.device}
-                  onChange={(e) => setWeights({ ...weights, device: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_network (MuleVision graph centrality & mule score)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.network}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.3"
-                  step="0.05"
-                  value={weights.network}
-                  onChange={(e) => setWeights({ ...weights, network: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span>w_scam (Pre-payment social engineering indicators)</span>
-                  <span className="font-mono text-[#0054A6] dark:text-blue-400 font-bold">{weights.scam}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.3"
-                  step="0.05"
-                  value={weights.scam}
-                  onChange={(e) => setWeights({ ...weights, scam: Number(e.target.value) })}
-                  className="w-full accent-[#0054A6]"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Action Engine Specification Table (Table from Page 5 of the PDF report) */}
-          <div className="bg-white dark:bg-[#0F172A] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-slate-100">
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Action Engine: Operational Decision Mapping
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Every mathematical model output maps to an auditable next step. High-impact decisions always require human authorization.
-              </p>
-            </div>
-
-            <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 font-bold text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
-                  <tr>
-                    <th className="py-2.5 px-3">Signal Domain</th>
-                    <th className="py-2.5 px-3">Score / Threshold</th>
-                    <th className="py-2.5 px-3">Mandatory Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Transaction risk</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-600 dark:text-emerald-400">Low (0–30)</td>
-                    <td className="py-2.5 px-3">Automated Monitor</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Transaction risk</td>
-                    <td className="py-2.5 px-3 font-mono text-blue-600 dark:text-blue-400">Medium (31–60)</td>
-                    <td className="py-2.5 px-3">Additional verification (SMS OTP)</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Transaction risk</td>
-                    <td className="py-2.5 px-3 font-mono text-amber-600 dark:text-amber-400 font-bold">High (61–80)</td>
-                    <td className="py-2.5 px-3">Human review required</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Transaction risk</td>
-                    <td className="py-2.5 px-3 font-mono text-rose-600 dark:text-rose-400 font-bold">Critical (81–100)</td>
-                    <td className="py-2.5 px-3 font-bold text-rose-700 dark:text-rose-400">Escalate + enhanced verification</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Agent liquidity risk</td>
-                    <td className="py-2.5 px-3 font-mono text-amber-600 dark:text-amber-400">Forecast shortfall &gt; ৳100k</td>
-                    <td className="py-2.5 px-3">Prioritise replenishment / float injection</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Regional risk</td>
-                    <td className="py-2.5 px-3 font-mono text-rose-600 dark:text-rose-400">Elevated regional score (&gt;75)</td>
-                    <td className="py-2.5 px-3">Activate Level-3 monitoring</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Scam risk</td>
-                    <td className="py-2.5 px-3 font-mono text-amber-600 dark:text-amber-400">Risky payment attempt</td>
-                    <td className="py-2.5 px-3">ScamShield pre-payment customer warning</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <PolicyWeightsActionEngine
+          weights={weights}
+          onWeightsChange={(newWeights) => setWeights(newWeights)}
+          lang={lang}
+        />
       )}
 
       {/* Tab 6: Audit Logs & Regulatory Reporting */}

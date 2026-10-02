@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { CustomerBaseline, Transaction } from '../../types';
+import { CustomerBaseline, LinkedWallet } from '../../types';
+import { MOCK_LINKED_WALLETS } from '../../data/mockData';
+import { QRCodeScannerModal } from './QRCodeScannerModal';
 import {
   Send,
   ArrowUpRight,
@@ -14,6 +16,15 @@ import {
   Lock,
   ChevronRight,
   Sparkles,
+  QrCode,
+  Building2,
+  Users,
+  ShoppingBag,
+  Trash2,
+  Plus,
+  ExternalLink,
+  Shield,
+  Zap,
 } from 'lucide-react';
 
 interface CustomerAppViewProps {
@@ -34,6 +45,12 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [showScamModal, setShowScamModal] = useState<boolean>(false);
   const [scamDecision, setScamDecision] = useState<string | null>(null);
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
+
+  // QR Code Scanner & Secure Wallet Linking States
+  const [isQRScannerOpen, setIsQRScannerOpen] = useState<boolean>(false);
+  const [linkedWallets, setLinkedWallets] = useState<LinkedWallet[]>(MOCK_LINKED_WALLETS);
+  const [linkSuccessBanner, setLinkSuccessBanner] = useState<string | null>(null);
+  const [formHighlight, setFormHighlight] = useState<boolean>(false);
 
   const handleSendPayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +78,39 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     }
   };
 
+  // Called when a QR code finishes linking a new wallet
+  const handleWalletLinked = (newWallet: LinkedWallet) => {
+    setLinkedWallets((prev) => [newWallet, ...prev]);
+    setLinkSuccessBanner(`Secure Link Established: ${newWallet.nickname || newWallet.accountHolder} is now protected by ScamShield.`);
+    setTimeout(() => setLinkSuccessBanner(null), 5000);
+  };
+
+  // Called when a payment or merchant QR is scanned
+  const handlePaymentQRScanned = (recipientWallet: string, suggestedAmount?: number, suggestedNote?: string) => {
+    setActiveTab('WALLET');
+    setRecipient(recipientWallet);
+    if (suggestedAmount) {
+      setAmount(suggestedAmount.toString());
+    }
+    if (suggestedNote) {
+      setNote(suggestedNote);
+    }
+    setFormHighlight(true);
+    setTimeout(() => setFormHighlight(false), 2500);
+  };
+
+  const handleUnlinkWallet = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLinkedWallets((prev) => prev.filter((w) => w.id !== id));
+  };
+
+  const handleSelectLinkedForTransfer = (wallet: LinkedWallet) => {
+    setRecipient(wallet.walletId);
+    setNote(`Transfer to ${wallet.nickname || wallet.accountHolder}`);
+    setFormHighlight(true);
+    setTimeout(() => setFormHighlight(false), 2000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Customer Mode Header */}
@@ -80,261 +130,444 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Main QR Scanner Action Button */}
           <button
-            onClick={() => setActiveTab('WALLET')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'WALLET'
-                ? 'bg-[#0054A6] text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            type="button"
+            onClick={() => setIsQRScannerOpen(true)}
+            className="flex items-center gap-2 bg-[#0054A6] hover:bg-[#004080] text-white px-4 py-2.5 rounded-xl text-xs font-extrabold shadow-sm transition-all cursor-pointer"
           >
-            {lang === 'BN' ? 'টাকা সেফ ওয়ালেট' : 'TakaSafe Wallet & Transfers'}
+            <QrCode className="w-4 h-4 text-amber-300" />
+            <span>{lang === 'BN' ? 'কিউআর স্ক্যান / ওয়ালেট লিঙ্ক' : 'Scan QR & Link Wallet'}</span>
           </button>
-          <button
-            onClick={() => setActiveTab('RESILIENCE')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'RESILIENCE'
-                ? 'bg-[#0054A6] text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            {lang === 'BN' ? 'আর্থিক সুরক্ষা সূচক' : 'Financial Resilience Score'}
-          </button>
+
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+            <button
+              onClick={() => setActiveTab('WALLET')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'WALLET'
+                  ? 'bg-white text-[#0054A6] shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              {lang === 'BN' ? 'টাকা সেফ ওয়ালেট' : 'Wallet & Transfers'}
+            </button>
+            <button
+              onClick={() => setActiveTab('RESILIENCE')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'RESILIENCE'
+                  ? 'bg-white text-[#0054A6] shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              {lang === 'BN' ? 'আর্থিক সুরক্ষা সূচক' : 'Resilience Score'}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Wallet Link Success Toast Banner */}
+      {linkSuccessBanner && (
+        <div className="p-4 bg-emerald-50 border-2 border-emerald-300 rounded-2xl flex items-center justify-between gap-3 text-emerald-900 text-xs animate-in fade-in slide-in-from-top-2 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+            <span className="font-bold">{linkSuccessBanner}</span>
+          </div>
+          <button
+            onClick={() => setLinkSuccessBanner(null)}
+            className="text-emerald-700 hover:text-emerald-950 font-bold px-2 py-1 rounded cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <div key={activeTab} className="page-enter">
         {activeTab === 'WALLET' ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-grid">
-          {/* Balance & Card Details */}
-          <div className="md:col-span-1 space-y-4">
-            {/* Digital Wallet Card */}
-            <div className="bg-gradient-to-br from-[#0054A6] via-[#004080] to-[#002B57] text-white p-6 rounded-3xl shadow-xl border border-blue-400/20 relative overflow-hidden card-hover-lift">
-              <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-blue-200 font-medium">TakaSafe Digital Account</span>
-                <span className="text-[10px] bg-amber-400 text-blue-950 font-black px-2 py-0.5 rounded-full">
-                  SCAMSHIELD 24/7
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-grid">
+              {/* Balance & Card Details */}
+              <div className="md:col-span-1 space-y-4">
+                {/* Digital Wallet Card */}
+                <div className="bg-gradient-to-br from-[#0054A6] via-[#004080] to-[#002B57] text-white p-6 rounded-3xl shadow-xl border border-blue-400/20 relative overflow-hidden card-hover-lift">
+                  <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-blue-200 font-medium">TakaSafe Digital Account</span>
+                    <span className="text-[10px] bg-amber-400 text-blue-950 font-black px-2 py-0.5 rounded-full">
+                      SCAMSHIELD 24/7
+                    </span>
+                  </div>
+
+                  <div className="mt-6">
+                    <span className="text-xs text-blue-200 block">Available Balance</span>
+                    <div className="flex items-baseline gap-1 mt-1">
+                      <span className="text-sm font-bold text-amber-300">৳</span>
+                      <span className="text-3xl font-black font-mono tracking-tight">
+                        {customer.balance.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-blue-200">
+                    <span>A/C: {customer.wallet}</span>
+                    <span className="text-emerald-300 font-semibold">Tier 2 Verified</span>
+                  </div>
+                </div>
+
+                {/* Quick Demo Pre-fills */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <span className="text-xs font-bold text-slate-700 block mb-2">
+                    ⚡ Quick Demonstration Scenarios:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handlePreFill('NORMAL')}
+                    className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all text-xs cursor-pointer"
+                  >
+                    <div className="font-bold text-slate-800">1. Normal Transfer (৳ 1,500)</div>
+                    <div className="text-[11px] text-slate-500">To: Mother · Regular contact · 0 Risk</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePreFill('RISKY')}
+                    className="w-full text-left p-2.5 rounded-xl border-2 border-rose-200 bg-rose-50/40 hover:bg-rose-50 hover:border-rose-400 transition-all text-xs cursor-pointer"
+                  >
+                    <div className="font-bold text-rose-800 flex items-center justify-between">
+                      <span>2. Risky Transfer (৳ 80,000)</span>
+                      <span className="bg-rose-600 text-white text-[9px] px-1.5 py-0.5 rounded">TRIGGERS SHIELD</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500">To: New nocturnal account · Mule W302 link</div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Transfer Form */}
+              <div
+                className={`md:col-span-2 bg-white p-6 rounded-3xl border shadow-sm transition-all duration-300 ${
+                  formHighlight ? 'ring-2 ring-[#0054A6] border-[#0054A6]' : 'border-slate-200'
+                }`}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Send className="w-5 h-5 text-[#0054A6]" />
+                    <h3 className="font-bold text-slate-900 text-base">
+                      {lang === 'BN' ? 'সেন্ড মানি করুন' : 'Send Money'}
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsQRScannerOpen(true)}
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#0054A6] hover:text-[#003875] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>{lang === 'BN' ? 'কিউআর স্ক্যান করুন' : 'Scan QR'}</span>
+                  </button>
+                </div>
+
+                {normalSuccess && (
+                  <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-800 text-xs animate-in fade-in">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <div>
+                      <div className="font-bold">Payment Completed Successfully!</div>
+                      <div>Sent ৳1,500 to {customer.frequentRecipients[0]}. Transaction fee: ৳0.</div>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleSendPayment} className="space-y-4 mt-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-semibold text-slate-700 block">
+                        {lang === 'BN' ? 'প্রাপকের টাকা সেফ নম্বর' : 'Recipient TakaSafe Wallet / Phone'}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsQRScannerOpen(true)}
+                        className="text-[11px] text-[#0054A6] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <QrCode className="w-3 h-3" />
+                        <span>Scan Recipient QR</span>
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={recipient}
+                        onChange={(e) => setRecipient(e.target.value)}
+                        placeholder="01XXXXXXXXX"
+                        required
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      {lang === 'BN' ? 'টাকার পরিমাণ (৳)' : 'Amount (BDT ৳)'}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-2.5 text-slate-400 font-bold">৳</span>
+                      <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="1000"
+                        required
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-4 py-2.5 text-base font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
+                      />
+                    </div>
+                    <span className="text-[11px] text-slate-500 mt-1 block">
+                      Your regular 90-day transfer average is <strong>৳1,500</strong>.
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Reference Note (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      placeholder="e.g. Family support, emergency, bill"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
+                    />
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      className="w-full bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-black py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>{lang === 'BN' ? 'টাকা পাঠান' : 'Proceed to Send Money'}</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {/* Linked Accounts & Wallets Section */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#0054A6] flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                      <span>{lang === 'BN' ? 'সংযুক্ত ওয়ালেট ও ব্যাংক অ্যাকাউন্ট' : 'Linked Secure Accounts & Co-Wallets'}</span>
+                      <span className="text-[10px] font-mono bg-blue-100 text-[#0054A6] px-2 py-0.5 rounded-full font-bold">
+                        {linkedWallets.length} Connected
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Cryptographically bound via QR handshake · 256-Bit TLS Anti-Tamper Verification
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsQRScannerOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0054A6] hover:bg-[#003f7a] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{lang === 'BN' ? 'নতুন কিউআর লিঙ্ক' : 'Link New via QR'}</span>
+                </button>
+              </div>
+
+              {/* Linked Accounts Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                {linkedWallets.map((wallet) => (
+                  <div
+                    key={wallet.id}
+                    onClick={() => handleSelectLinkedForTransfer(wallet)}
+                    className="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-[#0054A6] hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
+                          {wallet.type.replace(/_/g, ' ')}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                          <span className="text-[10px] font-bold text-emerald-700">Active</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {wallet.type === 'BANK_ACCOUNT' ? (
+                          <Building2 className="w-4 h-4 text-[#0054A6] shrink-0" />
+                        ) : wallet.type === 'FAMILY_MEMBER' ? (
+                          <Users className="w-4 h-4 text-emerald-600 shrink-0" />
+                        ) : (
+                          <ShoppingBag className="w-4 h-4 text-amber-600 shrink-0" />
+                        )}
+                        <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-[#0054A6] transition-colors truncate">
+                          {wallet.nickname || wallet.accountHolder}
+                        </h4>
+                      </div>
+
+                      <div className="text-[11px] font-mono text-slate-600 mt-1">
+                        {wallet.provider}
+                      </div>
+
+                      <div className="font-mono text-xs font-semibold text-slate-800 mt-0.5">
+                        {wallet.accountNumberMasked}
+                      </div>
+
+                      <div className="mt-3 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[10px] text-slate-500">
+                        <span>Daily Limit:</span>
+                        <span className="font-mono font-bold text-slate-800">৳{wallet.dailyLimitBDT.toLocaleString()}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-500 mt-0.5">
+                        <span>Trust Score:</span>
+                        <span className="font-mono font-bold text-emerald-600">
+                          {wallet.securityTrustScore}% Safe
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between">
+                      <span className="text-[10px] text-[#0054A6] font-bold group-hover:underline">
+                        Quick Transfer →
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => handleUnlinkWallet(wallet.id, e)}
+                        className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                        title="Unlink Account"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Receiving QR Shortcut Banner */}
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2 text-slate-800">
+                  <QrCode className="w-5 h-5 text-[#0054A6] shrink-0" />
+                  <div>
+                    <span className="font-bold block">Need to receive money from another person or merchant?</span>
+                    <span className="text-[11px] text-slate-600">
+                      Display your personalized, NID-verified TakaSafe Receiving QR code.
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsQRScannerOpen(true)}
+                  className="px-3.5 py-1.5 bg-white border border-[#0054A6] text-[#0054A6] hover:bg-blue-50 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                >
+                  Show My Receiving QR
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Customer Financial Resilience Tab */
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-amber-500" />
+                  <h3 className="font-bold text-slate-900 text-lg">
+                    Customer Financial Resilience & Health Index
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  Empowering MFS users with explainable insights on spending stability, cash-out dependency, and emergency buffers.
+                </p>
+              </div>
+
+              <div className="text-right">
+                <span className="text-[11px] text-slate-500 block">Personal Resilience Score</span>
+                <span className="text-3xl font-black font-mono text-emerald-600">
+                  {customer.financialResilienceScore}/100
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <span className="text-xs text-slate-500 block">Income Regularity</span>
+                <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
+                  {customer.resilienceComponents.incomeStability}%
+                </span>
+                <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">
+                  Predictable bi-monthly inflow
                 </span>
               </div>
 
-              <div className="mt-6">
-                <span className="text-xs text-blue-200 block">Available Balance</span>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-sm font-bold text-amber-300">৳</span>
-                  <span className="text-3xl font-black font-mono tracking-tight">
-                    {customer.balance.toLocaleString()}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <span className="text-xs text-slate-500 block">Spending Volatility</span>
+                <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
+                  {customer.resilienceComponents.spendingDiscipline}%
+                </span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Low discretionary spikes
+                </span>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <span className="text-xs text-slate-500 block">Emergency Buffer</span>
+                <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
+                  {customer.resilienceComponents.emergencyBufferDays} Days
+                </span>
+                <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">
+                  Above national 30-day baseline
+                </span>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <span className="text-xs text-slate-500 block">Cash-Out Dependency</span>
+                <span className="text-2xl font-bold font-mono text-amber-600 mt-1 block">
+                  {customer.resilienceComponents.cashOutDependency}%
+                </span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Moderate cash withdrawal habit
+                </span>
+              </div>
+            </div>
+
+            {/* Tailored Coaching Tips */}
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 space-y-3">
+              <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                Smart Financial Coaching (AI Recommendations)
+              </h4>
+              <div className="space-y-2 text-xs text-slate-700">
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">•</span>
+                  <span>
+                    <strong>Reduce Cash-Out Fees:</strong> You withdrew ৳12,000 in physical cash last month. Paying utility bills (DESCO, Titas) and groceries directly with TakaSafe QR saves approximately ৳216 in agent cash-out commissions.
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">•</span>
+                  <span>
+                    <strong>Emergency Buffer Goal:</strong> Your current wallet reserve covers 45 days. Maintaining a ৳10,000 minimum balance safeguards against unexpected monsoon health emergencies without borrowing.
                   </span>
                 </div>
               </div>
-
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-blue-200">
-                <span>A/C: {customer.wallet}</span>
-                <span className="text-emerald-300 font-semibold">Tier 2 Verified</span>
-              </div>
-            </div>
-
-            {/* Quick Demo Pre-fills */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-              <span className="text-xs font-bold text-slate-700 block mb-2">
-                ⚡ Quick Demonstration Scenarios:
-              </span>
-              <button
-                type="button"
-                onClick={() => handlePreFill('NORMAL')}
-                className="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all text-xs"
-              >
-                <div className="font-bold text-slate-800">1. Normal Transfer (৳ 1,500)</div>
-                <div className="text-[11px] text-slate-500">To: Mother · Regular contact · 0 Risk</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handlePreFill('RISKY')}
-                className="w-full text-left p-2.5 rounded-xl border-2 border-rose-200 bg-rose-50/40 hover:bg-rose-50 hover:border-rose-400 transition-all text-xs"
-              >
-                <div className="font-bold text-rose-800 flex items-center justify-between">
-                  <span>2. Risky Transfer (৳ 80,000)</span>
-                  <span className="bg-rose-600 text-white text-[9px] px-1.5 py-0.5 rounded">TRIGGERS SHIELD</span>
-                </div>
-                <div className="text-[11px] text-slate-500">To: New nocturnal account · Mule W302 link</div>
-              </button>
             </div>
           </div>
-
-          {/* Transfer Form */}
-          <div className="md:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <Send className="w-5 h-5 text-[#0054A6]" />
-                <h3 className="font-bold text-slate-900 text-base">
-                  {lang === 'BN' ? 'সেন্ড মানি করুন' : 'Send Money'}
-                </h3>
-              </div>
-              <span className="text-[11px] text-slate-500">
-                Protected by ScamShield Real-Time Guardian
-              </span>
-            </div>
-
-            {normalSuccess && (
-              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-800 text-xs">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                <div>
-                  <div className="font-bold">Payment Completed Successfully!</div>
-                  <div>Sent ৳1,500 to {customer.frequentRecipients[0]}. Transaction fee: ৳0.</div>
-                </div>
-              </div>
-            )}
-
-            <form onSubmit={handleSendPayment} className="space-y-4 mt-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
-                  {lang === 'BN' ? 'প্রাপকের টাকা সেফ নম্বর' : 'Recipient TakaSafe Wallet / Phone'}
-                </label>
-                <input
-                  type="text"
-                  value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
-                  placeholder="01XXXXXXXXX"
-                  required
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
-                  {lang === 'BN' ? 'টাকার পরিমাণ (৳)' : 'Amount (BDT ৳)'}
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-2.5 text-slate-400 font-bold">৳</span>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="1000"
-                    required
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-4 py-2.5 text-base font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
-                  />
-                </div>
-                <span className="text-[11px] text-slate-500 mt-1 block">
-                  Your regular 90-day transfer average is <strong>৳1,500</strong>.
-                </span>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
-                  Reference Note (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder="e.g. Family support, emergency, bill"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
-                />
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  className="w-full bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-black py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>{lang === 'BN' ? 'টাকা পাঠান' : 'Proceed to Send Money'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : (
-        /* Customer Financial Resilience Tab */
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
-            <div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-500" />
-                <h3 className="font-bold text-slate-900 text-lg">
-                  Customer Financial Resilience & Health Index
-                </h3>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">
-                Empowering MFS users with explainable insights on spending stability, cash-out dependency, and emergency buffers.
-              </p>
-            </div>
-
-            <div className="text-right">
-              <span className="text-[11px] text-slate-500 block">Personal Resilience Score</span>
-              <span className="text-3xl font-black font-mono text-emerald-600">
-                {customer.financialResilienceScore}/100
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Income Regularity</span>
-              <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
-                {customer.resilienceComponents.incomeStability}%
-              </span>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">
-                Predictable bi-monthly inflow
-              </span>
-            </div>
-
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Spending Volatility</span>
-              <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
-                {customer.resilienceComponents.spendingDiscipline}%
-              </span>
-              <span className="text-[10px] text-slate-500 mt-1 block">
-                Low discretionary spikes
-              </span>
-            </div>
-
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Emergency Buffer</span>
-              <span className="text-2xl font-bold font-mono text-slate-800 mt-1 block">
-                {customer.resilienceComponents.emergencyBufferDays} Days
-              </span>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">
-                Above national 30-day baseline
-              </span>
-            </div>
-
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Cash-Out Dependency</span>
-              <span className="text-2xl font-bold font-mono text-amber-600 mt-1 block">
-                {customer.resilienceComponents.cashOutDependency}%
-              </span>
-              <span className="text-[10px] text-slate-500 mt-1 block">
-                Moderate cash withdrawal habit
-              </span>
-            </div>
-          </div>
-
-          {/* Tailored Coaching Tips */}
-          <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 space-y-3">
-            <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
-              Smart Financial Coaching (AI Recommendations)
-            </h4>
-            <div className="space-y-2 text-xs text-slate-700">
-              <div className="flex items-start gap-2">
-                <span className="text-amber-600 font-bold mt-0.5">•</span>
-                <span>
-                  <strong>Reduce Cash-Out Fees:</strong> You withdrew ৳12,000 in physical cash last month. Paying utility bills (DESCO, Titas) and groceries directly with TakaSafe QR saves approximately ৳216 in agent cash-out commissions.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-amber-600 font-bold mt-0.5">•</span>
-                <span>
-                  <strong>Emergency Buffer Goal:</strong> Your current wallet reserve covers 45 days. Maintaining a ৳10,000 minimum balance safeguards against unexpected monsoon health emergencies without borrowing.
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
       </div>
+
+      {/* QR Code Scanner & Secure Linking Modal */}
+      <QRCodeScannerModal
+        isOpen={isQRScannerOpen}
+        onClose={() => setIsQRScannerOpen(false)}
+        customer={customer}
+        onWalletLinked={handleWalletLinked}
+        onPaymentQRScanned={handlePaymentQRScanned}
+        lang={lang}
+      />
 
       {/* ScamShield Pre-Payment Modal (Human-Choice Protection) */}
       {showScamModal && (

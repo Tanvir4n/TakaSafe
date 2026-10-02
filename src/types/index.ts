@@ -134,6 +134,38 @@ export interface StorylineStep {
 
 export type UserRole = 'ADMIN' | 'USER';
 
+export interface LinkedWallet {
+  id: string;
+  type: 'BANK_ACCOUNT' | 'MFS_WALLET' | 'FAMILY_MEMBER' | 'MERCHANT_POINT';
+  provider: string; // e.g. 'United Commercial Bank (UCB)', 'bKash MFS', 'Nagad MFS', 'City Bank'
+  accountHolder: string;
+  accountNumberMasked: string; // e.g. '01712-***877' or '2041-****-0081'
+  walletId: string;
+  linkedAt: string;
+  dailyLimitBDT: number;
+  monthlyLimitBDT: number;
+  status: 'ACTIVE' | 'FROZEN' | 'PENDING_CONFIRMATION';
+  securityTrustScore: number; // 0 - 100
+  nickname?: string;
+  verifiedNidMasked?: string;
+  autoSweepEnabled?: boolean;
+}
+
+export interface ScannedQRPayload {
+  action: 'LINK_WALLET' | 'SEND_PAYMENT' | 'MERCHANT_CHECKOUT';
+  targetWalletId: string;
+  accountHolder: string;
+  provider: string;
+  type: 'BANK_ACCOUNT' | 'MFS_WALLET' | 'FAMILY_MEMBER' | 'MERCHANT_POINT';
+  accountNumberMasked: string;
+  suggestedAmount?: number;
+  referenceCode?: string;
+  riskAssessmentScore: number; // 0 - 100
+  muleCheckPassed: boolean;
+  signature: string;
+  timestamp: string;
+}
+
 export interface AuthUser {
   id: string;
   name: string;
