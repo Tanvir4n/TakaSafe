@@ -196,7 +196,8 @@ TakaSafe is architected to satisfy Bangladesh regulatory and cybersecurity manda
 **Team 3AM Runtime** — Developed for the **DIU CPC × upay National Hackathon 2026**:
 
 - **Md. Tanvir Hasan** — Chief Risk Analyst & Lead Architect
-- **Md. Sadman Al Islam Shabab** — Model Architecture & Explainability Lead
 - **Sourov Kumar** — SOC Operations & Risk Governance
+- **Md. Sadman Al Islam Shabab** — Model Architecture & Explainability Lead
+
 
 *Special thanks to Daffodil International University (DIU CPC) and upay (UCB Fintech Company Limited) for supporting innovations in financial inclusion, fraud intelligence, and digital trust.*
