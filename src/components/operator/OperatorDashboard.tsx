@@ -12,6 +12,9 @@ import { DisasterResilienceSimulator } from './DisasterResilienceSimulator';
 import { EarlyWarningRadar } from './EarlyWarningRadar';
 import { TransactionRiskTrendChart } from './TransactionRiskTrendChart';
 import { GeospatialIntelligenceMap } from './GeospatialIntelligenceMap';
+import { LiveWebSocketTicker } from './LiveWebSocketTicker';
+import { ComplianceReportModal } from './ComplianceReportModal';
+import { RiskDistributionDonutChart } from './RiskDistributionDonutChart';
 import {
   ShieldCheck,
   AlertTriangle,
@@ -29,6 +32,7 @@ import {
   Filter,
   ArrowUpRight,
   Download,
+  Printer,
 } from 'lucide-react';
 
 interface OperatorDashboardProps {
@@ -63,12 +67,98 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   lang,
 }) => {
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [liveTransactions, setLiveTransactions] = useState<Transaction[]>(transactions);
+  const [latestTickerTxn, setLatestTickerTxn] = useState<Transaction | null>(transactions[0] || null);
+  const [isTickerFlashing, setIsTickerFlashing] = useState<boolean>(false);
+  const [isComplianceModalOpen, setIsComplianceModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (initialTab && initialTab !== activeTab) {
       setActiveTab(initialTab);
     }
   }, [initialTab]);
+
+  // Keep liveTransactions in sync with props
+  useEffect(() => {
+    setLiveTransactions((prev) => {
+      const existingIds = new Set(transactions.map((t) => t.id));
+      const simulatedOnly = prev.filter((p) => !existingIds.has(p.id));
+      return [...simulatedOnly, ...transactions];
+    });
+    if (transactions.length > 0 && (!latestTickerTxn || transactions[0].id !== latestTickerTxn.id)) {
+      setLatestTickerTxn(transactions[0]);
+    }
+  }, [transactions]);
+
+  // Periodic simulated live stream stream event
+  useEffect(() => {
+    const streamInterval = setInterval(() => {
+      // Cycle or simulate a live event occasionally to make the WebSocket feed feel authentic
+      if (liveTransactions.length > 0) {
+        const randomTxn = liveTransactions[Math.floor(Math.random() * Math.min(liveTransactions.length, 5))];
+        setLatestTickerTxn(randomTxn);
+      }
+    }, 9000);
+    return () => clearInterval(streamInterval);
+  }, [liveTransactions]);
+
+  // Flash ticker when high-risk transaction is intercepted
+  const triggerTickerFlash = (txn: Transaction) => {
+    setLatestTickerTxn(txn);
+    if (txn.fusedRiskScore >= 75 || txn.riskBand === 'CRITICAL' || txn.riskBand === 'HIGH') {
+      setIsTickerFlashing(true);
+      setTimeout(() => setIsTickerFlashing(false), 4500);
+    }
+  };
+
+  // Simulate incoming high-risk attack transaction
+  const handleSimulateAttackSpike = () => {
+    const attackTxn: Transaction = {
+      id: `TXN-${Math.floor(92000 + Math.random() * 7000)}`,
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+      senderWallet: '01899-771122',
+      senderName: 'Nocturnal Device Hijack',
+      senderLocation: 'Chittagong Coastal (IP: 103.24.88.90)',
+      senderDevice: 'Infinix Hot 30 (Unknown dev-8819)',
+      receiverWallet: '01988-510294',
+      receiverName: 'Md. Al-Amin (Mule W302)',
+      receiverLocation: 'Patuakhali Coastal, Barishal',
+      amount: 85000,
+      fee: 120,
+      channel: 'TakaSafe App',
+      status: 'HELD',
+      fusedRiskScore: 96,
+      riskBand: 'CRITICAL',
+      fraudProb: 0.95,
+      anomalyProb: 0.97,
+      networkRisk: 0.92,
+      velocityRisk: 0.96,
+      deviceRisk: 0.94,
+      isMuleConnected: true,
+      muleClusterId: 'Suspicious Network #17',
+      shapFeatures: [
+        {
+          name: 'Rapid Circular Pass-Through',
+          contribution: 36,
+          direction: 'RISK_INCREASING',
+          description: 'Funds routed into Mule Aggregator W302 within 2 minutes',
+          actualValue: '2 min velocity',
+          expectedValue: 'Normal Peer Velocity',
+        },
+        {
+          name: 'Device Hardware Anomaly',
+          contribution: 32,
+          direction: 'RISK_INCREASING',
+          description: 'New device fingerprint transacting at abnormal midnight hours',
+          actualValue: 'Device #dev-9941',
+          expectedValue: 'Known Device',
+        },
+      ],
+    };
+
+    setLiveTransactions((prev) => [attackTxn, ...prev]);
+    triggerTickerFlash(attackTxn);
+  };
 
   const [filterBand, setFilterBand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -85,9 +175,9 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
     scam: 0.10,
   });
 
-  const criticalCount = transactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
+  const criticalCount = liveTransactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
 
-  const filteredTxns = transactions.filter((txn) => {
+  const filteredTxns = liveTransactions.filter((txn) => {
     if (filterBand !== 'ALL' && txn.riskBand !== filterBand) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
@@ -176,6 +266,17 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
 
   return (
     <div id="operator-workspace" className="space-y-6 scroll-mt-24">
+      {/* Live Real-Time WebSocket Ticker Bar */}
+      <LiveWebSocketTicker
+        latestTransaction={latestTickerTxn}
+        isFlashing={isTickerFlashing}
+        onOpenInvestigation={onOpenInvestigation}
+        onSimulateSpike={handleSimulateAttackSpike}
+        onOpenComplianceReport={() => setIsComplianceModalOpen(true)}
+        onDownloadCSV={handleDownloadAuditCSV}
+        lang={lang}
+      />
+
       {/* Top Level Metric Cockpit Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -290,8 +391,20 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
       {/* Tab 1: Overview & Transaction Guardian */}
       {activeTab === 'OVERVIEW' && (
         <div className="space-y-6">
-          {/* Real-time Recharts Risk Trend Chart */}
-          <TransactionRiskTrendChart transactions={transactions} lang={lang} />
+          {/* Analytics Grid: Recharts Risk Trend Chart + Recharts Donut Distribution Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="lg:col-span-7 xl:col-span-8">
+              <TransactionRiskTrendChart transactions={liveTransactions} lang={lang} />
+            </div>
+            <div className="lg:col-span-5 xl:col-span-4">
+              <RiskDistributionDonutChart
+                transactions={liveTransactions}
+                activeFilter={filterBand}
+                onSelectFilter={(band) => setFilterBand(band)}
+                lang={lang}
+              />
+            </div>
+          </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             {/* Table Filters & Search */}
@@ -309,13 +422,13 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 text-xs">
-                  {['ALL', 'CRITICAL', 'HIGH', 'LOW'].map((b) => (
+                  {['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map((b) => (
                     <button
                       key={b}
                       onClick={() => setFilterBand(b)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors cursor-pointer ${
                         filterBand === b
-                          ? 'bg-[#0054A6] text-white font-bold'
+                          ? 'bg-[#0054A6] text-white font-bold shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -440,10 +553,12 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
       {/* Tab 5: Geospatial Intelligence (D3 Geographic Heatmap) */}
       {activeTab === 'GEOSPATIAL' && (
         <GeospatialIntelligenceMap
+          transactions={liveTransactions}
           regionalMetrics={regionalMetrics}
           agents={agents}
           onActivateMonitoring={onActivateMonitoring}
           onDispatchLiquidity={onDispatchLiquidity}
+          onOpenInvestigation={onOpenInvestigation}
           lang={lang}
         />
       )}
@@ -648,6 +763,16 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
                 {filteredAuditLogs.length} Records
               </span>
 
+              {/* PDF Compliance Report Generator Button */}
+              <button
+                onClick={() => setIsComplianceModalOpen(true)}
+                className="flex items-center gap-2 bg-[#0054A6] hover:bg-[#004080] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-[#003875]"
+                title="View and print official BFIU Regulatory Compliance PDF report"
+              >
+                <Printer className="w-4 h-4 text-amber-300" />
+                <span>Export Compliance PDF Report</span>
+              </button>
+
               {downloadSuccess ? (
                 <div className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm animate-in fade-in">
                   <CheckCircle className="w-4 h-4" />
@@ -656,10 +781,10 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
               ) : (
                 <button
                   onClick={handleDownloadAuditCSV}
-                  className="flex items-center gap-2 bg-[#0054A6] hover:bg-[#004080] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-[#003875]"
+                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 transition-all cursor-pointer shadow-xs"
                   title="Download complete audit logs as CSV for regulatory submission"
                 >
-                  <Download className="w-4 h-4 text-amber-300" />
+                  <Download className="w-4 h-4 text-slate-600" />
                   <span>Download Regulatory CSV</span>
                 </button>
               )}
@@ -739,6 +864,15 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </div>
         </div>
       )}
+
+      {/* Compliance PDF/Print Report Modal */}
+      <ComplianceReportModal
+        isOpen={isComplianceModalOpen}
+        onClose={() => setIsComplianceModalOpen(false)}
+        auditLogs={auditLogs}
+        onDownloadCSV={handleDownloadAuditCSV}
+        lang={lang}
+      />
     </div>
   );
 };

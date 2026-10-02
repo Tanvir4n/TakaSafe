@@ -16,16 +16,22 @@ import {
   Info,
   ChevronDown,
   Newspaper,
+  User,
+  LogOut,
+  ChevronRight,
 } from 'lucide-react';
+import { AuthUser } from '../../types';
 
 interface UpayHeaderProps {
-  activeView: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE';
-  setActiveView: (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE') => void;
+  activeView: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN';
+  setActiveView: (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN') => void;
   operatorTab: string;
   setOperatorTab: (tab: string) => void;
   lang: 'EN' | 'BN';
   setLang: (lang: 'EN' | 'BN') => void;
   criticalAlertCount: number;
+  currentUser?: AuthUser | null;
+  onLogout?: () => void;
   onOpenModal?: (modalType: string) => void;
 }
 
@@ -37,16 +43,23 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
   lang,
   setLang,
   criticalAlertCount,
+  currentUser,
+  onLogout,
   onOpenModal,
 }) => {
   const [isServicesOpen, setIsServicesOpen] = useState<boolean>(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsServicesOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -269,6 +282,97 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
               <Globe className="w-3.5 h-3.5" />
               <span>{lang === 'EN' ? 'বাংলা' : 'EN'}</span>
             </button>
+
+            {/* Login / User Profile Button (Right side of language select) */}
+            {currentUser ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-white text-[#0054A6] shadow-sm hover:bg-blue-50 transition-all cursor-pointer border border-white"
+                  title="Account Details"
+                >
+                  <div className="w-5 h-5 rounded-full bg-[#0054A6] text-white flex items-center justify-center text-[10px] font-bold">
+                    {currentUser.name.charAt(0)}
+                  </div>
+                  <span className="max-w-[85px] truncate hidden md:inline">{currentUser.name}</span>
+                  <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold uppercase ${
+                    currentUser.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'
+                  }`}>
+                    {currentUser.role}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 py-3 z-50 text-slate-800 animate-in fade-in slide-in-from-top-2">
+                    <div className="px-4 pb-2.5 border-b border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 text-xs">{currentUser.name}</span>
+                        <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold uppercase ${
+                          currentUser.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'
+                        }`}>
+                          {currentUser.role}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-mono truncate mt-0.5">{currentUser.email}</div>
+                      <div className="text-[10px] text-indigo-600 font-medium mt-1">{currentUser.designation}</div>
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          if (currentUser.role === 'ADMIN') setActiveView('OPERATOR');
+                          else setActiveView('CUSTOMER');
+                        }}
+                        className="w-full px-4 py-2 text-left text-xs hover:bg-blue-50 flex items-center justify-between text-slate-700 cursor-pointer"
+                      >
+                        <span>Go to {currentUser.role === 'ADMIN' ? 'Operator Cockpit' : 'Customer App'}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          setActiveView('LOGIN');
+                        }}
+                        className="w-full px-4 py-2 text-left text-xs hover:bg-blue-50 flex items-center justify-between text-slate-700 cursor-pointer"
+                      >
+                        <span>Switch Account / Role</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                      </button>
+                    </div>
+
+                    <div className="pt-1.5 border-t border-slate-100 px-2">
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          onLogout?.();
+                        }}
+                        className="w-full px-3 py-1.5 text-left text-xs rounded-xl hover:bg-rose-50 text-rose-600 font-semibold flex items-center gap-2 cursor-pointer transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setActiveView('LOGIN')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeView === 'LOGIN'
+                    ? 'bg-white text-[#0054A6] shadow-sm ring-2 ring-white/60'
+                    : 'bg-white/15 hover:bg-white/25 text-white border border-white/20'
+                }`}
+                title="Sign in (Admin or User)"
+              >
+                {/* User avatar icon matching image 1 */}
+                <User className="w-3.5 h-3.5 text-white" />
+                <span>Login</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { CustomerAppView } from './components/customer/CustomerAppView';
 import { StorylineRunner } from './components/storyline/StorylineRunner';
 import { InvestigationModal } from './components/investigation/InvestigationModal';
 import { UpayInfoModal } from './components/common/UpayInfoModal';
+import { LoginPage } from './components/auth/LoginPage';
 import {
   MOCK_TRANSACTIONS,
   CURRENT_CUSTOMER,
@@ -20,13 +21,14 @@ import {
   REGIONAL_RADAR_METRICS,
   INITIAL_AUDIT_LOGS,
 } from './data/mockData';
-import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep } from './types';
+import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep, AuthUser } from './types';
 import { ShieldCheck, Info } from 'lucide-react';
 
 export default function App() {
-  const [activeView, setActiveView] = useState<'OPERATOR' | 'CUSTOMER' | 'STORYLINE'>('OPERATOR');
+  const [activeView, setActiveView] = useState<'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN'>('OPERATOR');
   const [operatorTab, setOperatorTab] = useState<string>('OVERVIEW');
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
   // Application Data States
   const [transactions, setTransactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
@@ -243,24 +245,53 @@ export default function App() {
         lang={lang}
         setLang={setLang}
         criticalAlertCount={criticalCount}
+        currentUser={currentUser}
+        onLogout={() => {
+          setCurrentUser(null);
+          showToast('Signed out of TakaSafe.');
+        }}
         onOpenModal={(modal) => setActiveModal(modal)}
       />
 
-      {/* Upay Hero & Official Services Grid (Matching user wireframe photos 3, 4) */}
-      <UpayHeroServices
-        onServiceSelect={(svc) => {
-          if (svc === 'Send Money') {
-            setActiveView('CUSTOMER');
-          } else {
-            setActiveView('OPERATOR');
-          }
-        }}
-        onOpenModal={(modal) => setActiveModal(modal)}
-        lang={lang}
-      />
+      {/* Upay Hero & Official Services Grid (Shown on primary app views, hidden on dedicated login page) */}
+      {activeView !== 'LOGIN' && (
+        <UpayHeroServices
+          onServiceSelect={(svc) => {
+            if (svc === 'Send Money') {
+              setActiveView('CUSTOMER');
+            } else {
+              setActiveView('OPERATOR');
+            }
+          }}
+          onOpenModal={(modal) => setActiveModal(modal)}
+          lang={lang}
+        />
+      )}
 
       {/* Main Interactive Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeView === 'LOGIN' && (
+          <LoginPage
+            onLogin={(user) => {
+              setCurrentUser(user);
+              if (user.role === 'ADMIN') {
+                setActiveView('OPERATOR');
+              } else {
+                setActiveView('CUSTOMER');
+              }
+              showToast(`Welcome back, ${user.name}! Signed in as ${user.role}.`);
+            }}
+            onCancel={() => {
+              if (currentUser) {
+                setActiveView(currentUser.role === 'ADMIN' ? 'OPERATOR' : 'CUSTOMER');
+              } else {
+                setActiveView('OPERATOR');
+              }
+            }}
+            lang={lang}
+          />
+        )}
+
         {activeView === 'OPERATOR' && (
           <OperatorDashboard
             transactions={transactions}

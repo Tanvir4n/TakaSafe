@@ -329,21 +329,11 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               </div>
 
               {/* Luminous 3D Glass Trust Shield Card */}
-              <div className="w-72 h-60 sm:w-84 sm:h-64 bg-white/15 backdrop-blur-xl rounded-3xl p-5 border-2 border-white/40 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+              <div className="w-72 h-60 sm:w-84 sm:h-64 bg-white/15 backdrop-blur-xl rounded-3xl p-6 border-2 border-white/40 shadow-2xl flex flex-col justify-center items-center gap-4 relative overflow-hidden">
                 {/* Shiny top glass glare */}
                 <div className="absolute -top-10 -left-10 right-10 h-28 bg-white/15 rounded-full blur-xl pointer-events-none" />
 
-                <div className="flex items-center justify-between text-xs text-sky-100 relative z-10">
-                  <span className="font-bold flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span>TakaSafe Guardian Core</span>
-                  </span>
-                  <span className="bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold">
-                    ONLINE 99.9%
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center justify-center py-2 relative z-10">
+                <div className="flex flex-col items-center justify-center relative z-10">
                   {/* Concentric Pulse Rings */}
                   <div className="relative flex items-center justify-center">
                     <div className="absolute w-28 h-28 rounded-full bg-[#FAB915]/20 animate-pulse pointer-events-none" />
@@ -351,12 +341,12 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
                       <ShieldCheck className="w-12 h-12 text-[#003B75]" />
                     </div>
                   </div>
-                  <span className="text-sm font-black text-white mt-2.5 tracking-wide drop-shadow-sm">
+                  <span className="text-base font-black text-white mt-3 tracking-wide drop-shadow-sm">
                     Zero Fraud Compromise
                   </span>
                 </div>
 
-                <div className="text-center text-[11px] font-semibold text-sky-100 bg-black/20 py-1.5 px-2 rounded-xl border border-white/10 relative z-10">
+                <div className="w-full text-center text-[11px] font-semibold text-sky-100 bg-black/20 py-2 px-3 rounded-xl border border-white/10 relative z-10">
                   SHAP Explainability · Disaster Liquidity Mode
                 </div>
               </div>

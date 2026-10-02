@@ -62,9 +62,6 @@ export const DisasterResilienceSimulator: React.FC<DisasterResilienceSimulatorPr
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="bg-amber-400 text-blue-950 font-black text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                Novel Differentiator #1
-              </span>
               <h2 className="text-xl font-bold">Disaster Financial Resilience Mode</h2>
             </div>
             <p className="text-xs text-blue-200 mt-1 max-w-2xl">

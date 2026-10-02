@@ -41,9 +41,6 @@ export const EarlyWarningRadar: React.FC<EarlyWarningRadarProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="bg-indigo-600 text-white font-black text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                Novel Differentiator #2
-              </span>
               <h2 className="text-xl font-bold text-slate-900">
                 Financial Early-Warning Radar
               </h2>
