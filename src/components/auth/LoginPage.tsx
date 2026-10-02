@@ -107,7 +107,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 sm:px-6 font-sans">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 sm:p-10 relative">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 sm:p-10 relative animate-slide-up card-hover-lift">
         {/* Top Back Navigation */}
         <button
           onClick={onCancel}

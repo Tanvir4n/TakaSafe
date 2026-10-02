@@ -30,6 +30,40 @@ export default function App() {
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
+  // Dark/Light Theme state with localStorage persistence
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('takasafe_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('takasafe_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  // Visual feedback progress streak on page / tab transitions
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  useEffect(() => {
+    setIsTransitioning(true);
+    const timer = setTimeout(() => setIsTransitioning(false), 450);
+    return () => clearTimeout(timer);
+  }, [activeView, operatorTab]);
+
   // Application Data States
   const [transactions, setTransactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
   const [muleCluster, setMuleCluster] = useState<MuleCluster>(MULE_NETWORK_17);
@@ -235,7 +269,12 @@ export default function App() {
   const criticalCount = transactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100 text-slate-900">
+    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 transition-colors duration-200 relative">
+      {/* Route & Page Change Transition Glow Bar */}
+      {isTransitioning && (
+        <div key={`${activeView}-${operatorTab}`} className="page-progress-bar" />
+      )}
+
       {/* Upay Header with Logo, Navigation, Mode Switcher & Accreditation */}
       <UpayHeader
         activeView={activeView}
@@ -246,6 +285,8 @@ export default function App() {
         setLang={setLang}
         criticalAlertCount={criticalCount}
         currentUser={currentUser}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onLogout={() => {
           setCurrentUser(null);
           showToast('Signed out of TakaSafe.');
@@ -270,62 +311,64 @@ export default function App() {
 
       {/* Main Interactive Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeView === 'LOGIN' && (
-          <LoginPage
-            onLogin={(user) => {
-              setCurrentUser(user);
-              if (user.role === 'ADMIN') {
-                setActiveView('OPERATOR');
-              } else {
-                setActiveView('CUSTOMER');
-              }
-              showToast(`Welcome back, ${user.name}! Signed in as ${user.role}.`);
-            }}
-            onCancel={() => {
-              if (currentUser) {
-                setActiveView(currentUser.role === 'ADMIN' ? 'OPERATOR' : 'CUSTOMER');
-              } else {
-                setActiveView('OPERATOR');
-              }
-            }}
-            lang={lang}
-          />
-        )}
+        <div key={activeView} className="page-enter">
+          {activeView === 'LOGIN' && (
+            <LoginPage
+              onLogin={(user) => {
+                setCurrentUser(user);
+                if (user.role === 'ADMIN') {
+                  setActiveView('OPERATOR');
+                } else {
+                  setActiveView('CUSTOMER');
+                }
+                showToast(`Welcome back, ${user.name}! Signed in as ${user.role}.`);
+              }}
+              onCancel={() => {
+                if (currentUser) {
+                  setActiveView(currentUser.role === 'ADMIN' ? 'OPERATOR' : 'CUSTOMER');
+                } else {
+                  setActiveView('OPERATOR');
+                }
+              }}
+              lang={lang}
+            />
+          )}
 
-        {activeView === 'OPERATOR' && (
-          <OperatorDashboard
-            transactions={transactions}
-            customerProfile={CURRENT_CUSTOMER}
-            muleCluster={muleCluster}
-            agents={agents}
-            regionalMetrics={regionalMetrics}
-            onOpenInvestigation={(txn) => setSelectedTxnForInvestigation(txn)}
-            onFreezeWallet={handleFreezeWallet}
-            onDispatchLiquidity={handleDispatchLiquidity}
-            onActivateMonitoring={handleActivateMonitoring}
-            auditLogs={auditLogs}
-            initialTab={operatorTab}
-            onTabChange={(tab) => setOperatorTab(tab)}
-            lang={lang}
-          />
-        )}
+          {activeView === 'OPERATOR' && (
+            <OperatorDashboard
+              transactions={transactions}
+              customerProfile={CURRENT_CUSTOMER}
+              muleCluster={muleCluster}
+              agents={agents}
+              regionalMetrics={regionalMetrics}
+              onOpenInvestigation={(txn) => setSelectedTxnForInvestigation(txn)}
+              onFreezeWallet={handleFreezeWallet}
+              onDispatchLiquidity={handleDispatchLiquidity}
+              onActivateMonitoring={handleActivateMonitoring}
+              auditLogs={auditLogs}
+              initialTab={operatorTab}
+              onTabChange={(tab) => setOperatorTab(tab)}
+              lang={lang}
+            />
+          )}
 
-        {activeView === 'CUSTOMER' && (
-          <CustomerAppView
-            customer={CURRENT_CUSTOMER}
-            onSimulateRiskyPayment={() => {
-              // Ensure critical transaction is visible in operator queue
-            }}
-            lang={lang}
-          />
-        )}
+          {activeView === 'CUSTOMER' && (
+            <CustomerAppView
+              customer={CURRENT_CUSTOMER}
+              onSimulateRiskyPayment={() => {
+                // Ensure critical transaction is visible in operator queue
+              }}
+              lang={lang}
+            />
+          )}
 
-        {activeView === 'STORYLINE' && (
-          <StorylineRunner
-            onNavigateToModule={handleNavigateFromStoryline}
-            lang={lang}
-          />
-        )}
+          {activeView === 'STORYLINE' && (
+            <StorylineRunner
+              onNavigateToModule={handleNavigateFromStoryline}
+              lang={lang}
+            />
+          )}
+        </div>
       </main>
 
       {/* Toast Notification */}

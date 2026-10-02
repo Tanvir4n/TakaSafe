@@ -277,9 +277,9 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
         lang={lang}
       />
 
-      {/* Top Level Metric Cockpit Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      {/* Top Level Metric Cockpit Bar with Staggered Slide Up Animation */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 stagger-grid">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm card-hover-lift">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">National Risk Index</span>
             <span className="w-2 h-2 rounded-full bg-amber-500"></span>
@@ -293,7 +293,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm card-hover-lift">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">High / Critical Alerts</span>
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
@@ -307,7 +307,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm card-hover-lift">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">Active Mule Ring</span>
             <Network className="w-4 h-4 text-purple-600" />
@@ -321,7 +321,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm card-hover-lift">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">Agent Shortfall</span>
             <CloudLightning className="w-4 h-4 text-amber-500" />
@@ -335,7 +335,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 lg:col-span-1">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 lg:col-span-1 card-hover-lift">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">Audit Compliance</span>
             <FileCheck2 className="w-4 h-4 text-emerald-600" />
@@ -388,15 +388,17 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
         })}
       </div>
 
-      {/* Tab 1: Overview & Transaction Guardian */}
-      {activeTab === 'OVERVIEW' && (
+      {/* Navigation Tabs Content with SlideUp Page Enter Animation */}
+      <div key={activeTab} className="page-enter">
+        {/* Tab 1: Overview & Transaction Guardian */}
+        {activeTab === 'OVERVIEW' && (
         <div className="space-y-6">
           {/* Analytics Grid: Recharts Risk Trend Chart + Recharts Donut Distribution Chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 xl:col-span-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-slide-up stagger-1">
+            <div className="lg:col-span-7 xl:col-span-8 card-hover-lift">
               <TransactionRiskTrendChart transactions={liveTransactions} lang={lang} />
             </div>
-            <div className="lg:col-span-5 xl:col-span-4">
+            <div className="lg:col-span-5 xl:col-span-4 card-hover-lift">
               <RiskDistributionDonutChart
                 transactions={liveTransactions}
                 activeFilter={filterBand}
@@ -406,7 +408,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-slide-up stagger-2">
             {/* Table Filters & Search */}
             <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50">
               <div className="flex items-center gap-3">
@@ -864,6 +866,7 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           </div>
         </div>
       )}
+      </div>
 
       {/* Compliance PDF/Print Report Modal */}
       <ComplianceReportModal

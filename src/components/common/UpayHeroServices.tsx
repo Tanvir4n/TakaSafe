@@ -388,25 +388,128 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
         </div>
       </div>
 
+      {/* WHY CHOOSE UPAY? SECTION (From Official site as shown in video timestamp 0:02) */}
+      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto border-b border-slate-100 dark:border-slate-800">
+        <div className="text-center max-w-2xl mx-auto mb-10 animate-slide-up">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#0054A6] dark:text-blue-400 tracking-wide uppercase">
+            {lang === 'BN' ? 'কেন উপায়ের সেবা বেছে নেবেন?' : 'WHY CHOOSE UPAY?'}
+          </h2>
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            {lang === 'BN'
+              ? 'আমরা আপনার চাহিদাকে কেন্দ্রবিন্দুতে রেখে ডিজিটাল আর্থিক সেবায় নতুন যুগের সূচনা করতে প্রতিশ্রুতিবদ্ধ।'
+              : 'We aim to usher in a new era in the digital financial service industry by keeping your needs at the front and center of everything we do.'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left App Mockup */}
+          <div className="lg:col-span-5 flex justify-center animate-slide-up stagger-1">
+            <div className="relative w-64 sm:w-72 bg-slate-900 rounded-[36px] p-3 shadow-2xl border-4 border-slate-800 card-hover-lift">
+              <div className="w-20 h-4 bg-slate-800 rounded-full mx-auto mb-2" />
+              <div className="bg-[#0054A6] rounded-[26px] p-4 text-white space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[#FAB915] flex items-center justify-center font-black text-slate-950 text-xs">
+                      U
+                    </div>
+                    <span className="font-bold text-sm">upay</span>
+                  </div>
+                  <span className="bg-emerald-400/20 text-emerald-300 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
+                    SECURED
+                  </span>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-3 border border-white/20">
+                  <span className="text-[10px] text-blue-200 block">Available Balance</span>
+                  <div className="text-2xl font-black font-mono mt-0.5">৳ 48,250.00</div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+                  <div className="bg-white/10 p-2 rounded-xl">Cash In</div>
+                  <div className="bg-amber-400 text-slate-950 font-bold p-2 rounded-xl">Send Money</div>
+                  <div className="bg-white/10 p-2 rounded-xl">Cash Out</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right 5 Why Choose Upay Feature Cards */}
+          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4 stagger-grid">
+            {/* 1. Useful */}
+            <div className="p-4 rounded-2xl bg-[#FAB915] text-slate-950 card-hover-lift shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-slate-950/10 flex items-center justify-center mb-3">
+                <Sparkles className="w-5 h-5 text-slate-950" />
+              </div>
+              <h3 className="font-black text-xs uppercase tracking-wider">USEFUL</h3>
+              <p className="text-[11px] leading-relaxed mt-1 text-slate-900 font-medium">
+                Innovative features that a brand can offer for meeting customer need
+              </p>
+            </div>
+
+            {/* 2. Simplicity */}
+            <div className="p-4 rounded-2xl bg-[#0054A6] text-white card-hover-lift shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 text-amber-300">
+                <Smartphone className="w-5 h-5" />
+              </div>
+              <h3 className="font-black text-xs uppercase tracking-wider">SIMPLICITY</h3>
+              <p className="text-[11px] leading-relaxed mt-1 text-blue-100">
+                Frictionless intuitive interface designed for all users nationwide
+              </p>
+            </div>
+
+            {/* 3. Availability */}
+            <div className="p-4 rounded-2xl bg-[#0054A6] text-white card-hover-lift shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 text-amber-300">
+                <Globe className="w-5 h-5" />
+              </div>
+              <h3 className="font-black text-xs uppercase tracking-wider">AVAILABILITY</h3>
+              <p className="text-[11px] leading-relaxed mt-1 text-blue-100">
+                24/7 network uptime with over 15,000+ ATM & agent touchpoints
+              </p>
+            </div>
+
+            {/* 4. Celebration of Life */}
+            <div className="p-4 rounded-2xl bg-[#0054A6] text-white card-hover-lift shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 text-amber-300">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="font-black text-xs uppercase tracking-wider">CELEBRATION OF LIFE</h3>
+              <p className="text-[11px] leading-relaxed mt-1 text-blue-100">
+                Rewarding community campaigns, zero ATM charges & education savings
+              </p>
+            </div>
+
+            {/* 5. Safety */}
+            <div className="p-4 rounded-2xl bg-[#0054A6] text-white card-hover-lift shadow-sm col-span-2 sm:col-span-1">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 text-amber-300">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h3 className="font-black text-xs uppercase tracking-wider">SAFETY</h3>
+              <p className="text-[11px] leading-relaxed mt-1 text-blue-100">
+                Military-grade biometric authentication & AI ScamShield protection
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* OUR SERVICES SECTION (Matching Image 4) */}
       <div id="services-section" className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="text-center max-w-xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl font-black text-[#0054A6] tracking-wide uppercase">
+        <div className="text-center max-w-xl mx-auto mb-10 animate-slide-up">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#0054A6] dark:text-blue-400 tracking-wide uppercase">
             {lang === 'BN' ? 'আমাদের সেবাসমূহ' : 'OUR SERVICES'}
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             {lang === 'BN'
               ? 'আপনার দৈনন্দিন আর্থিক লেনদেনকে সহজ এবং নিরাপদ করতে আমাদের সেবাসমূহ প্রস্তুত'
               : 'Our services are designed to make your regular financial transactions convenient and easy'}
           </p>
         </div>
 
-        {/* 6 Core Services Grid matching wireframe Image 4 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+        {/* 6 Core Services Grid matching wireframe Image 4 with Staggered Slide Up Animation */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 stagger-grid">
           {/* 1. Cash In */}
           <div
             onClick={() => onServiceSelect?.('Cash In')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
             <div className="w-16 h-16 rounded-2xl bg-blue-50 group-hover:bg-amber-50 flex items-center justify-center mb-3 transition-colors text-[#0054A6] group-hover:text-amber-600">
               <ArrowDownLeft className="w-8 h-8" />
@@ -420,7 +523,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           {/* 2. Cash Out */}
           <div
             onClick={() => onServiceSelect?.('Cash Out')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
             <div className="w-16 h-16 rounded-2xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center mb-3 transition-colors text-amber-600">
               <ArrowUpRight className="w-8 h-8" />
@@ -434,7 +537,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           {/* 3. Send Money */}
           <div
             onClick={() => onServiceSelect?.('Send Money')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border-2 border-amber-300 shadow-sm hover:border-[#0054A6] hover:shadow-lg transition-all cursor-pointer text-center relative overflow-hidden"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border-2 border-amber-300 shadow-sm hover:border-[#0054A6] hover:shadow-lg transition-all cursor-pointer text-center relative overflow-hidden card-hover-lift"
           >
             <div className="absolute top-0 right-0 bg-[#0054A6] text-white text-[9px] font-bold px-2 py-0.5 rounded-bl">
               SHIELD
@@ -451,7 +554,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           {/* 4. Make Payment */}
           <div
             onClick={() => onServiceSelect?.('Make Payment')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
             <div className="w-16 h-16 rounded-2xl bg-indigo-50 group-hover:bg-indigo-100 flex items-center justify-center mb-3 transition-colors text-indigo-600">
               <QrCode className="w-8 h-8" />
@@ -465,7 +568,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           {/* 5. Add Money */}
           <div
             onClick={() => onServiceSelect?.('Add Money')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
             <div className="w-16 h-16 rounded-2xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-colors text-emerald-600">
               <PlusCircle className="w-8 h-8" />
@@ -479,7 +582,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
           {/* 6. Pay Bill */}
           <div
             onClick={() => onServiceSelect?.('Pay Bill')}
-            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center"
+            className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
             <div className="w-16 h-16 rounded-2xl bg-purple-50 group-hover:bg-purple-100 flex items-center justify-center mb-3 transition-colors text-purple-600">
               <ReceiptText className="w-8 h-8" />
@@ -493,7 +596,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
 
         {/* Expanded Services Grid (Revealed on View More) */}
         {showAllServices && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mt-6 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mt-6 stagger-grid">
             {/* 7. Mobile Recharge */}
             <div
               onClick={() => onServiceSelect?.('Mobile Recharge')}

@@ -28,7 +28,7 @@ export const StorylineRunner: React.FC<StorylineRunnerProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white p-6 rounded-3xl shadow-lg border border-blue-800">
+      <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white p-6 rounded-3xl shadow-lg border border-blue-800 animate-slide-up card-hover-lift">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export const StorylineRunner: React.FC<StorylineRunnerProps> = ({
       </div>
 
       {/* Active Step Feature Showcase Card */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6 animate-slide-up stagger-1 card-hover-lift">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-indigo-600" />

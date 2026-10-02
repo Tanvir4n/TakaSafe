@@ -19,6 +19,8 @@ import {
   User,
   LogOut,
   ChevronRight,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { AuthUser } from '../../types';
 
@@ -33,6 +35,8 @@ interface UpayHeaderProps {
   currentUser?: AuthUser | null;
   onLogout?: () => void;
   onOpenModal?: (modalType: string) => void;
+  theme?: 'light' | 'dark';
+  onToggleTheme?: () => void;
 }
 
 export const UpayHeader: React.FC<UpayHeaderProps> = ({
@@ -46,6 +50,8 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
   currentUser,
   onLogout,
   onOpenModal,
+  theme = 'light',
+  onToggleTheme,
 }) => {
   const [isServicesOpen, setIsServicesOpen] = useState<boolean>(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
@@ -281,6 +287,26 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
             >
               <Globe className="w-3.5 h-3.5" />
               <span>{lang === 'EN' ? 'বাংলা' : 'EN'}</span>
+            </button>
+
+            {/* Theme Toggle (Light / Dark Mode) */}
+            <button
+              onClick={onToggleTheme}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition-colors border border-white/10 cursor-pointer shadow-2xs"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle Theme Mode"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-300 animate-spin-slow" />
+                  <span className="hidden md:inline">Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-blue-200" />
+                  <span className="hidden md:inline">Dark</span>
+                </>
+              )}
             </button>
 
             {/* Login / User Profile Button (Right side of language select) */}

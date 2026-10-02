@@ -104,12 +104,13 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
         </div>
       </div>
 
-      {activeTab === 'WALLET' ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div key={activeTab} className="page-enter">
+        {activeTab === 'WALLET' ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-grid">
           {/* Balance & Card Details */}
           <div className="md:col-span-1 space-y-4">
             {/* Digital Wallet Card */}
-            <div className="bg-gradient-to-br from-[#0054A6] via-[#004080] to-[#002B57] text-white p-6 rounded-3xl shadow-xl border border-blue-400/20 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#0054A6] via-[#004080] to-[#002B57] text-white p-6 rounded-3xl shadow-xl border border-blue-400/20 relative overflow-hidden card-hover-lift">
               <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
               <div className="flex items-center justify-between">
                 <span className="text-xs text-blue-200 font-medium">TakaSafe Digital Account</span>
@@ -333,6 +334,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
           </div>
         </div>
       )}
+      </div>
 
       {/* ScamShield Pre-Payment Modal (Human-Choice Protection) */}
       {showScamModal && (
