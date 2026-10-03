@@ -482,6 +482,13 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setIsServiceReview(false);
       return;
     }
+    if ((activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out') || (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit')) {
+      setServiceNote(recipientWallet);
+      if (suggestedAmount && suggestedAmount > 0) setServiceAmount(String(suggestedAmount));
+      setServiceError(null);
+      setIsServiceReview(false);
+      return;
+    }
     setActiveTab('WALLET');
     setRecipient(recipientWallet);
     if (suggestedAmount) {
@@ -980,7 +987,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
         customer={customer}
         onWalletLinked={handleWalletLinked}
         onPaymentQRScanned={handlePaymentQRScanned}
-        paymentOnly={activeWalletService === 'Make Payment'}
+        scanMode={activeWalletService === 'Make Payment' ? 'PAYMENT' : (activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out') || (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit') ? 'AGENT' : 'LINK'}
         lang={lang}
       />
 
@@ -1031,9 +1038,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                     <input value={serviceTarget} onChange={(event) => setServiceTarget(event.target.value)} required placeholder="Enter merchant name or scan its QR" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
                   )}
                 </label>
-                {activeWalletService === 'Make Payment' && (
+                {(activeWalletService === 'Make Payment' || (activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out') || (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit')) && (
                   <button type="button" onClick={() => setIsQRScannerOpen(true)} className="w-full py-2.5 rounded-xl border border-[#0054A6] text-[#0054A6] hover:bg-blue-50 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer">
-                    <QrCode className="w-4 h-4" /> Scan merchant QR with camera
+                    <QrCode className="w-4 h-4" /> {activeWalletService === 'Make Payment' ? 'Scan merchant QR with camera' : 'Scan agent QR with camera'}
                   </button>
                 )}
                 {(activeWalletService === 'Cash In' || activeWalletService === 'Cash Out' || activeWalletService === 'Make Payment' || activeWalletService === 'Pay Bill' || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Education' || activeWalletService === 'Insurance' || activeWalletService === 'Business') && (

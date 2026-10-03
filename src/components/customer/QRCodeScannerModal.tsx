@@ -41,7 +41,7 @@ interface QRCodeScannerModalProps {
   customer: CustomerBaseline;
   onWalletLinked: (newWallet: LinkedWallet) => void;
   onPaymentQRScanned?: (recipientWallet: string, amount?: number, note?: string) => void;
-  paymentOnly?: boolean;
+  scanMode?: 'LINK' | 'PAYMENT' | 'AGENT';
   lang: 'EN' | 'BN';
 }
 
@@ -51,9 +51,10 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
   customer,
   onWalletLinked,
   onPaymentQRScanned,
-  paymentOnly = false,
+  scanMode = 'LINK',
   lang,
 }) => {
+  const transactionScan = scanMode !== 'LINK';
   const [modalTab, setModalTab] = useState<'SCANNER' | 'MY_QR'>('SCANNER');
   const [isTorchOn, setIsTorchOn] = useState<boolean>(false);
   const [cameraFacing, setCameraFacing] = useState<'ENVIRONMENT' | 'USER'>('ENVIRONMENT');
@@ -74,12 +75,12 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
   const animFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!isOpen || !paymentOnly) return;
+    if (!isOpen || !transactionScan) return;
     setModalTab('SCANNER');
     setIsScanning(true);
     setScannedPayload(null);
     setUploadError(null);
-  }, [isOpen, paymentOnly]);
+  }, [isOpen, transactionScan]);
 
   // Generate My QR Code for current customer
   useEffect(() => {
@@ -200,7 +201,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
         };
       }
 
-      if (paymentOnly) payload.action = 'MERCHANT_CHECKOUT';
+      if (transactionScan) payload.action = 'MERCHANT_CHECKOUT';
       setIsScanning(false);
       const isThreat = !payload.muleCheckPassed || payload.riskAssessmentScore >= 80;
       playScanBeep(isThreat);
@@ -391,7 +392,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold text-sm sm:text-base tracking-tight flex items-center gap-2">
-                <span>{paymentOnly ? 'Scan Merchant QR' : lang === 'BN' ? 'কিউআর স্ক্যানার ও ওয়ালেট সংযোগ' : 'QR Scanner & Secure Wallet Link'}</span>
+                <span>{scanMode === 'PAYMENT' ? 'Scan Merchant QR' : scanMode === 'AGENT' ? 'Scan Agent QR' : lang === 'BN' ? 'কিউআর স্ক্যানার ও ওয়ালেট সংযোগ' : 'QR Scanner & Secure Wallet Link'}</span>
               </h3>
               <p className="text-[11px] text-blue-100 font-medium">
                 Cryptographically verify and link bank accounts, trusted co-wallets, or scan merchant QR
@@ -422,10 +423,10 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-                <span>{paymentOnly ? 'Scan to Pay' : 'Scan QR Code'}</span>
+                <span>{transactionScan ? 'Scan to Continue' : 'Scan QR Code'}</span>
           </button>
 
-          {!paymentOnly && <button
+          {!transactionScan && <button
             onClick={() => setModalTab('MY_QR')}
             className={`flex items-center gap-2 py-2.5 px-4 font-bold text-xs rounded-t-xl transition-all cursor-pointer ${
               modalTab === 'MY_QR'
