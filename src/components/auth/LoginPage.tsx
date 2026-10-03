@@ -150,7 +150,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      const user = DEMO_PROFILES.find((profile) => profile.id === selectedProfileId && profile.role === selectedRole && profile.email.toLowerCase() === email.trim().toLowerCase());
+      const user = DEMO_PROFILES.find((profile) => profile.role === selectedRole && profile.email.toLowerCase() === email.trim().toLowerCase());
       if (!user) {
         setErrorMsg('Choose a demo profile that matches the selected role and email.');
         return;
@@ -165,6 +165,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
       setIsSubmitting(false);
       onLogin(DEMO_PROFILES.find((profile) => profile.id === selectedProfileId)!);
     }, 450);
+  };
+
+  const handleQuickLogin = (profile: AuthUser) => {
+    setSelectedRole(profile.role);
+    setSelectedProfileId(profile.id);
+    setEmail(profile.email);
+    setErrorMsg(null);
+    onLogin(profile);
   };
 
   return (
@@ -477,7 +485,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
               <button
                 key={profile.id}
                 type="button"
-                onClick={() => onLogin(profile)}
+                onClick={() => handleQuickLogin(profile)}
                 className={`w-full text-[11px] font-bold text-slate-800 ${profile.role === 'ADMIN' ? 'bg-blue-50 hover:bg-blue-100 border-blue-200' : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-200'} border px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs`}
               >
                 {profile.role === 'ADMIN'
