@@ -1,249 +1,254 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%" style="background:#070A12; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" height="100%" style="background-color: #080808; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <defs>
-    <!-- Background Gradients -->
-    <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0B1120" />
-      <stop offset="40%" stop-color="#070A12" />
-      <stop offset="100%" stop-color="#04060A" />
-    </linearGradient>
+    <!-- Background Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#141414" stroke-width="1"/>
+    </pattern>
 
-    <!-- Glowing Radial Spheres -->
-    <radialGradient id="glowCyan" cx="20%" cy="30%" r="60%">
-      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.35" />
-      <stop offset="60%" stop-color="#0284C7" stop-opacity="0.05" />
-      <stop offset="100%" stop-color="#0284C7" stop-opacity="0" />
-    </radialGradient>
-
-    <radialGradient id="glowPurple" cx="80%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.3" />
-      <stop offset="60%" stop-color="#7C3AED" stop-opacity="0.04" />
-      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0" />
-    </radialGradient>
-
-    <radialGradient id="glowEmerald" cx="50%" cy="90%" r="50%">
-      <stop offset="0%" stop-color="#059669" stop-opacity="0.25" />
-      <stop offset="100%" stop-color="#059669" stop-opacity="0" />
-    </radialGradient>
-
-    <!-- Metallic Text Gradient -->
-    <linearGradient id="textGold" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="40%" stop-color="#E2E8F0" />
-      <stop offset="70%" stop-color="#38BDF8" />
-      <stop offset="100%" stop-color="#0284C7" />
-    </linearGradient>
-
-    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.9" />
-      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95" />
-    </linearGradient>
-
-    <linearGradient id="goldChip" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FDE047" />
-      <stop offset="50%" stop-color="#CA8A04" />
-      <stop offset="100%" stop-color="#854D0E" />
-    </linearGradient>
-
-    <!-- Drop Shadows -->
-    <filter id="shadowGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#0284C7" flood-opacity="0.35" />
+    <!-- Glow Filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#000000" flood-opacity="0.7" />
+
+    <!-- Card Shadow -->
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.8"/>
     </filter>
+
+    <!-- Radar Sector Sweep Gradient -->
+    <linearGradient id="sweep-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ccff00" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ccff00" stop-opacity="0"/>
+    </linearGradient>
+
+    <style>
+      /* Radar Sweep Spin Animation around Center (660, 220) */
+      @keyframes radar-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      
+      /* Threat Node Pulsing */
+      @keyframes threat-pulse {
+        0%, 100% { r: 5px; opacity: 1; }
+        50% { r: 8px; opacity: 0.4; }
+      }
+
+      /* Mule Intercept Flow Lines */
+      @keyframes dash-flow {
+        from { stroke-dashoffset: 24; }
+        to { stroke-dashoffset: 0; }
+      }
+
+      /* Intercept Shield Glow */
+      @keyframes shield-glow {
+        0%, 100% { filter: drop-shadow(0px 0px 4px #ccff00); }
+        50% { filter: drop-shadow(0px 0px 10px #ccff00); }
+      }
+
+      /* NFC Contactless Wave Signal */
+      @keyframes wave-pulse {
+        0%, 100% { opacity: 0.2; stroke: #666666; }
+        50% { opacity: 1; stroke: #ccff00; }
+      }
+
+      .radar-sweep-element {
+        animation: radar-spin 3s linear infinite;
+        transform-origin: 660px 220px;
+      }
+
+      .threat-node {
+        animation: threat-pulse 1.8s infinite ease-in-out;
+      }
+
+      .flow-path {
+        stroke-dasharray: 6 6;
+        animation: dash-flow 1s linear infinite;
+      }
+
+      .intercept-shield {
+        animation: shield-glow 2s infinite;
+      }
+
+      .wave-1 { animation: wave-pulse 1.5s infinite 0s; }
+      .wave-2 { animation: wave-pulse 1.5s infinite 0.3s; }
+    </style>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="100%" height="100%" fill="url(#heroBg)" />
+  <!-- Background Grid -->
+  <rect width="1200" height="630" fill="#080808"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
 
-  <!-- Ambient Glow Layers -->
-  <rect width="100%" height="100%" fill="url(#glowCyan)" />
-  <rect width="100%" height="100%" fill="url(#glowPurple)" />
-  <rect width="100%" height="100%" fill="url(#glowEmerald)" />
+  <!-- LEFT SECTION: Branding & Information -->
+  <g transform="translate(80, 0)">
+    <!-- Header Badge -->
+    <g transform="translate(0, 110)">
+      <rect x="0" y="0" width="220" height="30" rx="15" fill="#111111" stroke="#222222" stroke-width="1"/>
+      <circle cx="16" cy="15" r="4" fill="#ccff00" filter="url(#glow)"/>
+      <text x="30" y="19" fill="#888888" font-size="11" font-weight="600" letter-spacing="1">AI FINANCIAL TRUST &amp; RESILIENCE</text>
+    </g>
 
-  <!-- Perspective Cyber Grid Lines -->
-  <g opacity="0.04" stroke="#FFFFFF" stroke-width="1">
-    <line x1="0" y1="60" x2="1200" y2="60" />
-    <line x1="0" y1="140" x2="1200" y2="140" />
-    <line x1="0" y1="220" x2="1200" y2="220" />
-    <line x1="0" y1="300" x2="1200" y2="300" />
-    <line x1="0" y1="370" x2="1200" y2="370" />
-    <line x1="100" y1="0" x2="100" y2="420" />
-    <line x1="280" y1="0" x2="280" y2="420" />
-    <line x1="460" y1="0" x2="460" y2="420" />
-    <line x1="640" y1="0" x2="640" y2="420" />
-    <line x1="820" y1="0" x2="820" y2="420" />
-    <line x1="1000" y1="0" x2="1000" y2="420" />
+    <!-- Main Title -->
+    <g transform="translate(0, 185)">
+      <text x="0" y="0" fill="#ffffff" font-size="44" font-weight="800" letter-spacing="-1">TakaSafe</text>
+      <text x="185" y="-24" fill="#ccff00" font-size="12" font-weight="700" letter-spacing="1">v2.5</text>
+      <text x="0" y="32" fill="#aaaaaa" font-size="18" font-weight="400">Explainable AI Fraud Shield &amp; Mule Syndicate Defense</text>
+      <text x="0" y="56" fill="#555555" font-size="13" font-weight="400">Engineered for MFS Architecture • &lt; 18ms SLA • BFIU STR Compliance</text>
+    </g>
+
+    <!-- Feature Badges -->
+    <g transform="translate(0, 290)">
+      <!-- Badge 1 -->
+      <rect x="0" y="0" width="125" height="36" rx="18" fill="#121212" stroke="#262626" stroke-width="1"/>
+      <path d="M 22 18 L 25 12 L 23 24 L 27 18" stroke="#ccff00" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <text x="35" y="22" fill="#dddddd" font-size="12" font-weight="600">&lt; 18ms SLA</text>
+
+      <!-- Badge 2 -->
+      <rect x="135" y="0" width="145" height="36" rx="18" fill="#121212" stroke="#262626" stroke-width="1"/>
+      <circle cx="152" cy="18" r="4" fill="#ccff00"/>
+      <text x="164" y="22" fill="#dddddd" font-size="12" font-weight="600">ScamShield AI</text>
+
+      <!-- Badge 3 -->
+      <rect x="290" y="0" width="155" height="36" rx="18" fill="#121212" stroke="#262626" stroke-width="1"/>
+      <polygon points="308,14 313,22 303,22" fill="#ccff00"/>
+      <text x="321" y="22" fill="#dddddd" font-size="12" font-weight="600">MuleVision GNN</text>
+    </g>
+
+    <!-- Tech Specs Footer -->
+    <g transform="translate(0, 365)">
+      <text x="0" y="0" fill="#444444" font-size="11" font-weight="600" letter-spacing="1">POWERED BY</text>
+      <text x="85" y="0" fill="#666666" font-size="11" font-weight="500">XGBoost • Isolation Forest • SHAP • Gemini 2.5 • D3.js</text>
+    </g>
   </g>
 
-  <!-- ==================== LEFT HERO BRANDING & COPY ==================== -->
-  <g transform="translate(60, 55)">
-    <!-- Top Status Badge -->
-    <g transform="translate(0, 0)">
-      <rect x="0" y="0" width="265" height="28" rx="14" fill="#0F172A" stroke="#0284C7" stroke-width="1.2" />
-      <!-- Pulsing Dot -->
-      <circle cx="14" cy="14" r="5" fill="#10B981" />
-      <circle cx="14" cy="14" r="9" fill="#10B981" opacity="0.3" />
-      <text x="28" y="18" fill="#38BDF8" font-size="10.5" font-weight="700" letter-spacing="0.5">
-        AI FINANCIAL TRUST &amp; RESILIENCE
-      </text>
-    </g>
+  <!-- Connection Line (Radar to Intercept Panel) -->
+  <path d="M 660 300 C 660 350, 680 370, 710 370" fill="none" stroke="#ccff00" stroke-width="1.5" class="flow-path" opacity="0.4"/>
 
-    <!-- Main Title with Glowing Shield Emblem -->
-    <g transform="translate(0, 48)">
-      <!-- Shield Emblem Icon -->
-      <g transform="translate(0, 4)" filter="url(#shadowGlow)">
-        <polygon points="26,0 52,10 52,38 26,52 0,38 0,10" fill="#0284C7" stroke="#38BDF8" stroke-width="1.5" />
-        <!-- Inner Bengali Taka symbol ৳ stylized -->
-        <text x="26" y="36" fill="#FFFFFF" font-size="28" font-weight="900" text-anchor="middle">৳</text>
-      </g>
-
-      <text x="68" y="44" fill="url(#textGold)" font-size="52" font-weight="900" letter-spacing="-1.5">TakaSafe</text>
-    </g>
-
-    <!-- Subtitle -->
-    <text x="0" y="148" fill="#F8FAFC" font-size="16" font-weight="700" letter-spacing="-0.2">
-      Explainable AI Fraud Shield, Mule Syndicate Defense &amp; Disaster Resilience
-    </text>
+  <!-- RIGHT SECTION 1: Multimodal Threat Radar -->
+  <g transform="translate(560, 90)" filter="url(#card-shadow)">
+    <!-- Container -->
+    <rect x="0" y="0" width="200" height="260" rx="12" fill="#0d0d0d" stroke="#1f1f1f" stroke-width="1"/>
     
-    <text x="0" y="172" fill="#94A3B8" font-size="13" font-weight="400">
-      Engineered for Bangladesh MFS (upay, bKash, Nagad) · &lt; 18ms SLA · BFIU STR Compliance
-    </text>
+    <!-- Title Bar -->
+    <circle cx="16" cy="20" r="4" fill="#ccff00"/>
+    <text x="26" y="24" fill="#ffffff" font-size="11" font-weight="700">Multimodal Threat Radar</text>
+    <line x1="0" y1="38" x2="200" y2="38" stroke="#161616" stroke-width="1"/>
 
-    <!-- Feature Pills Grid -->
-    <g transform="translate(0, 202)">
-      <!-- Pill 1: SLA -->
-      <g transform="translate(0, 0)">
-        <rect x="0" y="0" width="112" height="30" rx="6" fill="#0E1E38" stroke="#0284C7" stroke-width="1" />
-        <text x="12" y="19" fill="#38BDF8" font-size="11" font-weight="700">⚡ &lt; 18ms SLA</text>
-      </g>
+    <!-- Radar Screen (Center: Global 660, 220) -->
+    <g transform="translate(100, 130)">
+      <!-- Concentric Rings -->
+      <circle cx="0" cy="0" r="75" fill="none" stroke="#1e2605" stroke-width="1"/>
+      <circle cx="0" cy="0" r="50" fill="none" stroke="#1e2605" stroke-width="1"/>
+      <circle cx="0" cy="0" r="25" fill="none" stroke="#1e2605" stroke-width="1"/>
+      
+      <!-- Axis Lines -->
+      <line x1="-80" y1="0" x2="80" y2="0" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="0" y1="-80" x2="0" y2="80" stroke="#1a1a1a" stroke-width="1"/>
 
-      <!-- Pill 2: ScamShield -->
-      <g transform="translate(122, 0)">
-        <rect x="0" y="0" width="138" height="30" rx="6" fill="#2E1220" stroke="#F43F5E" stroke-width="1" />
-        <text x="12" y="19" fill="#FDA4AF" font-size="11" font-weight="700">🛡️ ScamShield AI</text>
-      </g>
+      <!-- Static Nodes -->
+      <circle cx="-30" cy="-20" r="3" fill="#ffffff" opacity="0.3"/>
+      <circle cx="20" cy="-45" r="3" fill="#ffffff" opacity="0.4"/>
 
-      <!-- Pill 3: MuleVision GNN -->
-      <g transform="translate(270, 0)">
-        <rect x="0" y="0" width="144" height="30" rx="6" fill="#24143D" stroke="#A855F7" stroke-width="1" />
-        <text x="12" y="19" fill="#E9D5FF" font-size="11" font-weight="700">🕸️ MuleVision GNN</text>
-      </g>
+      <!-- Target Threat Point -->
+      <circle cx="35" cy="30" r="5" fill="#ccff00" class="threat-node" filter="url(#glow)"/>
+      <circle cx="35" cy="30" r="10" fill="none" stroke="#ccff00" stroke-width="1" opacity="0.6"/>
+    </g>
 
-      <!-- Pill 4: Climate Float Logistics -->
-      <g transform="translate(424, 0)">
-        <rect x="0" y="0" width="168" height="30" rx="6" fill="#092620" stroke="#10B981" stroke-width="1" />
-        <text x="12" y="19" fill="#A7F3D0" font-size="11" font-weight="700">🌊 Climate Float Logistics</text>
+    <text x="100" y="242" text-anchor="middle" fill="#ccff00" font-size="10" font-weight="700" letter-spacing="0.5">ACTIVE THREAT DETECTED</text>
+  </g>
+
+  <!-- ROTATING RADAR SWEEP (Rotates precisely around center X=660, Y=220) -->
+  <g class="radar-sweep-element">
+    <path d="M 660 220 L 735 220 A 75 75 0 0 0 660 145 Z" fill="url(#sweep-gradient)"/>
+    <line x1="660" y1="220" x2="735" y2="220" stroke="#ccff00" stroke-width="1.5" filter="url(#glow)"/>
+  </g>
+
+  <!-- RIGHT SECTION 2: Payment Card (Centurion / upay) -->
+  <g transform="translate(730, 60)" filter="url(#card-shadow)">
+    <!-- Card Frame -->
+    <rect x="0" y="0" width="260" height="150" rx="12" fill="#121212" stroke="#282828" stroke-width="1"/>
+    
+    <!-- Branding -->
+    <text x="20" y="28" fill="#555555" font-size="9" font-weight="700" letter-spacing="1">SOVEREIGN CENTURION</text>
+    <text x="210" y="28" fill="#ffffff" font-size="11" font-weight="800" font-style="italic">upay</text>
+
+    <!-- Metallic Chip -->
+    <rect x="20" y="44" width="26" height="18" rx="3" fill="#222222" stroke="#3a3a3a" stroke-width="1"/>
+    <line x1="20" y1="53" x2="46" y2="53" stroke="#121212" stroke-width="1"/>
+
+    <!-- Contactless Wave Signals (Animated) -->
+    <g transform="translate(52, 45)">
+      <path d="M 2 4 A 8 8 0 0 1 2 12" fill="none" stroke="#888888" stroke-width="1.5" stroke-linecap="round" class="wave-1"/>
+      <path d="M 6 1 A 13 13 0 0 1 6 15" fill="none" stroke="#888888" stroke-width="1.5" stroke-linecap="round" class="wave-2"/>
+    </g>
+
+    <!-- Card Number -->
+    <text x="20" y="94" fill="#ffffff" font-size="14" font-weight="600" letter-spacing="3">•••• 8829 4410 9021</text>
+
+    <!-- Details -->
+    <text x="20" y="122" fill="#444444" font-size="8" font-weight="600">CARDHOLDER</text>
+    <text x="20" y="132" fill="#888888" font-size="9" font-weight="600">TAKASAFE SCAMSHIELD</text>
+
+    <text x="180" y="122" fill="#444444" font-size="8" font-weight="600" text-anchor="end">BALANCE</text>
+    <text x="240" y="133" fill="#ccff00" font-size="11" font-weight="700" text-anchor="end">৳ 2,450,000</text>
+  </g>
+
+  <!-- RIGHT SECTION 3: Mule Outflow Intercept Panel -->
+  <g transform="translate(680, 260)" filter="url(#card-shadow)">
+    <!-- Container -->
+    <rect x="0" y="0" width="300" height="230" rx="12" fill="#0a0a0a" stroke="#ccff00" stroke-width="1.5"/>
+
+    <!-- Header Alert -->
+    <rect x="12" y="12" width="60" height="18" rx="4" fill="#ccff00"/>
+    <text x="42" y="24" fill="#000000" font-size="10" font-weight="800" text-anchor="middle">CRIT: 94</text>
+    <text x="80" y="26" fill="#ffffff" font-size="13" font-weight="700">Mule Outflow Intercept</text>
+
+    <!-- SHAP Metrics -->
+    <g transform="translate(16, 55)">
+      <text x="0" y="10" fill="#888888" font-size="11" font-weight="500">• SHAP: <tspan fill="#ffffff" font-weight="700">+31% Circadian Spike</tspan></text>
+      <text x="0" y="28" fill="#888888" font-size="11" font-weight="500">• SHAP: <tspan fill="#ffffff" font-weight="700">+24% Velocity Burst</tspan></text>
+    </g>
+
+    <!-- Intercept Flow Visual -->
+    <g transform="translate(16, 110)">
+      <text x="0" y="0" fill="#555555" font-size="10" font-weight="700" letter-spacing="0.5">INTERCEPT PATH</text>
+      
+      <g transform="translate(0, 15)">
+        <!-- MFS Node -->
+        <circle cx="20" cy="20" r="14" fill="#141414" stroke="#333333" stroke-width="1"/>
+        <text x="20" y="23" fill="#888888" font-size="9" font-weight="700" text-anchor="middle">MFS</text>
+
+        <!-- Dynamic Intercept Flow Line -->
+        <line x1="34" y1="20" x2="80" y2="20" stroke="#ccff00" stroke-width="2" class="flow-path"/>
+
+        <!-- Shield Node -->
+        <circle cx="95" cy="20" r="16" fill="#ccff00" class="intercept-shield"/>
+        <path d="M 91 15 L 99 15 L 99 20 C 99 24 91 26 91 26 C 91 26 83 24 83 20 L 83 15 Z" fill="#000000" transform="translate(4, -1) scale(0.7)"/>
+
+        <!-- Line to Blocked Node -->
+        <line x1="111" y1="20" x2="155" y2="20" stroke="#444444" stroke-width="1.5"/>
+        <line x1="130" y1="12" x2="138" y2="28" stroke="#ff3333" stroke-width="2"/>
+
+        <!-- Mule Node (Blocked) -->
+        <circle cx="170" cy="20" r="14" fill="#141414" stroke="#ff3333" stroke-width="1"/>
+        <text x="170" y="23" fill="#ff3333" font-size="8" font-weight="700" text-anchor="middle">MULE</text>
       </g>
     </g>
 
-    <!-- Micro Tech Badges -->
-    <g transform="translate(0, 252)">
-      <text x="0" y="14" fill="#64748B" font-size="11" font-weight="600">POWERED BY:</text>
-      <text x="85" y="14" fill="#CBD5E1" font-size="11" font-weight="600">
-        XGBoost (scale_pos_weight=20.68) · Isolation Forest · SHAP Explainability · Gemini 2.5 Flash · D3.js
-      </text>
+    <!-- Action Bar -->
+    <g transform="translate(14, 180)">
+      <rect x="0" y="0" width="272" height="34" rx="6" fill="#111803" stroke="#253805" stroke-width="1"/>
+      <path d="M 12 17 L 16 21 L 24 13" fill="none" stroke="#ccff00" stroke-width="2" stroke-linecap="round"/>
+      <text x="32" y="21" fill="#ccff00" font-size="11" font-weight="700">Action: Automated BFIU Form 2 STR Generated</text>
     </g>
   </g>
 
-  <!-- ==================== RIGHT HERO GRAPHICS: FLOATING CARDS & RADAR ==================== -->
-  <g transform="translate(710, 45)">
-    <!-- 1. SOVEREIGN CENTURION CARD (3D Isometric Floating Effect) -->
-    <g transform="translate(100, 20) rotate(5)" filter="url(#cardShadow)">
-      <!-- Card Shell -->
-      <rect x="0" y="0" width="310" height="190" rx="14" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="1.3" stroke-opacity="0.8" />
-      
-      <!-- Subtle Card Holographic Texture Lines -->
-      <path d="M 0 60 Q 150 120 310 40" stroke="#38BDF8" stroke-width="0.8" stroke-opacity="0.3" fill="none" />
-      <path d="M 0 110 Q 160 170 310 90" stroke="#A855F7" stroke-width="0.8" stroke-opacity="0.3" fill="none" />
-
-      <!-- Top Card Header -->
-      <text x="24" y="32" fill="#94A3B8" font-size="9" font-weight="800" letter-spacing="1">SOVEREIGN CENTURION</text>
-      <text x="286" y="32" fill="#F8FAFC" font-size="11" font-weight="900" text-anchor="end">upay</text>
-
-      <!-- EMV Gold Chip -->
-      <rect x="24" y="48" width="38" height="28" rx="4" fill="url(#goldChip)" stroke="#FEF08A" stroke-width="0.8" />
-      <line x1="24" y1="62" x2="62" y2="62" stroke="#713F12" stroke-width="0.6" />
-      <line x1="43" y1="48" x2="43" y2="76" stroke="#713F12" stroke-width="0.6" />
-      <circle cx="43" cy="62" r="4" fill="#EAB308" opacity="0.6" />
-
-      <!-- Contactless Wave Icon -->
-      <path d="M 72 54 A 12 12 0 0 1 72 70" stroke="#94A3B8" stroke-width="1.5" fill="none" stroke-linecap="round" />
-      <path d="M 77 50 A 18 18 0 0 1 77 74" stroke="#94A3B8" stroke-width="1.5" fill="none" stroke-linecap="round" />
-
-      <!-- Masked Card Number -->
-      <text x="24" y="112" fill="#F8FAFC" font-size="14" font-family="Courier, monospace" font-weight="700" letter-spacing="2">
-        •••• 8829 4410 9021
-      </text>
-
-      <!-- Cardholder & Tier -->
-      <g transform="translate(24, 138)">
-        <text x="0" y="10" fill="#64748B" font-size="7.5" font-weight="700" letter-spacing="0.5">ACCOUNT HOLDER</text>
-        <text x="0" y="24" fill="#F1F5F9" font-size="11" font-weight="700">TANVIR HASAN</text>
-      </g>
-      <g transform="translate(200, 138)">
-        <text x="86" y="10" fill="#64748B" font-size="7.5" font-weight="700" letter-spacing="0.5" text-anchor="end">BALANCE</text>
-        <text x="86" y="24" fill="#38BDF8" font-size="12" font-weight="800" text-anchor="end">৳ 2,450,000</text>
-      </g>
-
-      <!-- Bottom Card Ribbon -->
-      <rect x="0" y="174" width="310" height="16" rx="0" fill="#0284C7" fill-opacity="0.3" />
-      <text x="155" y="185" fill="#7DD3FC" font-size="8" font-weight="700" text-anchor="middle" letter-spacing="1">
-        PROTECTED BY TAKASAFE SCAMSHIELD 24H DELAY
-      </text>
-    </g>
-
-    <!-- 2. FLOATING SOC RADAR SWEEP (Left Bottom of Card) -->
-    <g transform="translate(0, 150)" filter="url(#shadowGlow)">
-      <rect x="0" y="0" width="180" height="150" rx="10" fill="#090D18" stroke="#1E293B" stroke-width="1.3" />
-      <rect x="12" y="10" width="6" height="6" rx="3" fill="#0284C7" />
-      <text x="24" y="16" fill="#E2E8F0" font-size="10" font-weight="700">Multi-Modal Threat Radar</text>
-      
-      <!-- Radar Circle Grid -->
-      <g transform="translate(90, 84)">
-        <circle cx="0" cy="0" r="45" fill="none" stroke="#1E293B" stroke-width="1" />
-        <circle cx="0" cy="0" r="30" fill="none" stroke="#1E293B" stroke-width="1" />
-        <circle cx="0" cy="0" r="15" fill="none" stroke="#1E293B" stroke-width="1" />
-        <line x1="-45" y1="0" x2="45" y2="0" stroke="#1E293B" stroke-width="1" />
-        <line x1="0" y1="-45" x2="0" y2="45" stroke="#1E293B" stroke-width="1" />
-        
-        <!-- Radar Sweep Cone -->
-        <path d="M 0 0 L 32 -32 A 45 45 0 0 1 45 0 Z" fill="#0284C7" fill-opacity="0.25" />
-        
-        <!-- Detected Blips -->
-        <circle cx="22" cy="-18" r="3.5" fill="#EF4444" />
-        <circle cx="-14" cy="24" r="2.5" fill="#F59E0B" />
-        <circle cx="10" cy="28" r="2" fill="#10B981" />
-      </g>
-      <text x="90" y="140" fill="#38BDF8" font-size="9" font-weight="700" text-anchor="middle">ACTIVE THREAT DETECTED</text>
-    </g>
-
-    <!-- 3. FLOATING SHAP ATTRIBUTION PILL (Overlaying Top-Right) -->
-    <g transform="translate(195, 225)" filter="url(#shadowGlow)">
-      <rect x="0" y="0" width="220" height="74" rx="8" fill="#160B12" stroke="#F43F5E" stroke-width="1.2" />
-      <rect x="10" y="8" width="55" height="18" rx="3" fill="#BE123C" />
-      <text x="37" y="20" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">CRIT: 94</text>
-      <text x="72" y="20" fill="#FDA4AF" font-size="10" font-weight="700">Mule Outflow Intercept</text>
-      
-      <text x="10" y="42" fill="#E2E8F0" font-size="9">• SHAP: +31% Circadian Spike</text>
-      <text x="10" y="55" fill="#E2E8F0" font-size="9">• SHAP: +24% Velocity Burst</text>
-      <text x="10" y="68" fill="#34D399" font-size="8.5" font-weight="700">✓ Action: Automated BFIU Form 2 STR</text>
-    </g>
-  </g>
-
-  <!-- ==================== BOTTOM COMPLIANCE STRIP ==================== -->
-  <g transform="translate(0, 385)">
-    <rect x="0" y="0" width="1200" height="35" fill="#04070F" stroke="#1E293B" stroke-width="1" />
-    <text x="60" y="22" fill="#64748B" font-size="10" font-weight="700">
-      REGULATORY ASSURANCE:
-    </text>
-    <text x="210" y="22" fill="#94A3B8" font-size="10" font-weight="500">
-      BANGLADESH BANK PSD CIRCULAR 12 · ANTI-MONEY LAUNDERING ACT 2012 (SEC 19) · BFIU STR FORM 2 · ZERO-COLD-START ML
-    </text>
-
-    <!-- Right Hackathon Tag -->
-    <text x="1140" y="22" fill="#FBBF24" font-size="10" font-weight="800" text-anchor="end">
-      🏆 DIU CPC × UPAY HACKATHON 2026
-    </text>
+  <!-- GLOBAL FOOTER -->
+  <g transform="translate(80, 580)">
+    <line x1="0" y1="0" x2="1040" y2="0" stroke="#161616" stroke-width="1"/>
+    <text x="0" y="22" fill="#444444" font-size="10" font-weight="600" letter-spacing="0.5">REGULATORY ASSURANCE:</text>
+    <text x="140" y="22" fill="#666666" font-size="10" font-weight="500">BANGLADESH BANK PSD CIRCULAR 12 • ANTI-MONEY LAUNDERING ACT 2012 (SEC 19) • ZERO-COLD-START ML</text>
+    <text x="1040" y="22" fill="#ccff00" font-size="10" font-weight="700" text-anchor="end">DIU CPC x UPAY HACKATHON 2026</text>
   </g>
 </svg>
