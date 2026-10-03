@@ -48,6 +48,8 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [showScamModal, setShowScamModal] = useState<boolean>(false);
   const [scamDecision, setScamDecision] = useState<string | null>(null);
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
+  const [riskReasons, setRiskReasons] = useState<string[]>([]);
+  const [riskScore, setRiskScore] = useState<number>(0);
 
   // QR Code Scanner & Secure Wallet Linking States
   const [isQRScannerOpen, setIsQRScannerOpen] = useState<boolean>(false);
@@ -59,8 +61,35 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     e.preventDefault();
     const num = Number(amount);
 
-    // If amount is high (>20000) or suspicious recipient, trigger ScamShield
-    if (num >= 20000 || recipient.includes('510294')) {
+    const recipientIsKnown = customer.frequentRecipients.some((known) => known.includes(recipient.trim()));
+    const isKnownMule = recipient.trim().includes('510294');
+    const currentHour = new Date().getHours();
+    const [usualStart = 9, usualEnd = 21] = customer.usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
+    const amountRatio = num / Math.max(customer.avgAmount, 1);
+    const amountIsUnusual = num > customer.maxAmountTypical && amountRatio >= 3;
+    const outsideUsualHours = currentHour < usualStart || currentHour >= usualEnd;
+    const reasons: string[] = [];
+    let score = 0;
+    if (amountIsUnusual) {
+      score += Math.min(40, 15 + Math.round((amountRatio - 3) * 3));
+      reasons.push(`Unusual amount: ৳${num.toLocaleString()} is ${amountRatio.toFixed(1)}× your usual average of ৳${customer.avgAmount.toLocaleString()}.`);
+    }
+    if (outsideUsualHours) {
+      score += 12;
+      reasons.push(`This transfer is outside your usual activity hours (${customer.usualHours}).`);
+    }
+    if (!recipientIsKnown) {
+      score += 8;
+      reasons.push('This is a recipient you have not sent money to before.');
+    }
+    if (isKnownMule) {
+      score += 65;
+      reasons.push('This recipient is linked to a suspicious money-mule network.');
+    }
+    setRiskReasons(reasons);
+    setRiskScore(Math.min(score, 100));
+    // A new recipient or a routine amount alone should not interrupt a transfer.
+    if (score >= 40) {
       setShowScamModal(true);
       onSimulateRiskyPayment();
     } else {
@@ -573,7 +602,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                     ScamShield Pre-Payment Warning
                   </span>
                   <h3 className="text-lg font-black text-slate-900 mt-0.5">
-                    High Risk Transaction (Score: 94/100)
+                    Review Transaction (Score: {riskScore}/100)
                   </h3>
                 </div>
               </div>
@@ -594,29 +623,19 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
             </div>
 
             <p className="text-xs text-slate-700 leading-relaxed">
-              Hold on, <strong>{customer.name}</strong>! This payment differs significantly from your usual activity. We detected patterns commonly seen in coercive social engineering and fraudulent lottery scams.
+              Hold on, <strong>{customer.name}</strong>. This transfer has signals that differ from your usual activity. Review them before continuing.
             </p>
 
             {/* Plain Language Reasons */}
             <div className="bg-rose-50/80 rounded-2xl p-4 border border-rose-200 space-y-2.5 text-xs">
-              <span className="font-bold text-rose-950 block">Why this was flagged:</span>
+              <span className="font-bold text-rose-950 block">Signals detected:</span>
               <ul className="space-y-1.5 text-slate-700">
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>New Recipient:</strong> You have never transacted with wallet <code>{recipient}</code> before.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>Unusual Amount:</strong> ৳{Number(amount).toLocaleString()} is <strong>53x higher</strong> than your regular transfers (৳1,500).</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>Time Anomaly:</strong> Initiated during late night/early morning hours.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>Suspicious Network:</strong> Recipient is connected to an active money-mule syndicate under review.</span>
-                </li>
+                {riskReasons.map((reason) => (
+                  <li key={reason} className="flex items-start gap-2">
+                    <span className="text-rose-600 font-bold">•</span>
+                    <span>{reason}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
