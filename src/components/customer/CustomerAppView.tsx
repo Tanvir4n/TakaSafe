@@ -209,7 +209,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     const currentHour = new Date().getHours();
     const [usualStart = 9, usualEnd = 21] = usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
     const amountRatio = num / Math.max(medianAmount, 1);
-    const amountThreshold = recentTransfers.length >= 5
+    const amountThreshold = baselineTransfers.length >= 5
       ? Math.max(medianAmount + 3 * 1.4826 * medianAbsoluteDeviation, medianAmount * 2.5, observedUpperRange)
       : Math.max(customer.maxAmountTypical, observedAverage * 3);
     const amountIsUnusual = num > amountThreshold && amountRatio >= 3;
@@ -226,20 +226,21 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     const splitPaymentPattern = dailyTransfers.length >= 2 && num <= customer.maxAmountTypical &&
       dailyTransfers.every((transfer) => transfer.amount <= customer.maxAmountTypical) &&
       dailyAmount > Math.max(customer.maxAmountTypical * 3, customer.avgAmount * customer.avgDailyTxns * 2.5);
-    const knownSessionDevices = loginHistory.map((login) => login.device).filter((device): device is string => Boolean(device));
-    const currentDevice = typeof navigator === 'undefined' ? '' : navigator.userAgent;
+    const normalizeDevice = (device: string) => device.replace(/(Chrome|Firefox|Version|Safari|Edg)\/[\d.]+/g, '$1/*');
+    const knownSessionDevices = loginHistory.map((login) => login.device).filter((device): device is string => Boolean(device)).map(normalizeDevice);
+    const currentDevice = typeof navigator === 'undefined' ? '' : normalizeDevice(navigator.userAgent);
     const newDevice = knownSessionDevices.length >= 2 && Boolean(currentDevice) && !knownSessionDevices.includes(currentDevice);
     const reasons: string[] = [];
     let score = 0;
     if (amountIsUnusual) {
-      score += Math.min(40, 15 + Math.round((amountRatio - 3) * 3));
+      score += Math.min(40, 20 + Math.round((amountRatio - 3) * 3));
       reasons.push(`Unusual amount: ৳${num.toLocaleString()} is ${amountRatio.toFixed(1)}× your recent average of ৳${Math.round(observedAverage).toLocaleString()}.`);
     }
     if (outsideUsualHours) {
-      score += amountIsUnusual ? 22 : 8;
+      score += amountIsUnusual ? 25 : 8;
       reasons.push(`This transfer is outside your usual activity hours (${usualHours})${amountIsUnusual ? ', increasing the risk of this unusually large payment' : ''}.`);
     } else if (learnedUnusualTime) {
-      score += amountIsUnusual ? 22 : 8;
+      score += amountIsUnusual ? 25 : 8;
       reasons.push(`You have not usually logged in or transacted at this hour${amountIsUnusual ? ', and this amount is unusually large' : ''}.`);
     }
     if (!recipientIsKnown) {
