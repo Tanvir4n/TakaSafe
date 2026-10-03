@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { matchAssistantQuery } from '../../data/assistantKnowledge';
 import {
   X,
   ShieldCheck,
@@ -30,6 +31,17 @@ interface UpayInfoModalProps {
   onNavigateView?: (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE') => void;
 }
 
+interface ChatMessage {
+  sender: 'bot' | 'user';
+  text: string;
+  time: string;
+  suggestedAction?: {
+    label: string;
+    view?: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE';
+  };
+  relatedTopics?: string[];
+}
+
 export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
   modalType,
   onClose,
@@ -37,57 +49,50 @@ export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
   onNavigateView,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string; time: string }>>([
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       sender: 'bot',
       text: lang === 'BN' 
-        ? 'আসসালামু আলাইকুম! TakaSafe কাস্টমার কেয়ারে স্বাগতম। আপনাকে কীভাবে সাহায্য করতে পারি?' 
-        : 'Welcome to TakaSafe 24/7 Digital Assistant. How can we assist you today?',
+        ? 'আসসালামু আলাইকুম! TakaSafe কাস্টমার কেয়ারে স্বাগতম। আপনি TakaSafe ফ্রড প্রোটেকশন, ScamShield, মিউল সিন্ডিকেট গ্রাফ, ঘূর্ণিঝড় রিমেল ক্যাশ লজিস্টিকস, বা বিএফআইইউ কমপ্লায়েন্স সংক্রান্ত যেকোনো প্রশ্ন করতে পারেন।' 
+        : 'Welcome to TakaSafe 24/7 Digital Assistant. Ask me anything about our real-time fraud engine (< 18ms SLA), ScamShield 24h cooling-off, MuleVision graph defense, Cyclone Remal cash logistics, or BFIU STR compliance!',
       time: 'Just now',
+      relatedTopics: [
+        lang === 'BN' ? 'ScamShield কীভাবে কাজ করে?' : 'How does ScamShield work?',
+        lang === 'BN' ? '১৮ms SLA কীভাবে সম্ভব?' : 'What is the < 18ms SLA?',
+        lang === 'BN' ? 'মিউল সিন্ডিকেট ডিটেকশন কী?' : 'What is MuleVision Graph?',
+        lang === 'BN' ? 'ঘূর্ণিঝড়ে ক্যাশ সাপোর্ট কীভাবে দেয়?' : 'Cyclone Remal Disaster Float?',
+      ],
     },
   ]);
   const [inputMsg, setInputMsg] = useState('');
 
   if (!modalType) return null;
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
+  const handleSendMessage = (e?: React.FormEvent, overrideText?: string) => {
+    if (e) e.preventDefault();
+    const query = (overrideText !== undefined ? overrideText : inputMsg).trim();
+    if (!query) return;
 
-    const userText = inputMsg;
     const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    setChatMessages((prev) => [...prev, { sender: 'user', text: userText, time: timeNow }]);
-    setInputMsg('');
+    setChatMessages((prev) => [...prev, { sender: 'user', text: query, time: timeNow }]);
+    if (overrideText === undefined) {
+      setInputMsg('');
+    }
 
     setTimeout(() => {
-      let botReply = '';
-      const lower = userText.toLowerCase();
-
-      if (lower.includes('cash out') || lower.includes('atm') || lower.includes('charge') || lower.includes('খরচ')) {
-        botReply = lang === 'BN'
-          ? 'আমাদের যেকোনো TakaSafe এটিএম বুথ থেকে ক্যাশ আউট সম্পূর্ণ ফ্রি (০ টাকা)। কোনো লুকানো চার্জ নেই!'
-          : 'Cash out from any TakaSafe ATM nationwide is 100% FREE (৳0 fee) with no hidden deductions!';
-      } else if (lower.includes('scam') || lower.includes('fraud') || lower.includes('সুরক্ষা') || lower.includes('প্রতারণা')) {
-        botReply = lang === 'BN'
-          ? 'TakaSafe ScamShield এআই প্রতিটি পেমেন্টের আগে রিসিভারের অ্যাকাউন্ট বিশ্লেষণ করে ঝুঁকি থাকলে আপনাকে তাৎক্ষণিক সতর্ক করে।'
-          : 'TakaSafe ScamShield AI scans receiver accounts in real-time before payment and gives explainable risk warnings to protect your hard-earned money.';
-      } else if (lower.includes('agent') || lower.includes('location') || lower.includes('এজেন্ট') || lower.includes('বুথ')) {
-        botReply = lang === 'BN'
-          ? 'আমাদের গুলশান প্রধান পয়েন্ট: প্লট সিডব্লিউএস (এ)-১, রোড ৩৪, গুলশান এভিনিউ, ঢাকা-১২১২ (সময়: সকাল ৯:৩০ - বিকাল ৪:০০)।'
-          : 'Our Gulshan Flagship Point: Plot CWS (A)-1, Road 34, Gulshan Avenue, Dhaka-1212 (Timing: 9:30 am - 4:00 pm).';
-      } else if (lower.includes('bonus') || lower.includes('বোনাস')) {
-        botReply = lang === 'BN'
-          ? 'নতুন টাকা সেফ অ্যাকাউন্ট খুললে তাৎক্ষণিক ৳২০০ বোনাস পাবেন প্রথম লেনদেনের পর!'
-          : 'Open a new TakaSafe account today and receive up to ৳200 bonus on your qualifying transactions!';
-      } else {
-        botReply = lang === 'BN'
-          ? 'ধন্যবাদ আপনার বার্তার জন্য! আমাদের একজন কাস্টমার প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন। হেল্পলাইন: ১৬২৬৮।'
-          : 'Thank you for reaching out! Our senior representative is on standby. You can also dial our 24/7 hotline at 16268.';
-      }
-
-      setChatMessages((prev) => [...prev, { sender: 'bot', text: botReply, time: 'Just now' }]);
-    }, 600);
+      const matchResult = matchAssistantQuery(query, lang);
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          sender: 'bot',
+          text: matchResult.answer,
+          time: 'Just now',
+          suggestedAction: matchResult.item?.suggestedAction,
+          relatedTopics: matchResult.relatedTopics,
+        },
+      ]);
+    }, 400);
   };
 
   const renderContent = () => {
@@ -253,46 +258,123 @@ export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
           </div>
         );
 
-      case 'LIVE_CHAT':
+      case 'LIVE_CHAT': {
+        const quickChips = [
+          { label: lang === 'BN' ? '🛡️ ScamShield কী?' : '🛡️ ScamShield AI', query: 'How does ScamShield work?' },
+          { label: lang === 'BN' ? '⚡ ১৮ms SLA কী?' : '⚡ < 18ms SLA', query: 'What is the latency SLA?' },
+          { label: lang === 'BN' ? '🕸️ মিউল সিন্ডিকেট' : '🕸️ MuleVision GNN', query: 'What is MuleVision and mule detection?' },
+          { label: lang === 'BN' ? '🌊 ঘূর্ণিঝড় ক্যাশ ব্যাকআপ' : '🌊 Cyclone Float', query: 'What is Disaster Resilience mode?' },
+          { label: lang === 'BN' ? '📋 বিএফআইইউ Form 2' : '📋 BFIU Form 2 STR', query: 'What is BFIU STR compliance?' },
+          { label: lang === 'BN' ? '💳 ফ্রি ATM ক্যাশ-আউট' : '💳 Free ATM Cash-Out', query: 'What is the cash-out fee at ATMs?' },
+        ];
+
         return (
-          <div className="flex flex-col h-80">
-            <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50 rounded-xl border border-slate-200">
+          <div className="flex flex-col h-[430px]">
+            {/* Quick Suggestion Chips Carousel */}
+            <div className="pb-2.5 mb-2 border-b border-slate-200">
+              <span className="text-[10px] font-bold text-slate-600 tracking-wider uppercase block mb-1.5">
+                {lang === 'BN' ? 'প্রস্তাবিত বিষয়সমূহ:' : 'SUGGESTED TOPICS:'}
+              </span>
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                {quickChips.map((chip, cIdx) => (
+                  <button
+                    key={cIdx}
+                    type="button"
+                    onClick={() => handleSendMessage(undefined, chip.query)}
+                    className="shrink-0 text-[11px] font-medium bg-blue-50 hover:bg-blue-100 text-[#0054A6] px-2.5 py-1 rounded-full border border-blue-200 transition-colors cursor-pointer"
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Chat Messages Stream */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50/80 rounded-xl border border-slate-200">
               {chatMessages.map((m, idx) => (
                 <div
                   key={idx}
                   className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-xs leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
                       m.sender === 'user'
-                        ? 'bg-[#0054A6] text-white rounded-br-xs'
+                        ? 'bg-[#0054A6] text-white rounded-br-xs shadow-xs'
                         : 'bg-white text-slate-800 border border-slate-200 shadow-xs rounded-bl-xs'
                     }`}
                   >
-                    {m.text}
+                    <div className="whitespace-pre-line">{m.text}</div>
+
+                    {/* Navigation action button if available */}
+                    {m.suggestedAction && m.suggestedAction.view && (
+                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (m.suggestedAction?.view) {
+                              onNavigateView?.(m.suggestedAction.view);
+                              onClose();
+                            }
+                          }}
+                          className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0054A6] hover:text-[#003870] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 transition-colors cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                          <span>{m.suggestedAction.label}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Related topics pills */}
+                    {m.relatedTopics && m.relatedTopics.length > 0 && m.sender === 'bot' && (
+                      <div className="mt-2.5 pt-2 border-t border-slate-100">
+                        <span className="text-[9.5px] font-semibold text-slate-600 block mb-1">
+                          {lang === 'BN' ? 'সম্পর্কিত প্রশ্ন:' : 'Related questions:'}
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {m.relatedTopics.map((topic, tIdx) => (
+                            <button
+                              key={tIdx}
+                              type="button"
+                              onClick={() => handleSendMessage(undefined, topic)}
+                              className="text-[10px] bg-slate-100 hover:bg-blue-50 hover:text-[#0054A6] text-slate-600 px-2 py-0.5 rounded-md border border-slate-200 transition-colors cursor-pointer text-left"
+                            >
+                              • {topic}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <span className="text-[9px] text-slate-400 mt-0.5 px-1">{m.time}</span>
+                  <span className="text-[9px] text-slate-600 mt-0.5 px-1">{m.time}</span>
                 </div>
               ))}
             </div>
 
-            <form onSubmit={handleSendMessage} className="mt-3 flex items-center gap-2">
+            {/* Input Form */}
+            <form onSubmit={(e) => handleSendMessage(e)} className="mt-3 flex items-center gap-2">
               <input
                 type="text"
                 value={inputMsg}
                 onChange={(e) => setInputMsg(e.target.value)}
-                placeholder="Ask about 0% ATM cash-out, ScamShield, points..."
-                className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#0054A6]"
+                placeholder={
+                  lang === 'BN'
+                    ? 'TakaSafe বা ফ্রড প্রোটেকশন সম্পর্কে যেকোনো প্রশ্ন লিখুন...'
+                    : 'Ask anything about TakaSafe, ScamShield, ML models, BFIU...'
+                }
+                className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
               />
               <button
                 type="submit"
-                className="bg-[#0054A6] hover:bg-[#004080] text-white p-2 rounded-xl transition-colors cursor-pointer"
+                className="bg-[#0054A6] hover:bg-[#004080] text-white p-2.5 rounded-xl transition-colors cursor-pointer shrink-0 shadow-xs"
+                title="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
           </div>
         );
+      }
 
       case 'SEARCH':
         return (
@@ -412,9 +494,9 @@ export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
       case 'ABOUT_US': return 'About TakaSafe';
       case 'PREPAID_CARD': return 'TakaSafe Prepaid Cards';
       case 'SERVICE_LOCATIONS': return 'Service Locations & ATM Finder';
-      case 'LIMITS_CHARGES': return 'Limits and Service Charges';
-      case 'LIVE_CHAT': return '24/7 Live Support Assistant';
-      case 'SEARCH': return 'Quick Search Directory';
+      case 'LIMITS_CHARGES': return lang === 'BN' ? 'লিমিট ও সার্ভিস চার্জ' : 'Limits and Service Charges';
+      case 'LIVE_CHAT': return lang === 'BN' ? '২৪/৭ লাইভ সাপোর্ট সহকারী' : '24/7 Live Support Assistant';
+      case 'SEARCH': return lang === 'BN' ? 'দ্রুত অনুসন্ধান' : 'Quick Search Directory';
       case 'APP_DOWNLOAD': return 'Download TakaSafe App';
       case 'MEDIA': return 'Press Releases & Media';
       case 'NEED_HELP': return 'Customer Help & Support';
@@ -428,7 +510,7 @@ export const UpayInfoModal: React.FC<UpayInfoModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in">
-      <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+      <div className={`bg-white rounded-3xl ${modalType === 'LIVE_CHAT' ? 'max-w-xl' : 'max-w-lg'} w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col`}>
         {/* Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
           <div className="flex items-center gap-2">
