@@ -73,13 +73,13 @@ export default function App() {
         ? 'CUSTOMER'
         : user
           ? (validViews.includes(saved.activeView as AppView) ? saved.activeView! : 'OPERATOR')
-          : 'LOGIN';
+          : 'OPERATOR';
       return { user, view };
     } catch {
       return null;
     }
   });
-  const [activeView, setActiveView] = useState<AppView>(initialSession?.view || 'LOGIN');
+  const [activeView, setActiveView] = useState<AppView>(initialSession?.view || 'OPERATOR');
   const [operatorTab, setOperatorTab] = useState<string>('OVERVIEW');
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() =>
@@ -386,7 +386,7 @@ export default function App() {
   // Customer accounts should stay in the customer experience even when shared
   // navigation controls request the operator view.
   const navigateToView = (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN') => {
-    if (!currentUser && view !== 'LOGIN') {
+    if (!currentUser && view !== 'LOGIN' && view !== 'OPERATOR') {
       setActiveView('LOGIN');
       return;
     }
@@ -395,6 +395,22 @@ export default function App() {
       return;
     }
     setActiveView(view);
+  };
+
+  const navigateToOperatorTab = (tab: string) => {
+    if (!currentUser && tab !== 'OVERVIEW') {
+      setActiveView('LOGIN');
+      return;
+    }
+    setOperatorTab(tab);
+  };
+
+  const requireSignIn = (action: () => void) => {
+    if (!currentUser) {
+      setActiveView('LOGIN');
+      return;
+    }
+    action();
   };
 
   return (
@@ -409,7 +425,7 @@ export default function App() {
         activeView={activeView}
         setActiveView={navigateToView}
         operatorTab={operatorTab}
-        setOperatorTab={setOperatorTab}
+        setOperatorTab={navigateToOperatorTab}
         lang={lang}
         setLang={setLang}
         criticalAlertCount={criticalCount}
@@ -418,7 +434,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         onLogout={() => {
           setCurrentUser(null);
-          setActiveView('LOGIN');
+          setActiveView('OPERATOR');
           showToast('Signed out of TakaSafe.');
         }}
         onSwitchUserRole={(newRole) => {
@@ -499,13 +515,13 @@ export default function App() {
                 muleCluster={muleCluster}
                 agents={agents}
                 regionalMetrics={regionalMetrics}
-                onOpenInvestigation={(txn) => setSelectedTxnForInvestigation(txn)}
-                onFreezeWallet={handleFreezeWallet}
-                onDispatchLiquidity={handleDispatchLiquidity}
-                onActivateMonitoring={handleActivateMonitoring}
+                onOpenInvestigation={(txn) => requireSignIn(() => setSelectedTxnForInvestigation(txn))}
+                onFreezeWallet={(walletId, label) => requireSignIn(() => { void handleFreezeWallet(walletId, label); })}
+                onDispatchLiquidity={(agentId, agentName, amount) => requireSignIn(() => { void handleDispatchLiquidity(agentId, agentName, amount); })}
+                onActivateMonitoring={(division) => requireSignIn(() => { void handleActivateMonitoring(division); })}
                 auditLogs={auditLogs}
                 initialTab={operatorTab}
-                onTabChange={(tab) => setOperatorTab(tab)}
+                onTabChange={navigateToOperatorTab}
                 lang={lang}
               />
             )
