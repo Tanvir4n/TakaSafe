@@ -46,6 +46,10 @@ interface CustomerTransfer {
   riskScore?: number;
 }
 
+interface CustomerLogin {
+  timestamp: string;
+}
+
 const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
   try {
     const saved = window.localStorage.getItem(`takasafe-transfers:${userId}:${wallet}`)
@@ -54,6 +58,16 @@ const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[]
     return Array.isArray(parsed) ? parsed.filter((item): item is CustomerTransfer =>
       typeof item?.amount === 'number' && typeof item?.recipient === 'string' && typeof item?.timestamp === 'string'
     ) : [];
+  } catch {
+    return [];
+  }
+};
+
+const loadLoginHistory = (userId: string, wallet: string): CustomerLogin[] => {
+  try {
+    const saved = window.localStorage.getItem(`takasafe-logins:${userId}:${wallet}`);
+    const parsed: unknown = saved ? JSON.parse(saved) : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is CustomerLogin => typeof item?.timestamp === 'string') : [];
   } catch {
     return [];
   }
@@ -75,6 +89,32 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
   const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(userId, customer.wallet));
+  const [loginHistory, setLoginHistory] = useState<CustomerLogin[]>(() => loadLoginHistory(userId, customer.wallet));
+
+  useEffect(() => {
+    let active = true;
+    const localLogins = loadLoginHistory(userId, customer.wallet);
+    fetch(`/api/customer-logins/${encodeURIComponent(userId)}`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('Login history unavailable')))
+      .then(async ({ logins }: { logins: CustomerLogin[] }) => {
+        if (!active || !Array.isArray(logins)) return;
+        if (!logins.length && localLogins.length) {
+          for (const login of localLogins) {
+            await fetch(`/api/customer-logins/${encodeURIComponent(userId)}`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ wallet: customer.wallet, ...login }),
+            });
+          }
+          if (!active) return;
+          setLoginHistory(localLogins);
+          return;
+        }
+        setLoginHistory(logins);
+        window.localStorage.setItem(`takasafe-logins:${userId}:${customer.wallet}`, JSON.stringify(logins));
+      })
+      .catch(() => { if (active) setLoginHistory(localLogins); });
+    return () => { active = false; };
+  }, [userId, customer.wallet]);
 
   useEffect(() => {
     let active = true;
@@ -111,7 +151,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     : customer.maxAmountTypical;
   const observedRecipients = new Set(recentTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')));
   const knownRecipients = observedRecipients.size ? observedRecipients : new Set(customer.frequentRecipients.map((item) => item.replace(/\D/g, '')));
-  const observedHours = recentTransfers.map((transfer) => new Date(transfer.timestamp).getHours()).sort((a, b) => a - b);
+  const activityTimestamps = [
+    ...recentTransfers.map((transfer) => transfer.timestamp),
+    ...loginHistory.map((login) => login.timestamp).filter((timestamp) => Date.now() - Date.parse(timestamp) <= 90 * 24 * 60 * 60 * 1000),
+  ];
+  const observedHours = activityTimestamps.map((timestamp) => new Date(timestamp).getHours()).sort((a, b) => a - b);
   const usualHours = observedHours.length >= 3
     ? `${String(observedHours[0]).padStart(2, '0')}:00 - ${String((observedHours[observedHours.length - 1] + 1) % 24).padStart(2, '0')}:00`
     : customer.usualHours;
@@ -165,6 +209,12 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       : Math.max(customer.maxAmountTypical, observedAverage * 3);
     const amountIsUnusual = num > amountThreshold && amountRatio >= 3;
     const outsideUsualHours = currentHour < usualStart || currentHour >= usualEnd;
+    const activityHourCounts = observedHours.reduce((counts, hour) => {
+      counts[hour] = (counts[hour] || 0) + 1;
+      return counts;
+    }, {} as Record<number, number>);
+    const peakActivityCount = Math.max(0, ...Object.values(activityHourCounts));
+    const learnedUnusualTime = observedHours.length >= 6 && peakActivityCount >= 2 && (activityHourCounts[currentHour] || 0) === 0;
     const recentAttemptCount = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
     const reasons: string[] = [];
     let score = 0;
@@ -173,8 +223,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       reasons.push(`Unusual amount: ৳${num.toLocaleString()} is ${amountRatio.toFixed(1)}× your recent average of ৳${Math.round(observedAverage).toLocaleString()}.`);
     }
     if (outsideUsualHours) {
-      score += 12;
-      reasons.push(`This transfer is outside your usual activity hours (${usualHours}).`);
+      score += amountIsUnusual ? 22 : 8;
+      reasons.push(`This transfer is outside your usual activity hours (${usualHours})${amountIsUnusual ? ', increasing the risk of this unusually large payment' : ''}.`);
+    } else if (learnedUnusualTime) {
+      score += amountIsUnusual ? 22 : 8;
+      reasons.push(`You have not usually logged in or transacted at this hour${amountIsUnusual ? ', and this amount is unusually large' : ''}.`);
     }
     if (!recipientIsKnown) {
       score += 8;

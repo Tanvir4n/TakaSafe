@@ -90,6 +90,24 @@ export default function App() {
   const [auditLogs, setAuditLogs] = useState<any[]>(INITIAL_AUDIT_LOGS);
   const [selectedTxnForInvestigation, setSelectedTxnForInvestigation] = useState<Transaction | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const recordCustomerLogin = (user: AuthUser) => {
+    if (user.role !== 'USER') return;
+    const timestamp = new Date().toISOString();
+    const storageKey = `takasafe-logins:${user.id}:${user.phone}`;
+    try {
+      const prior = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const logins = [...(Array.isArray(prior) ? prior : []), { timestamp }].slice(-200);
+      localStorage.setItem(storageKey, JSON.stringify(logins));
+    } catch {
+      // Server logging below remains available if browser storage is unavailable.
+    }
+    fetch(`/api/customer-logins/${encodeURIComponent(user.id)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: user.phone, timestamp }),
+    }).catch(() => undefined);
+  };
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   // Fetch initial audit logs from server if available (e.g. local/Express dev), else fallback cleanly
@@ -312,6 +330,7 @@ export default function App() {
         onSwitchUserRole={(newRole) => {
           const user = DEMO_ACCOUNTS[newRole];
           setCurrentUser(user);
+          recordCustomerLogin(user);
           if (newRole === 'ADMIN') {
             setActiveView('OPERATOR');
             showToast(`Switched to Admin role (${user.name}). Wider privileges unlocked.`);
@@ -349,6 +368,7 @@ export default function App() {
             <LoginPage
               onLogin={(user) => {
                 setCurrentUser(user);
+                recordCustomerLogin(user);
                 if (user.role === 'ADMIN') {
                   setActiveView('OPERATOR');
                   showToast(`Welcome back, ${user.name}! Signed in as Admin with Wider Privileges.`);
