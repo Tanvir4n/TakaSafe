@@ -150,6 +150,46 @@ app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => 
   }
 });
 
+app.get('/api/recipient-risk/:recipient', async (req: Request, res: Response) => {
+  const recipient = String(req.params.recipient || '').replace(/\D/g, '');
+  if (!recipient || recipient.length > 32) return res.status(400).json({ error: 'Invalid recipient' });
+  try {
+    const csv = await fs.readFile(customerTransactionsCsv, 'utf8').catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return '';
+      throw error;
+    });
+    const lines = csv.split(/\r?\n/).filter(Boolean);
+    const headers = lines.length ? parseCsvLine(lines.shift()!) : customerTransactionHeaders;
+    const history = lines.map(parseCsvLine).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ''])))
+      .filter((row) => ['COMPLETED', 'PROCEEDED'].includes(row.status) && Number.isFinite(Date.parse(row.timestamp)) && Date.now() - Date.parse(row.timestamp) <= 24 * 60 * 60 * 1000);
+    const inbound = history.filter((row) => String(row.recipient || '').replace(/\D/g, '') === recipient);
+    const outbound = history.filter((row) => String(row.wallet || '').replace(/\D/g, '') === recipient);
+    const senderCount = new Set(inbound.map((row) => row.wallet)).size;
+    const inboundAmount = inbound.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const rapidPassThrough = inbound.some((received) => outbound.some((sent) => {
+      const delay = Date.parse(sent.timestamp) - Date.parse(received.timestamp);
+      return delay >= 0 && delay <= 60 * 60 * 1000;
+    }));
+    const reasons: string[] = [];
+    let score = 0;
+    if (senderCount >= 3) {
+      score += senderCount >= 5 ? 30 : 20;
+      reasons.push(`Recipient received funds from ${senderCount} distinct senders in the last 24 hours.`);
+    }
+    if (rapidPassThrough && inboundAmount > 0) {
+      score += 25;
+      reasons.push('Recent incoming funds were followed by outgoing transfers within one hour.');
+    }
+    if (inbound.length >= 5) {
+      score += 15;
+      reasons.push(`${inbound.length} inbound transfers were recorded to this recipient in the last 24 hours.`);
+    }
+    res.json({ success: true, score: Math.min(score, 60), reasons, senderCount, inboundAmount });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/customer-history/:wallet', async (req: Request, res: Response) => {
   const wallet = String(req.params.wallet || '').trim();
   const { wallet: customerWallet, amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0 } = req.body || {};
