@@ -403,6 +403,7 @@ export default function App() {
           {activeView === 'CUSTOMER' && (
             <CustomerAppView
               customer={CURRENT_CUSTOMER}
+              userId={currentUser?.id || CURRENT_CUSTOMER.wallet}
               onSimulateRiskyPayment={() => {
                 // Ensure critical transaction is visible in operator queue
               }}

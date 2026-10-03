@@ -48,7 +48,8 @@ interface CustomerTransfer {
 
 const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
   try {
-    const saved = window.localStorage.getItem(`takasafe-transfers:${userId}:${wallet}`);
+    const saved = window.localStorage.getItem(`takasafe-transfers:${userId}:${wallet}`)
+      || window.localStorage.getItem(`takasafe-transfers:${wallet}`);
     const parsed: unknown = saved ? JSON.parse(saved) : [];
     return Array.isArray(parsed) ? parsed.filter((item): item is CustomerTransfer =>
       typeof item?.amount === 'number' && typeof item?.recipient === 'string' && typeof item?.timestamp === 'string'
