@@ -26,7 +26,9 @@ import {
 import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep, AuthUser, CustomerBaseline } from './types';
 import { ShieldCheck, Info } from 'lucide-react';
 
-const APP_SESSION_KEY = 'takasafe-app-session';
+// Bump the key so the old prototype's automatically seeded admin session is
+// discarded after upgrade. New sessions are saved only after explicit sign-in.
+const APP_SESSION_KEY = 'takasafe-app-session-v2';
 type AppView = 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN';
 
 const getCustomerProfile = (user: AuthUser | null): CustomerBaseline => {
@@ -77,11 +79,11 @@ export default function App() {
       return null;
     }
   });
-  const [activeView, setActiveView] = useState<AppView>(initialSession?.view || 'OPERATOR');
+  const [activeView, setActiveView] = useState<AppView>(initialSession?.view || 'LOGIN');
   const [operatorTab, setOperatorTab] = useState<string>('OVERVIEW');
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() =>
-    initialSession ? initialSession.user : DEMO_ACCOUNTS.ADMIN
+    initialSession ? initialSession.user : null
   );
 
   useEffect(() => {
@@ -383,6 +385,10 @@ export default function App() {
   // Customer accounts should stay in the customer experience even when shared
   // navigation controls request the operator view.
   const navigateToView = (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN') => {
+    if (!currentUser && view !== 'LOGIN') {
+      setActiveView('LOGIN');
+      return;
+    }
     if (view === 'OPERATOR' && currentUser?.role === 'USER') {
       setActiveView('CUSTOMER');
       return;
@@ -449,6 +455,7 @@ export default function App() {
         <div key={activeView} className="page-enter">
           {activeView === 'LOGIN' && (
             <LoginPage
+              showBackButton={Boolean(currentUser)}
               onLogin={(user) => {
                 setCurrentUser(user);
                 recordCustomerLogin(user);
@@ -464,8 +471,7 @@ export default function App() {
                 if (currentUser) {
                   setActiveView(currentUser.role === 'ADMIN' ? 'OPERATOR' : 'CUSTOMER');
                 } else {
-                  setCurrentUser(DEMO_ACCOUNTS.ADMIN);
-                  setActiveView('OPERATOR');
+                  setActiveView('LOGIN');
                 }
               }}
               lang={lang}
