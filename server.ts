@@ -15,7 +15,7 @@ app.use(express.json());
 const customerTransactionsCsv = path.resolve(process.cwd(), 'dataset', 'customer_transactions.csv');
 const customerLoginsCsv = path.resolve(process.cwd(), 'dataset', 'customer_logins.csv');
 const alertFeedbackCsv = path.resolve(process.cwd(), 'dataset', 'alert_feedback.csv');
-const customerTransactionHeaders = ['user_id', 'wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
+const customerTransactionHeaders = ['user_id', 'wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score', 'service_type', 'direction', 'fee'];
 const toCsvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 const parseCsvLine = (line: string): string[] => {
   const cells: string[] = [];
@@ -126,7 +126,7 @@ app.post('/api/alert-feedback', async (req: Request, res: Response) => {
 });
 
 app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => {
-  const wallet = String(req.params.wallet || '').trim();
+    const wallet = String(req.params.wallet || '').trim();
   if (!wallet || wallet.length > 64) return res.status(400).json({ error: 'Invalid wallet' });
   try {
     const csv = await fs.readFile(customerTransactionsCsv, 'utf8').catch((error: NodeJS.ErrnoException) => {
@@ -137,12 +137,12 @@ app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => 
     const headers = lines.length ? parseCsvLine(lines.shift()!) : customerTransactionHeaders;
     const rows = lines.map(parseCsvLine).map((cells) => {
       const row = Object.fromEntries(headers.map((header, index) => [header, cells[index] || '']));
-      // Older CSV rows predate user IDs, so preserve their wallet as the legacy owner key.
-      const ownerId = row.user_id || row.wallet;
-      if (ownerId !== wallet) return null;
+      // Match by user ID or wallet to support both new records and legacy CSV rows.
+      if (row.user_id !== wallet && row.wallet !== wallet) return null;
       return {
         amount: Number(row.amount), recipient: row.recipient, timestamp: row.timestamp,
         reference: row.reference, status: row.status, riskScore: Number(row.risk_score) || 0,
+        serviceType: row.service_type || 'SEND_MONEY', direction: row.direction || 'OUT', fee: Number(row.fee) || 0,
       };
     }).filter(Boolean);
     res.json({ success: true, history: rows });
@@ -193,12 +193,17 @@ app.get('/api/recipient-risk/:recipient', async (req: Request, res: Response) =>
 
 app.post('/api/customer-history/:wallet', async (req: Request, res: Response) => {
   const wallet = String(req.params.wallet || '').trim();
-  const { wallet: customerWallet, amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0 } = req.body || {};
+  const {
+    wallet: customerWallet, amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0,
+    serviceType = 'SEND_MONEY', direction = 'OUT', fee = 0,
+  } = req.body || {};
   const date = new Date(timestamp);
+  const allowedServiceTypes = ['SEND_MONEY', 'CASH_IN', 'CASH_OUT', 'MAKE_PAYMENT', 'ADD_MONEY', 'PAY_BILL', 'MOBILE_RECHARGE', 'REMITTANCE', 'SAVINGS', 'EDUCATION', 'INSURANCE', 'BUSINESS_PAYMENT'];
   if (!wallet || wallet.length > 64 || typeof customerWallet !== 'string' || !customerWallet.trim() || customerWallet.length > 64 || !Number.isFinite(Number(amount)) || Number(amount) <= 0 ||
       typeof recipient !== 'string' || !recipient.trim() || recipient.length > 128 || !Number.isFinite(date.getTime()) ||
       typeof reference !== 'string' || reference.length > 256 || !['COMPLETED', 'PROCEEDED'].includes(status) ||
-      !Number.isFinite(Number(riskScore))) {
+      !Number.isFinite(Number(riskScore)) || !allowedServiceTypes.includes(serviceType) || !['IN', 'OUT'].includes(direction) ||
+      !Number.isFinite(Number(fee)) || Number(fee) < 0) {
     return res.status(400).json({ error: 'Invalid customer transaction record' });
   }
   try {
@@ -210,18 +215,25 @@ app.post('/api/customer-history/:wallet', async (req: Request, res: Response) =>
         const existing = await fs.readFile(customerTransactionsCsv, 'utf8');
         const [headerLine, ...oldLines] = existing.split(/\r?\n/).filter(Boolean);
         const oldHeaders = parseCsvLine(headerLine);
-        if (!oldHeaders.includes('user_id')) {
+        if (customerTransactionHeaders.some((header) => !oldHeaders.includes(header))) {
           const migrated = oldLines.map((line) => {
             const oldCells = parseCsvLine(line);
             const oldRow = Object.fromEntries(oldHeaders.map((header, index) => [header, oldCells[index] || '']));
-            return [oldRow.wallet, oldRow.wallet, oldRow.amount, oldRow.recipient, oldRow.timestamp, oldRow.reference, oldRow.status, oldRow.risk_score]
+            return [
+              oldRow.user_id || oldRow.wallet, oldRow.wallet, oldRow.amount, oldRow.recipient, oldRow.timestamp,
+              oldRow.reference, oldRow.status, oldRow.risk_score, oldRow.service_type || 'SEND_MONEY',
+              oldRow.direction || 'OUT', oldRow.fee || 0,
+            ]
               .map(toCsvCell).join(',');
           });
           await fs.writeFile(customerTransactionsCsv, `${customerTransactionHeaders.join(',')}\r\n${migrated.join('\r\n')}${migrated.length ? '\r\n' : ''}`, 'utf8');
         }
       }
     } catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
-    const values = [wallet, customerWallet.trim(), Number(amount), recipient.trim(), date.toISOString(), reference, status, Math.max(0, Math.min(100, Number(riskScore)))];
+    const values = [
+      wallet, customerWallet.trim(), Number(amount), recipient.trim(), date.toISOString(), reference, status,
+      Math.max(0, Math.min(100, Number(riskScore))), serviceType, direction, Number(fee),
+    ];
     const content = `${needsHeader ? `${customerTransactionHeaders.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`;
     await fs.appendFile(customerTransactionsCsv, content, 'utf8');
     res.json({ success: true });

@@ -907,6 +907,67 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
         lang={lang}
       />
 
+      {activeWalletService && WALLET_SERVICES[activeWalletService] && (
+        <div className="fixed inset-0 z-[80] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <section role="dialog" aria-modal="true" aria-labelledby="wallet-service-title" className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#0054A6]">Wallet Service</p>
+                <h3 id="wallet-service-title" className="text-xl font-black text-slate-900 mt-1">{WALLET_SERVICES[activeWalletService].title}</h3>
+                <p className="text-xs text-slate-500 mt-1">Account: {customer.name} · Available ৳{availableBalance.toLocaleString()}</p>
+              </div>
+              <button type="button" onClick={closeWalletService} aria-label="Close service" className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {serviceReceipt ? (
+              <div className="space-y-4">
+                <div role="status" className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800">{serviceReceipt}</div>
+                <button type="button" onClick={closeWalletService} className="w-full py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">Done</button>
+              </div>
+            ) : (
+              <form onSubmit={handleWalletServiceSubmit} className="space-y-4">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {WALLET_SERVICES[activeWalletService].targetLabel}
+                  <select value={serviceTarget} onChange={(event) => setServiceTarget(event.target.value)} required className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]">
+                    {WALLET_SERVICES[activeWalletService].targets.map((target) => <option key={target} value={target}>{target}</option>)}
+                  </select>
+                </label>
+                {(activeWalletService === 'Cash Out' || activeWalletService === 'Make Payment' || activeWalletService === 'Pay Bill' || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Education' || activeWalletService === 'Insurance' || activeWalletService === 'Business') && (
+                  <label className="block text-xs font-semibold text-slate-700">
+                    {activeWalletService === 'Mobile Recharge' ? 'Mobile number' : activeWalletService === 'Pay Bill' ? 'Customer / bill account number' : activeWalletService === 'Cash Out' ? 'Cash collection number (optional)' : 'Reference or account number (optional)'}
+                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Enter a reference" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                  </label>
+                )}
+                {(activeWalletService === 'Cash In' || activeWalletService === 'Add Money' || activeWalletService === 'Remittance' || activeWalletService === 'Savings') && (
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Note (optional)
+                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Add a note" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                  </label>
+                )}
+                <label className="block text-xs font-semibold text-slate-700">
+                  Amount (BDT ৳)
+                  <input type="number" min="1" step="1" required value={serviceAmount} onChange={(event) => { setServiceAmount(event.target.value); setServiceError(null); }} placeholder="Enter amount" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                </label>
+                {serviceError && <p role="alert" className="text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3">{serviceError}</p>}
+                <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600 flex justify-between gap-4">
+                  <span>{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Balance after deposit' : `Charge (${(WALLET_SERVICES[activeWalletService].feeRate * 100).toFixed(1)}%)`}</span>
+                  <strong className="text-slate-900">
+                    {WALLET_SERVICES[activeWalletService].direction === 'IN'
+                      ? `৳${(availableBalance + (Number(serviceAmount) || 0)).toLocaleString()}`
+                      : `৳${Math.round((Number(serviceAmount) || 0) * WALLET_SERVICES[activeWalletService].feeRate).toLocaleString()}`}
+                  </strong>
+                </div>
+                <button type="submit" className="w-full py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">
+                  {WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Confirm Deposit' : 'Confirm Payment'}
+                </button>
+              </form>
+            )}
+          </section>
+        </div>
+      )}
+
       {/* ScamShield Pre-Payment Modal (Human-Choice Protection) */}
       {showScamModal && (
         <div
