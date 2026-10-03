@@ -1,144 +1,459 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#0D1117; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%" style="background:#090D16; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <defs>
-    <!-- Arrow Marker -->
-    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8B949E" />
-    </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10B981" />
-    </marker>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#090D16" />
+      <stop offset="100%" stop-color="#050811" />
+    </linearGradient>
+
+    <linearGradient id="blueCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.9" />
+    </linearGradient>
+
+    <linearGradient id="aiCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.9" />
+    </linearGradient>
+
+    <linearGradient id="actionCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#31102A" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.9" />
+    </linearGradient>
+
+    <linearGradient id="disasterCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#064E3B" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="m-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38BDF8" />
     </marker>
-    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <marker id="m-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#C084FC" />
     </marker>
-
-    <!-- Subtle Gradients -->
-    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#161B22" />
-      <stop offset="100%" stop-color="#0E131A" />
-    </linearGradient>
-    <linearGradient id="glowGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.1" />
-      <stop offset="100%" stop-color="#10B981" stop-opacity="0.1" />
-    </linearGradient>
+    <marker id="m-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#34D399" />
+    </marker>
+    <marker id="m-rose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#FB7185" />
+    </marker>
+    <marker id="m-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#FBBF24" />
+    </marker>
+    <marker id="m-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748B" />
+    </marker>
   </defs>
 
-  <!-- Title & Top Badges -->
-  <text x="40" y="48" fill="#F0F6FC" font-size="26" font-weight="700" letter-spacing="-0.5">Architecture</text>
-  <text x="40" y="72" fill="#8B949E" font-size="13" font-weight="400">TakaSafe Multi-Modal AI Financial Trust, Explainable Fraud Shield &amp; Disaster Resilience</text>
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="url(#bgGrad)" />
 
-  <!-- Top Right Synthetic Data & License Tags -->
-  <g transform="translate(940, 30)">
-    <rect x="0" y="0" width="105" height="24" rx="4" fill="#21262D" stroke="#30363D"/>
-    <text x="8" y="16" fill="#8B949E" font-size="11" font-weight="600">data</text>
-    <rect x="36" y="0" width="69" height="24" rx="4" fill="#A3E635"/>
-    <text x="42" y="16" fill="#0D1117" font-size="11" font-weight="800">synthetic</text>
-  </g>
-  <g transform="translate(1060, 30)">
-    <rect x="0" y="0" width="100" height="24" rx="4" fill="#21262D" stroke="#30363D"/>
-    <text x="8" y="16" fill="#8B949E" font-size="11" font-weight="600">license</text>
-    <rect x="52" y="0" width="48" height="24" rx="4" fill="#3B82F6"/>
-    <text x="61" y="16" fill="#FFFFFF" font-size="11" font-weight="800">MIT</text>
-  </g>
-
-  <!-- ==================== 1. FRONTEND CONTAINER (LEFT) ==================== -->
-  <rect x="40" y="105" width="200" height="420" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-  <text x="60" y="132" fill="#8B949E" font-size="11" font-weight="600" text-anchor="start">React 19 + TypeScript on Vite</text>
-
-  <!-- Frontend Sub-modules -->
-  <!-- Homepage + 3D -->
-  <rect x="60" y="150" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-  <text x="140" y="179" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Homepage + Overview</text>
-
-  <!-- Customer -->
-  <rect x="60" y="225" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-  <text x="140" y="254" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Customer (TakaSafe)</text>
-
-  <!-- Agent -->
-  <rect x="60" y="300" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-  <text x="140" y="329" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Agent (Float / Cash-out)</text>
-
-  <!-- Operations -->
-  <rect x="60" y="375" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-  <text x="140" y="404" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Operations (Risk Cockpit)</text>
-
-  <!-- ==================== 2. API GATEWAY NODE (MIDDLE-LEFT) ==================== -->
-  <g transform="translate(290, 275)">
-    <!-- Parallelogram / Rhomboid Shape for Gateway -->
-    <polygon points="12,0 190,0 178,56 0,56" fill="#1C2128" stroke="#38BDF8" stroke-width="1.2" />
-    <text x="95" y="34" fill="#38BDF8" font-size="11" font-weight="700" text-anchor="middle">v1 routes · JWT · rate limit</text>
+  <!-- Background Decorative Grid Lines -->
+  <g opacity="0.04" stroke="#FFFFFF" stroke-width="1">
+    <line x1="0" y1="150" x2="1440" y2="150" />
+    <line x1="0" y1="300" x2="1440" y2="300" />
+    <line x1="0" y1="450" x2="1440" y2="450" />
+    <line x1="0" y1="600" x2="1440" y2="600" />
+    <line x1="0" y1="750" x2="1440" y2="750" />
+    <line x1="240" y1="0" x2="240" y2="900" />
+    <line x1="480" y1="0" x2="480" y2="900" />
+    <line x1="720" y1="0" x2="720" y2="900" />
+    <line x1="960" y1="0" x2="960" y2="900" />
+    <line x1="1200" y1="0" x2="1200" y2="900" />
   </g>
 
-  <!-- ==================== 3. BACKEND CORE SERVICES (CENTER-RIGHT) ==================== -->
-  <rect x="520" y="105" width="640" height="420" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-  <text x="840" y="132" fill="#8B949E" font-size="11" font-weight="600" text-anchor="middle">Backend Core Services (Express &amp; Python ML Runtime)</text>
+  <!-- ==================== HEADER ==================== -->
+  <g transform="translate(48, 46)">
+    <text x="0" y="0" fill="#F8FAFC" font-size="28" font-weight="800" letter-spacing="-0.5">TakaSafe Enterprise Platform Architecture</text>
+    <text x="0" y="24" fill="#94A3B8" font-size="13" font-weight="500">
+      Multi-Modal AI Fraud Scoring · Mule Syndicate Defense · ScamShield Cognitive Protection · Disaster Float Logistics
+    </text>
 
-  <!-- Model services node -->
-  <rect x="550" y="275" width="150" height="56" rx="6" fill="#0D1117" stroke="#38BDF8" stroke-width="1.2" />
-  <text x="625" y="308" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Model services</text>
+    <!-- Header Badges -->
+    <g transform="translate(1030, -18)">
+      <!-- Data Synthetic Badge -->
+      <rect x="0" y="0" width="112" height="26" rx="4" fill="#1E293B" stroke="#334155" />
+      <text x="10" y="17" fill="#94A3B8" font-size="11" font-weight="600">data</text>
+      <rect x="42" y="0" width="70" height="26" rx="4" fill="#A3E635" />
+      <text x="49" y="17" fill="#090D16" font-size="11" font-weight="800">synthetic</text>
 
-  <!-- TOP BRANCH: Policy · YAML rules -->
-  <rect x="760" y="150" width="150" height="52" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-  <text x="835" y="181" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Policy · Dynamic Rules</text>
-
-  <!-- Brief: Gemini + validator + cache -->
-  <rect x="960" y="150" width="170" height="52" rx="6" fill="#0D1117" stroke="#C084FC" stroke-width="1.2" />
-  <text x="1045" y="174" fill="#F0F6FC" font-size="11" font-weight="700" text-anchor="middle">Brief: Gemini 2.5 Flash</text>
-  <text x="1045" y="191" fill="#8B949E" font-size="9" text-anchor="middle">+ validator + cache</text>
-
-  <!-- MIDDLE BRANCH: SQLite / Audit DB Cylinder -->
-  <g transform="translate(760, 270)">
-    <rect x="0" y="8" width="160" height="48" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-    <ellipse cx="80" cy="8" rx="80" ry="10" fill="#161B22" stroke="#30363D" stroke-width="1" />
-    <ellipse cx="80" cy="56" rx="80" ry="10" fill="#0D1117" stroke="#30363D" stroke-width="1" />
-    <text x="80" y="36" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Database / Ledger</text>
-    <text x="80" y="50" fill="#8B949E" font-size="9" text-anchor="middle">cases · actions · audit</text>
+      <!-- License MIT Badge -->
+      <g transform="translate(122, 0)">
+        <rect x="0" y="0" width="98" height="26" rx="4" fill="#1E293B" stroke="#334155" />
+        <text x="10" y="17" fill="#94A3B8" font-size="11" font-weight="600">license</text>
+        <rect x="54" y="0" width="44" height="26" rx="4" fill="#3B82F6" />
+        <text x="63" y="17" fill="#FFFFFF" font-size="11" font-weight="800">MIT</text>
+      </g>
+    </g>
   </g>
 
-  <!-- BOTTOM BRANCH: Artifacts Cylinder -->
-  <g transform="translate(760, 395)">
-    <rect x="0" y="8" width="160" height="52" fill="#0D1117" stroke="#10B981" stroke-width="1.2" />
-    <ellipse cx="80" cy="8" rx="80" ry="10" fill="#161B22" stroke="#10B981" stroke-width="1.2" />
-    <ellipse cx="80" cy="60" rx="80" ry="10" fill="#0D1117" stroke="#10B981" stroke-width="1.2" />
-    <text x="80" y="36" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">artifacts/: models</text>
-    <text x="80" y="52" fill="#8B949E" font-size="9" text-anchor="middle">calibrators · forecasts · JSON</text>
+  <!-- ======================================================================== -->
+  <!-- 1. PRESENTATION LAYER (LEFT) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(48, 110)">
+    <!-- Container -->
+    <rect x="0" y="0" width="230" height="490" rx="12" fill="url(#blueCard)" stroke="#334155" stroke-width="1.2" />
+    <rect x="16" y="14" width="8" height="8" rx="4" fill="#38BDF8" />
+    <text x="32" y="22" fill="#E2E8F0" font-size="13" font-weight="700">Client Applications</text>
+    <text x="32" y="37" fill="#64748B" font-size="10">React 19 · Vite · Tailwind v4 · D3.js</text>
+
+    <!-- Sub-module 1: Customer App Simulator -->
+    <g transform="translate(16, 52)">
+      <rect x="0" y="0" width="198" height="92" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="22" fill="#38BDF8" font-size="12" font-weight="700">Customer Mobile Portal</text>
+      <text x="12" y="38" fill="#94A3B8" font-size="10">• Sovereign Centurion Card</text>
+      <text x="12" y="53" fill="#94A3B8" font-size="10">• Send Money / Cash-out / QR</text>
+      <text x="12" y="68" fill="#F43F5E" font-size="10" font-weight="600">• ScamShield Intercept Prompt</text>
+      <text x="12" y="83" fill="#94A3B8" font-size="9">• 24h Cooling-Off Window</text>
+    </g>
+
+    <!-- Sub-module 2: Operator Risk Cockpit -->
+    <g transform="translate(16, 156)">
+      <rect x="0" y="0" width="198" height="92" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="22" fill="#38BDF8" font-size="12" font-weight="700">Fraud Ops Cockpit</text>
+      <text x="12" y="38" fill="#94A3B8" font-size="10">• Live WebSocket Ticker Feed</text>
+      <text x="12" y="53" fill="#94A3B8" font-size="10">• Multi-Modal Risk Radar</text>
+      <text x="12" y="68" fill="#94A3B8" font-size="10">• Policy Parameter Tuner</text>
+      <text x="12" y="83" fill="#94A3B8" font-size="9">• 24h Trend Chart Analytics</text>
+    </g>
+
+    <!-- Sub-module 3: MuleVision Graph Hub -->
+    <g transform="translate(16, 260)">
+      <rect x="0" y="0" width="198" height="74" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="22" fill="#A855F7" font-size="12" font-weight="700">MuleVision Graph Hub</text>
+      <text x="12" y="38" fill="#94A3B8" font-size="10">• D3 Force-Directed Network</text>
+      <text x="12" y="53" fill="#94A3B8" font-size="10">• Pass-Through Ring Tracer</text>
+      <text x="12" y="68" fill="#94A3B8" font-size="9">• 1-Click Node Isolation</text>
+    </g>
+
+    <!-- Sub-module 4: Climate & Disaster Hub -->
+    <g transform="translate(16, 346)">
+      <rect x="0" y="0" width="198" height="66" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="22" fill="#34D399" font-size="12" font-weight="700">Disaster Resilience Map</text>
+      <text x="12" y="38" fill="#94A3B8" font-size="10">• 8-Division Geospatial View</text>
+      <text x="12" y="53" fill="#94A3B8" font-size="9">• Agent Float Stress Forecasting</text>
+    </g>
+
+    <!-- Sub-module 5: Compliance Modal -->
+    <g transform="translate(16, 424)">
+      <rect x="0" y="0" width="198" height="52" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="20" fill="#FBBF24" font-size="11" font-weight="700">BFIU Compliance Portal</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9">• Form 2 STR Export &amp; E-Sign</text>
+    </g>
   </g>
 
-  <!-- ==================== 4. NOTEBOOK / ML TRAINING (BOTTOM) ==================== -->
-  <rect x="420" y="560" width="260" height="95" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-  <text x="550" y="583" fill="#8B949E" font-size="11" font-weight="600" text-anchor="middle">Jupyter / Kaggle Notebooks NB00-NB99</text>
+  <!-- ======================================================================== -->
+  <!-- 2. INGRESS & API GATEWAY -->
+  <!-- ======================================================================== -->
+  <g transform="translate(308, 290)">
+    <polygon points="10,0 120,0 110,130 0,130" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" />
+    <text x="60" y="38" fill="#38BDF8" font-size="12" font-weight="800" text-anchor="middle">API</text>
+    <text x="60" y="54" fill="#38BDF8" font-size="12" font-weight="800" text-anchor="middle">GATEWAY</text>
+    <text x="56" y="80" fill="#94A3B8" font-size="9" text-anchor="middle">Express / Node</text>
+    <text x="56" y="95" fill="#94A3B8" font-size="8" text-anchor="middle">JWT · Rate Limit</text>
+    <text x="56" y="110" fill="#94A3B8" font-size="8" text-anchor="middle">Channel Routing</text>
+  </g>
 
-  <rect x="440" y="598" width="220" height="42" rx="6" fill="#0D1117" stroke="#A3E635" stroke-width="1" />
-  <text x="550" y="623" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Train · calibrate · evaluate · export</text>
+  <!-- ======================================================================== -->
+  <!-- 3. MULTI-MODAL AI RISK SCORING ENGINE (CENTER TOP) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(460, 110)">
+    <rect x="0" y="0" width="470" height="310" rx="12" fill="url(#blueCard)" stroke="#38BDF8" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#38BDF8" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="14" font-weight="800">Multi-Modal AI Risk Scoring Engine</text>
+    <text x="34" y="37" fill="#94A3B8" font-size="10">Deterministic In-Memory Vector Fusion · Latency &lt; 18ms SLA</text>
 
-  <!-- ==================== CONNECTING ARROWS & PATHS ==================== -->
+    <!-- 6 Parallel Scoring Signal Blocks -->
+    <!-- Signal 1: Supervised XGBoost (0.30) -->
+    <g transform="translate(18, 52)">
+      <rect x="0" y="0" width="205" height="66" rx="6" fill="#0B132B" stroke="#38BDF8" stroke-width="1" />
+      <text x="10" y="18" fill="#38BDF8" font-size="11" font-weight="700">1. XGBoost Classifier (w=0.30)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">Supervised Gradient Boosted Trees</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">Attack Vectors · scale_pos_weight</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: P(Fraud) 0.00 - 1.00</text>
+    </g>
 
-  <!-- Frontend -> Gateway connections -->
-  <path d="M 220 174 C 260 174, 260 290, 290 290" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
-  <path d="M 220 249 C 255 249, 265 298, 290 298" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
-  <path d="M 220 324 C 255 324, 265 306, 290 306" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
-  <path d="M 220 399 C 260 399, 260 314, 290 314" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+    <!-- Signal 2: Isolation Forest Anomaly (0.20) -->
+    <g transform="translate(235, 52)">
+      <rect x="0" y="0" width="215" height="66" rx="6" fill="#0B132B" stroke="#334155" stroke-width="1" />
+      <text x="10" y="18" fill="#E2E8F0" font-size="11" font-weight="700">2. Behavioral Anomaly (w=0.20)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">Isolation Forest Unsupervised Model</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">90-Day Spending Baseline Distances</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: Anomaly Dev Score 0 - 100</text>
+    </g>
 
-  <!-- Gateway -> Model services -->
-  <line x1="475" y1="303" x2="546" y2="303" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+    <!-- Signal 3: Velocity & Frequency (0.15) -->
+    <g transform="translate(18, 126)">
+      <rect x="0" y="0" width="205" height="66" rx="6" fill="#0B132B" stroke="#334155" stroke-width="1" />
+      <text x="10" y="18" fill="#E2E8F0" font-size="11" font-weight="700">3. Velocity Multipliers (w=0.15)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">Rolling 10m &amp; 60m Burst Windows</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">Amount / Avg 30d (53x Thresholds)</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: Velocity Index 0 - 100</text>
+    </g>
 
-  <!-- Model services -> Top Branch (Policy) -->
-  <path d="M 700 295 C 725 295, 735 176, 756 176" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+    <!-- Signal 4: Hardware & Device (0.15) -->
+    <g transform="translate(235, 126)">
+      <rect x="0" y="0" width="215" height="66" rx="6" fill="#0B132B" stroke="#334155" stroke-width="1" />
+      <text x="10" y="18" fill="#E2E8F0" font-size="11" font-weight="700">4. Device &amp; Geo Integrity (w=0.15)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">IMEI Changes · SIM Swap Signals</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">IP Region vs Location Mismatch</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: Device Risk 0 - 100</text>
+    </g>
 
-  <!-- Policy -> Gemini Brief -->
-  <line x1="910" y1="176" x2="956" y2="176" stroke="#C084FC" stroke-width="1.5" marker-end="url(#arrow-purple)" />
+    <!-- Signal 5: MuleVision Centrality (0.10) -->
+    <g transform="translate(18, 200)">
+      <rect x="0" y="0" width="205" height="66" rx="6" fill="#0B132B" stroke="#334155" stroke-width="1" />
+      <text x="10" y="18" fill="#E2E8F0" font-size="11" font-weight="700">5. Mule Syndicate Graph (w=0.10)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">GNN Degree &amp; Betweenness Centrality</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">Rapid Layering Pass-Through Rings</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: Syndicate Hub Score 0 - 100</text>
+    </g>
 
-  <!-- Model services -> Middle Branch (Database) -->
-  <line x1="700" y1="303" x2="756" y2="303" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+    <!-- Signal 6: ScamShield Cognitive Risk (0.10) -->
+    <g transform="translate(235, 200)">
+      <rect x="0" y="0" width="215" height="66" rx="6" fill="#0B132B" stroke="#334155" stroke-width="1" />
+      <text x="10" y="18" fill="#E2E8F0" font-size="11" font-weight="700">6. Cognitive Duress / Scam (w=0.10)</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">Nocturnal Off-Hour Timing (00-06h)</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9">First-Time Unknown Wallet P2P Transfer</text>
+      <text x="10" y="60" fill="#34D399" font-size="8.5" font-weight="600">Output: Social Engineering Score</text>
+    </g>
 
-  <!-- Model services -> Bottom Branch (Artifacts) -->
-  <path d="M 700 312 C 725 312, 735 425, 756 425" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+    <!-- Fusion Equation Bar at Bottom -->
+    <rect x="18" y="274" width="432" height="24" rx="4" fill="#020617" stroke="#1E293B" />
+    <text x="234" y="290" fill="#F8FAFC" font-size="10.5" font-weight="700" text-anchor="middle">
+      R_final = Σ ( w_i · s_i ) = 0.30·XGB + 0.20·Iso + 0.15·Vel + 0.15·Dev + 0.10·Mule + 0.10·Scam
+    </text>
+  </g>
 
-  <!-- Notebook -> Artifacts (Curved Upwards) -->
-  <path d="M 660 619 C 750 619, 755 490, 758 450" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-green)" />
-  <!-- Label on Notebook arrow -->
-  <rect x="675" y="535" width="110" height="20" rx="3" fill="#1C2128" stroke="#30363D" />
-  <text x="730" y="549" fill="#10B981" font-size="9.5" font-weight="700" text-anchor="middle">artifacts + reports</text>
+  <!-- ======================================================================== -->
+  <!-- 4. EXPLAINABLE AI & GEMINI REGULATORY BRIEF (RIGHT TOP) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(965, 110)">
+    <rect x="0" y="0" width="425" height="310" rx="12" fill="url(#aiCard)" stroke="#C084FC" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#C084FC" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="14" font-weight="800">Explainable AI &amp; Regulatory Intelligence</text>
+    <text x="34" y="37" fill="#D8B4FE" font-size="10">SHAP Attributions · Google Gemini 2.5 Flash · BFIU Audits</text>
+
+    <!-- SHAP Decomposition Block -->
+    <g transform="translate(18, 52)">
+      <rect x="0" y="0" width="388" height="92" rx="8" fill="#0B132B" stroke="#4C1D95" stroke-width="1" />
+      <text x="12" y="20" fill="#C084FC" font-size="11" font-weight="700">SHAP (SHapley Additive exPlanations) Engine</text>
+      <text x="12" y="36" fill="#E2E8F0" font-size="9.5">Exact game-theoretic mathematical feature decomposition:</text>
+      <!-- Visual mini bar indicators -->
+      <g transform="translate(12, 45)">
+        <rect x="0" y="0" width="130" height="7" rx="3.5" fill="#EF4444" />
+        <text x="138" y="7" fill="#FCA5A5" font-size="8.5">Circadian Anomaly (+31%)</text>
+        <rect x="0" y="14" width="105" height="7" rx="3.5" fill="#EF4444" />
+        <text x="113" y="21" fill="#FCA5A5" font-size="8.5">Velocity Burst Spike (+24%)</text>
+        <rect x="0" y="28" width="70" height="7" rx="3.5" fill="#EF4444" />
+        <text x="78" y="35" fill="#FCA5A5" font-size="8.5">Hardware / IP Mismatch (+17%)</text>
+      </g>
+    </g>
+
+    <!-- Gemini 2.5 Flash Dossier Synthesizer -->
+    <g transform="translate(18, 156)">
+      <rect x="0" y="0" width="388" height="142" rx="8" fill="#0B132B" stroke="#7E22CE" stroke-width="1" />
+      <text x="12" y="22" fill="#E9D5FF" font-size="12" font-weight="700">Google Gemini 2.5 Flash Case Synthesizer</text>
+      <text x="12" y="40" fill="#94A3B8" font-size="10">• Translates high-dimensional SHAP tensors into plain English</text>
+      <text x="12" y="56" fill="#94A3B8" font-size="10">• Synthesizes forensic case narratives for human compliance officers</text>
+      <text x="12" y="72" fill="#94A3B8" font-size="10">• Formulates formal Suspicious Transaction Reports (STR Form 2)</text>
+      <text x="12" y="88" fill="#94A3B8" font-size="10">• High-speed server proxy with deterministic local fallbacks</text>
+      <rect x="12" y="104" width="364" height="26" rx="4" fill="#3B0764" stroke="#6B21A8" />
+      <text x="194" y="121" fill="#F5D0FE" font-size="9.5" font-weight="700" text-anchor="middle">
+        Strict Compliance: Anti-Money Laundering Act, 2012 (Sec 19)
+      </text>
+    </g>
+  </g>
+
+  <!-- ======================================================================== -->
+  <!-- 5. DETERMINISTIC POLICY & ACTION ENGINE (CENTER BOTTOM) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(460, 445)">
+    <rect x="0" y="0" width="470" height="235" rx="12" fill="url(#actionCard)" stroke="#F43F5E" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#F43F5E" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="14" font-weight="800">Deterministic Policy &amp; Automated Action Router</text>
+    <text x="34" y="37" fill="#FECDD3" font-size="10">Operational Risk Tiers &amp; Regulatory Intervention Handlers</text>
+
+    <!-- 4 Tiers Grid -->
+    <!-- Low Tier -->
+    <g transform="translate(18, 52)">
+      <rect x="0" y="0" width="102" height="120" rx="6" fill="#064E3B" fill-opacity="0.4" stroke="#10B981" stroke-width="1" />
+      <text x="51" y="20" fill="#34D399" font-size="10" font-weight="800" text-anchor="middle">LOW (0 - 30)</text>
+      <text x="51" y="38" fill="#F8FAFC" font-size="9.5" font-weight="700" text-anchor="middle">Straight-Through</text>
+      <text x="51" y="56" fill="#94A3B8" font-size="8" text-anchor="middle">Zero Friction</text>
+      <text x="51" y="70" fill="#94A3B8" font-size="8" text-anchor="middle">Instant Approval</text>
+      <text x="51" y="84" fill="#94A3B8" font-size="8" text-anchor="middle">Full Settlement</text>
+      <rect x="6" y="96" width="90" height="18" rx="3" fill="#047857" />
+      <text x="51" y="108" fill="#FFFFFF" font-size="8" font-weight="700" text-anchor="middle">PASS</text>
+    </g>
+
+    <!-- Medium Tier -->
+    <g transform="translate(128, 52)">
+      <rect x="0" y="0" width="102" height="120" rx="6" fill="#78350F" fill-opacity="0.4" stroke="#FBBF24" stroke-width="1" />
+      <text x="51" y="20" fill="#FCD34D" font-size="10" font-weight="800" text-anchor="middle">MED (31 - 60)</text>
+      <text x="51" y="38" fill="#F8FAFC" font-size="9.5" font-weight="700" text-anchor="middle">Step-Up Verify</text>
+      <text x="51" y="56" fill="#94A3B8" font-size="8" text-anchor="middle">Out-of-band OTP</text>
+      <text x="51" y="70" fill="#94A3B8" font-size="8" text-anchor="middle">Biometric Check</text>
+      <text x="51" y="84" fill="#94A3B8" font-size="8" text-anchor="middle">Velocity Watch</text>
+      <rect x="6" y="96" width="90" height="18" rx="3" fill="#B45309" />
+      <text x="51" y="108" fill="#FFFFFF" font-size="8" font-weight="700" text-anchor="middle">CHALLENGE</text>
+    </g>
+
+    <!-- High Tier -->
+    <g transform="translate(238, 52)">
+      <rect x="0" y="0" width="102" height="120" rx="6" fill="#7C2D12" fill-opacity="0.4" stroke="#FB923C" stroke-width="1" />
+      <text x="51" y="20" fill="#FDBA74" font-size="10" font-weight="800" text-anchor="middle">HIGH (61 - 80)</text>
+      <text x="51" y="38" fill="#F8FAFC" font-size="9.5" font-weight="700" text-anchor="middle">ScamShield</text>
+      <text x="51" y="56" fill="#94A3B8" font-size="8" text-anchor="middle">Cognitive Alert</text>
+      <text x="51" y="70" fill="#94A3B8" font-size="8" text-anchor="middle">24h Delay Hold</text>
+      <text x="51" y="84" fill="#94A3B8" font-size="8" text-anchor="middle">Cancel Anytime</text>
+      <rect x="6" y="96" width="90" height="18" rx="3" fill="#C2410C" />
+      <text x="51" y="108" fill="#FFFFFF" font-size="8" font-weight="700" text-anchor="middle">COOLING-OFF</text>
+    </g>
+
+    <!-- Critical Tier -->
+    <g transform="translate(348, 52)">
+      <rect x="0" y="0" width="104" height="120" rx="6" fill="#881337" fill-opacity="0.4" stroke="#F43F5E" stroke-width="1" />
+      <text x="52" y="20" fill="#FDA4AF" font-size="10" font-weight="800" text-anchor="middle">CRIT (81-100)</text>
+      <text x="52" y="38" fill="#F8FAFC" font-size="9.5" font-weight="700" text-anchor="middle">Freeze &amp; STR</text>
+      <text x="52" y="56" fill="#94A3B8" font-size="8" text-anchor="middle">Outflow Quarantined</text>
+      <text x="52" y="70" fill="#94A3B8" font-size="8" text-anchor="middle">Node Isolated</text>
+      <text x="52" y="84" fill="#94A3B8" font-size="8" text-anchor="middle">BFIU STR Drafted</text>
+      <rect x="6" y="96" width="92" height="18" rx="3" fill="#BE123C" />
+      <text x="52" y="108" fill="#FFFFFF" font-size="8" font-weight="700" text-anchor="middle">QUARANTINE</text>
+    </g>
+
+    <!-- 1-Click Operational Presets -->
+    <rect x="18" y="186" width="434" height="34" rx="6" fill="#020617" stroke="#334155" />
+    <text x="32" y="207" fill="#F8FAFC" font-size="10" font-weight="700">1-Click Presets:</text>
+    <text x="110" y="207" fill="#38BDF8" font-size="9.5">• Production Baseline</text>
+    <text x="215" y="207" fill="#A855F7" font-size="9.5">• Nocturnal Guard</text>
+    <text x="295" y="207" fill="#F43F5E" font-size="9.5">• Anti-Mule Active</text>
+    <text x="382" y="207" fill="#34D399" font-size="9.5">• Disaster Mode</text>
+  </g>
+
+  <!-- ======================================================================== -->
+  <!-- 6. DISASTER RESILIENCE & PREDICTIVE FLOAT (RIGHT BOTTOM) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(965, 445)">
+    <rect x="0" y="0" width="425" height="235" rx="12" fill="url(#disasterCard)" stroke="#34D399" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#34D399" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="14" font-weight="800">Disaster Resilience &amp; Predictive Float</text>
+    <text x="34" y="37" fill="#A7F3D0" font-size="10">Climate Shock Simulation &amp; Armored Distributor Dispatch</text>
+
+    <!-- Cyclone Simulation Box -->
+    <g transform="translate(18, 52)">
+      <rect x="0" y="0" width="388" height="74" rx="8" fill="#0B132B" stroke="#047857" stroke-width="1" />
+      <text x="12" y="20" fill="#34D399" font-size="11" font-weight="700">Cyclone / Flood Cash Surge Forecasting</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9.5">• Models extreme weather shocks (e.g. Cyclone Remal in Barishal &amp; Patuakhali)</text>
+      <text x="12" y="52" fill="#94A3B8" font-size="9.5">• Proactively forecasts agent cash liquidity exhaustion 24 - 48 hours in advance</text>
+      <text x="12" y="66" fill="#94A3B8" font-size="9.5">• Dynamically relaxes false-positive friction for emergency aid disbursements</text>
+    </g>
+
+    <!-- Float Logistics & Armored Dispatch -->
+    <g transform="translate(18, 138)">
+      <rect x="0" y="0" width="388" height="82" rx="8" fill="#0B132B" stroke="#047857" stroke-width="1" />
+      <text x="12" y="20" fill="#6EE7B7" font-size="11" font-weight="700">Automated Armored Float Logistics</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9.5">• Automated armored vehicle route dispatch to critical rural liquidity nodes</text>
+      <text x="12" y="52" fill="#94A3B8" font-size="9.5">• Balances agent cash reserves before bank branches become waterlogged</text>
+      <rect x="12" y="60" width="364" height="16" rx="3" fill="#065F46" />
+      <text x="194" y="72" fill="#D1FAE5" font-size="8.5" font-weight="700" text-anchor="middle">
+        Guarantees Rural Cash-Out Continuity During Severe National Crises
+      </text>
+    </g>
+  </g>
+
+  <!-- ======================================================================== -->
+  <!-- 7. OFFLINE MACHINE LEARNING LAB & ARTIFACTS (BOTTOM) -->
+  <!-- ======================================================================== -->
+  <!-- ML Training Lab Box -->
+  <g transform="translate(48, 705)">
+    <rect x="0" y="0" width="430" height="155" rx="12" fill="url(#blueCard)" stroke="#A3E635" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#A3E635" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="13" font-weight="800">Offline Machine Learning Lab (notebook/)</text>
+    <text x="34" y="37" fill="#BEF264" font-size="10">Jupyter &amp; Python Pipelines (xgboost_fraud_detection.ipynb)</text>
+
+    <!-- Notebook details -->
+    <g transform="translate(18, 50)">
+      <rect x="0" y="0" width="394" height="92" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="20" fill="#E2E8F0" font-size="10" font-weight="700">34-Cell End-to-End Pipeline &amp; Model Optimization:</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9">• Ingests dataset/transactions.csv (8,000 rows × 40 features, 4.61% fraud rate)</text>
+      <text x="12" y="50" fill="#94A3B8" font-size="9">• Computes scale_pos_weight = 20.68 for severe class imbalance compensation</text>
+      <text x="12" y="64" fill="#94A3B8" font-size="9">• Stratified Cross-Validation (70/15/15) · Optimal Decision Threshold Tuning</text>
+      <text x="12" y="78" fill="#A3E635" font-size="9" font-weight="700">• Exports to model_artifacts/xgboost_mfs_fraud_detector.json</text>
+    </g>
+  </g>
+
+  <!-- Model Artifacts & Registry Cylinder Box -->
+  <g transform="translate(510, 705)">
+    <rect x="0" y="0" width="420" height="155" rx="12" fill="url(#blueCard)" stroke="#38BDF8" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#38BDF8" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="13" font-weight="800">Model Artifacts Registry &amp; Metadata</text>
+    <text x="34" y="37" fill="#94A3B8" font-size="10">High-Performance Serialized Ensembles</text>
+
+    <g transform="translate(18, 50)">
+      <rect x="0" y="0" width="384" height="92" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="20" fill="#38BDF8" font-size="10" font-weight="700">Model Artifacts Registry (artifacts/):</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9">• xgboost_mfs_fraud_detector.json (Native C++/Go/Node runtime compatible)</text>
+      <text x="12" y="50" fill="#94A3B8" font-size="9">• model_metadata.json (Optimal threshold, ROC-AUC: 0.984, PR-AUC: 0.941)</text>
+      <text x="12" y="64" fill="#94A3B8" font-size="9">• Feature vector scaling masks &amp; categorical encoding schemas</text>
+      <text x="12" y="78" fill="#34D399" font-size="9" font-weight="600">• Zero-cold-start in-memory model hot reloader</text>
+    </g>
+  </g>
+
+  <!-- State & Audit Store Box -->
+  <g transform="translate(965, 705)">
+    <rect x="0" y="0" width="425" height="155" rx="12" fill="url(#blueCard)" stroke="#334155" stroke-width="1.5" />
+    <rect x="18" y="14" width="8" height="8" rx="4" fill="#94A3B8" />
+    <text x="34" y="22" fill="#F8FAFC" font-size="13" font-weight="800">Audit Ledger &amp; State Persistence</text>
+    <text x="34" y="37" fill="#94A3B8" font-size="10">Immutable Compliance &amp; Node Isolation Store</text>
+
+    <g transform="translate(18, 50)">
+      <rect x="0" y="0" width="388" height="92" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+      <text x="12" y="20" fill="#E2E8F0" font-size="10" font-weight="700">Persistence Services:</text>
+      <text x="12" y="36" fill="#94A3B8" font-size="9">• Immutable audit log of all risk actions, freeze orders, and STR signatures</text>
+      <text x="12" y="50" fill="#94A3B8" font-size="9">• Active Quarantine Node Registry &amp; Mule Cluster Map State</text>
+      <text x="12" y="64" fill="#94A3B8" font-size="9">• 8-Division Regional Risk Indices (Dhaka, Chattogram, Sylhet, Barishal...)</text>
+      <text x="12" y="78" fill="#94A3B8" font-size="9">• Regulatory sign-off records attributed to Authorized AML Officers</text>
+    </g>
+  </g>
+
+  <!-- ======================================================================== -->
+  <!-- CONNECTING ARROWS & DATA HIGHWAYS -->
+  <!-- ======================================================================== -->
+
+  <!-- Frontend -> Gateway -->
+  <path d="M 278 200 C 295 200, 295 350, 308 350" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#m-blue)" />
+  <path d="M 278 350 L 308 350" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#m-blue)" />
+  <path d="M 278 500 C 295 500, 295 365, 308 365" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#m-blue)" />
+
+  <!-- Gateway -> AI Engine -->
+  <line x1="428" y1="355" x2="455" y2="355" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#m-blue)" />
+  <text x="440" y="345" fill="#38BDF8" font-size="9" font-weight="700" text-anchor="middle">Event Ingest</text>
+
+  <!-- AI Engine -> Explainable Gemini Brief -->
+  <path d="M 930 240 L 960 240" fill="none" stroke="#C084FC" stroke-width="2.5" marker-end="url(#m-purple)" />
+  <text x="945" y="230" fill="#C084FC" font-size="9" font-weight="700" text-anchor="middle">SHAP Vectors</text>
+
+  <!-- AI Engine -> Action Engine -->
+  <path d="M 695 420 L 695 440" fill="none" stroke="#F43F5E" stroke-width="2.5" marker-end="url(#m-rose)" />
+  <text x="735" y="435" fill="#F43F5E" font-size="9" font-weight="700">Fused Score R</text>
+
+  <!-- Action Engine -> Disaster Hub -->
+  <path d="M 930 562 L 960 562" fill="none" stroke="#34D399" stroke-width="2" marker-end="url(#m-emerald)" />
+  <text x="945" y="552" fill="#34D399" font-size="8.5" font-weight="700" text-anchor="middle">Float Dispatch</text>
+
+  <!-- ML Lab -> Model Artifacts Registry -->
+  <line x1="478" y1="782" x2="505" y2="782" stroke="#A3E635" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#m-emerald)" />
+  <text x="492" y="774" fill="#A3E635" font-size="8.5" font-weight="700" text-anchor="middle">Export</text>
+
+  <!-- Model Artifacts -> AI Engine (Upwards) -->
+  <path d="M 720 705 C 720 680, 695 680, 695 435" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#m-blue)" />
+
+  <!-- Action Engine -> Audit Ledger (Downwards to right) -->
+  <path d="M 930 650 C 945 650, 945 782, 960 782" fill="none" stroke="#64748B" stroke-width="1.8" marker-end="url(#m-gray)" />
+  <text x="945" y="700" fill="#94A3B8" font-size="8.5" font-weight="600" text-anchor="middle">Audit Trail</text>
 </svg>

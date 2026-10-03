@@ -42,58 +42,107 @@ The TakaSafe platform is designed with a modern decoupled architecture separatin
 ### Architectural Components:
 
 1. **Frontend Presentation Layer (`React 19 + TypeScript on Vite / Cloud Run`)**:
-   - **`Homepage + Overview`**: Real-time situational overview, executive metrics, and 3D resilience indicators.
-   - **`Customer (TakaSafe Persona)`**: Mobile consumer MFS application simulator equipped with proactive **ScamShield** cognitive duress warnings and 24-hour cooling-off protection.
-   - **`Agent (Float / Cash-out)`**: Agent liquidity portal for cash-in/out and automated armored distributor float dispatch.
-   - **`Operations (Risk Cockpit)`**: Full-spectrum risk cockpit featuring live WebSocket feeds, tunable policy weights, division risk maps, and D3 force-directed mule graphs.
+   - **`Customer Mobile Portal`**: Consumer MFS banking simulator featuring the billionaire-grade **TakaSafe Sovereign Centurion Card**, send money, cash-out, and the proactive **ScamShield Cognitive Coercion Defense** with 24-hour cooling-off protection.
+   - **`Fraud Operations Cockpit`**: SOC analyst command center with live WebSocket streaming ticker, multi-modal risk radar, 24-hour risk distribution analytics, and dynamic policy parameter weight sliders.
+   - **`MuleVision Graph Hub`**: D3.js force-directed interactive network visualizer detecting circular pass-through rings, aggregator hubs, and 1-click node quarantine.
+   - **`Disaster Resilience & Geospatial Map`**: Interactive 8-division geospatial situational map forecasting agent cash exhaustion and tracking armored distributor logistics.
+   - **`BFIU Compliance Portal`**: Regulatory reporting interface for generating printable BFIU Form 2 Suspicious Transaction Reports (STR) with electronic officer sign-off.
 
-2. **API Gateway (`v1 routes · JWT · Rate Limit`)**:
-   - Secure edge gateway handling authentication, role-based access control (RBAC), rate-limiting, and payload schema validation.
+2. **Ingress & API Gateway (`Express / Node.js`)**:
+   - High-throughput gateway managing JWT authentication, channel attribution (App, USSD `*268#`, Agent Counter, Web), rate-limiting, and payload sanitization.
 
-3. **Backend Core Services (`Express & Python ML Runtime`)**:
-   - **`Model Services`**: Orchestrates fused risk scoring combining supervised XGBoost fraud probability with unsupervised Isolation Forest anomaly scoring.
-   - **`Policy & Dynamic Rules`**: Mathematical policy weight coordinator ($R_{final} = \sum w_i \cdot s_i$) with one-click operational presets.
-   - **`Brief: Gemini 2.5 Flash + Validator + Cache`**: Converts mathematical SHAP values into auditable, plain-language investigation dossiers and printable BFIU Suspicious Transaction Reports (STR).
-   - **`Database / Ledger (cases · actions · audit)`**: Immutable transactional and regulatory action audit log.
-   - **`Artifacts Storage (models · calibrators · forecasts)`**: Serialized model definitions (`xgboost_mfs_fraud_detector.json`), calibration curves, and feature schemas.
+3. **Multi-Modal AI Risk Scoring Engine (`< 18ms SLA`)**:
+   - In-memory vector evaluation fusing 6 parallel scoring models:
+     - **Supervised XGBoost Classifier ($w=0.30$)**: Gradient boosted decision trees trained on transaction attack vectors with `scale_pos_weight = 20.68`.
+     - **Behavioral Anomaly Isolation Forest ($w=0.20$)**: Unsupervised baseline deviation from 90-day customer spending profiles.
+     - **Velocity Multipliers ($w=0.15$)**: Rolling 10-minute and 60-minute frequency bursts and 30-day average spending multipliers.
+     - **Device & Geo Integrity ($w=0.15$)**: IMEI change detection, SIM swap flags, and IP region vs. divisional location mismatch.
+     - **Mule Syndicate Graph Centrality ($w=0.10$)**: Graph Neural Network degree and betweenness centrality scores.
+     - **Cognitive Duress & ScamShield ($w=0.10$)**: Nocturnal off-hours (00:00–05:59 BST) and first-time unknown recipient risk heuristics.
 
-4. **Offline ML Training Pipeline (`Jupyter / Kaggle Notebooks NB00-NB99`)**:
-   - Standalone data science environment (`notebook/xgboost_fraud_detection.ipynb`) for dataset ingestion, feature engineering, stratified cross-validation, hyperparameter tuning (`scale_pos_weight`), SHAP evaluation, and model artifact export.
+4. **Explainable AI & Gemini Regulatory Intelligence**:
+   - **SHAP Attribution Engine**: Computes exact game-theoretic mathematical feature decomposition (e.g. Circadian Anomaly +31%, Velocity Spike +24%, Device Mismatch +17%).
+   - **Google Gemini 2.5 Flash Synthesizer**: Transforms mathematical SHAP vectors into human-readable forensic case investigation dossiers and formal BFIU STR filings under Section 19 of the Anti-Money Laundering Act, 2012.
+
+5. **Deterministic Policy & Automated Action Engine**:
+   - Evaluates fused composite score ($R_{\text{final}} = \sum w_i \cdot s_i$) and maps to 4 deterministic regulatory tiers:
+     - **LOW (0–30)**: Straight-Through Processing (Zero Friction, Instant Settlement).
+     - **MEDIUM (31–60)**: Step-Up Authentication (Out-of-band SMS OTP / Biometric Verification).
+     - **HIGH (61–80)**: ScamShield Pre-Payment Intercept & 24-Hour Cooling-Off Window.
+     - **CRITICAL (81–100)**: Instant Wallet Freeze, Node Quarantine & Automated BFIU STR Generation.
+   - Includes 1-click operational policy presets (*Production Baseline*, *Nocturnal Guard*, *Anti-Mule Active*, *Disaster Relief Mode*).
+
+6. **Disaster Resilience & Armored Float Logistics**:
+   - Models extreme climate shocks (e.g. Cyclone Remal in Barishal and Patuakhali).
+   - Forecasts agent cash depletion 24 to 48 hours in advance and automates armored distributor vehicle route dispatch to prevent rural cash-out failures.
+
+7. **Offline Machine Learning Lab (`notebook/`)**:
+   - 34-cell end-to-end Jupyter Notebook (`xgboost_fraud_detection.ipynb`) training on `dataset/transactions.csv` (8,000 transactions × 40 features), addressing the 20.68:1 class imbalance, tuning decision thresholds, and exporting production models to `artifacts/`.
+
+8. **Audit Ledger & State Persistence**:
+   - Immutable audit logging of all regulatory decisions, active quarantine node registries, and 8-division regional risk indexes.
 
 ```mermaid
-graph LR
-    subgraph Frontend["Frontend Layer (React 19 + TypeScript)"]
-        UI_Home["Homepage + Overview"]
-        UI_Cust["Customer (TakaSafe)"]
-        UI_Agent["Agent (Float / Cash-out)"]
-        UI_Ops["Operations (Risk Cockpit)"]
+graph TD
+    subgraph Clients["1. Client Ecosystem (React 19 + TypeScript + D3.js)"]
+        UI_Cust["Customer Portal\n(Centurion Card · ScamShield)"]
+        UI_Ops["Fraud Ops Cockpit\n(WebSocket · Radar · Policy)"]
+        UI_Mule["MuleVision Graph Hub\n(D3 Force Network · Quarantine)"]
+        UI_Disaster["Disaster Resilience Hub\n(8-Division Map · Float Logistics)"]
+        UI_Comp["BFIU Compliance Portal\n(Form 2 STR · E-Sign)"]
     end
 
-    Gateway["v1 routes · JWT · Rate Limit"]
+    Gateway["2. API Gateway & Ingress Layer\n(Express · JWT · Rate Limit · Channel Router)"]
 
-    subgraph Backend["Core Services (Express & ML Engine)"]
-        ModelSvc["Model Services (XGBoost + Anomaly)"]
-        Policy["Policy · Dynamic Rules"]
-        Gemini["Brief: Gemini 2.5 Flash + Cache"]
-        DB[(Database / Ledger: cases · actions · audit)]
-        Artifacts[("artifacts/: models · calibrators · forecasts")]
+    subgraph ScoringEngine["3. Multi-Modal AI Risk Scoring Engine (< 18ms SLA)"]
+        XGB["1. XGBoost Classifier (w=0.30)\nSupervised Attack Vectors"]
+        Iso["2. Behavioral Anomaly (w=0.20)\nIsolation Forest Baseline"]
+        Vel["3. Velocity Multipliers (w=0.15)\n10m/60m Bursts · 53x Multiplier"]
+        Dev["4. Device & Geo Integrity (w=0.15)\nIMEI · SIM Swap · IP Mismatch"]
+        Mule["5. Mule Syndicate Graph (w=0.10)\nGNN Degree & Betweenness"]
+        Scam["6. ScamShield Duress (w=0.10)\nNocturnal · Unverified P2P"]
+        Formula["Fusion Engine: R_final = Σ ( w_i · s_i )"]
     end
 
-    subgraph OfflineML["ML Pipeline (Jupyter Notebooks)"]
-        Notebook["Train · Calibrate · Evaluate · Export"]
+    subgraph ExplainableAI["4. Explainable AI & Regulatory Intelligence"]
+        SHAP["SHAP Attribution Engine\n(+31% Time, +24% Velocity, +17% Device)"]
+        Gemini["Google Gemini 2.5 Flash\nCase Dossier & BFIU Form 2 STR"]
     end
 
-    UI_Home --> Gateway
-    UI_Cust --> Gateway
-    UI_Agent --> Gateway
-    UI_Ops --> Gateway
+    subgraph ActionEngine["5. Deterministic Policy & Action Router"]
+        T1["LOW (0-30): Straight-Through Processing"]
+        T2["MED (31-60): Out-of-Band Step-Up OTP"]
+        T3["HIGH (61-80): ScamShield 24h Cooling-Off"]
+        T4["CRIT (81-100): Instant Freeze & BFIU STR"]
+        Presets["1-Click Presets: Baseline · Nocturnal · Anti-Mule · Disaster"]
+    end
 
-    Gateway --> ModelSvc
-    ModelSvc --> Policy
-    Policy --> Gemini
-    ModelSvc --> DB
-    ModelSvc --> Artifacts
-    Notebook -. "artifacts + reports" .-> Artifacts
+    subgraph DisasterEngine["6. Disaster Resilience & Float Logistics"]
+        Cyclone["Climate Cash Shock Simulator\n(Cyclone Remal in Coastal Divisions)"]
+        Armored["Automated Armored Float Dispatch\n(Predictive Agent Cash Balance)"]
+    end
+
+    subgraph OfflineMLLab["7. Offline ML Lab (notebook/)"]
+        Dataset["Synthetic Dataset (8,000 rows × 40 features)"]
+        Notebook["34-Cell XGBoost Pipeline (scale_pos_weight=20.68)"]
+        Artifacts[("Model Artifacts: xgboost_mfs_fraud_detector.json")]
+    end
+
+    subgraph Persistence["8. Audit Ledger & State Persistence"]
+        AuditDB[("Immutable BFIU Sign-Off Ledger\nQuarantine Nodes · Divisional Risk")]
+    end
+
+    Clients --> Gateway
+    Gateway --> ScoringEngine
+    XGB & Iso & Vel & Dev & Mule & Scam --> Formula
+    Formula --> ExplainableAI
+    Formula --> ActionEngine
+    ActionEngine -. "Float Dispatch" .-> DisasterEngine
+    ActionEngine --> Persistence
+    ExplainableAI --> Persistence
+    Dataset --> Notebook
+    Notebook --> Artifacts
+    Artifacts -. "Zero-Cold-Start Load" .-> ScoringEngine
 ```
 
 ---
