@@ -64,9 +64,9 @@ const WALLET_SERVICES: Record<string, {
   targets: string[];
   feeRate: number;
 }> = {
-  'Cash In': { title: 'Cash In', type: 'CASH_IN', direction: 'IN', targetLabel: 'Deposit source', targets: ['TakaSafe Agent', 'Bank Transfer'], feeRate: 0 },
-  'Cash Out': { title: 'Cash Out', type: 'CASH_OUT', direction: 'OUT', targetLabel: 'Withdrawal point', targets: ['TakaSafe Agent', 'ATM'], feeRate: 0.014 },
-  'Make Payment': { title: 'Make Payment', type: 'MAKE_PAYMENT', direction: 'OUT', targetLabel: 'Merchant', targets: ['Aarong Dhanmondi', 'Chaldal', 'Local Merchant'], feeRate: 0 },
+  'Cash In': { title: 'Cash In', type: 'CASH_IN', direction: 'IN', targetLabel: 'Deposit method', targets: ['Agent Deposit', 'Bank Transfer'], feeRate: 0 },
+  'Cash Out': { title: 'Cash Out', type: 'CASH_OUT', direction: 'OUT', targetLabel: 'Withdrawal method', targets: ['Agent Cash Out', 'ATM Cash Out'], feeRate: 0.014 },
+  'Make Payment': { title: 'Make Payment', type: 'MAKE_PAYMENT', direction: 'OUT', targetLabel: 'Merchant', targets: [], feeRate: 0 },
   'Add Money': { title: 'Add Money', type: 'ADD_MONEY', direction: 'IN', targetLabel: 'Funding source', targets: ['Linked Bank Account', 'Debit Card'], feeRate: 0 },
   'Pay Bill': { title: 'Pay Bill', type: 'PAY_BILL', direction: 'OUT', targetLabel: 'Biller', targets: ['DESCO', 'WASA', 'Titas Gas', 'DPDC', 'NESCO'], feeRate: 0 },
   'Mobile Recharge': { title: 'Mobile Recharge', type: 'MOBILE_RECHARGE', direction: 'OUT', targetLabel: 'Mobile operator', targets: ['Grameenphone', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'], feeRate: 0 },
@@ -78,7 +78,7 @@ const WALLET_SERVICES: Record<string, {
 };
 
 const getServiceFee = (service: string, target: string, amount: number): number => {
-  if (service === 'Cash Out' && target === 'ATM') return 0;
+  if (service === 'Cash Out' && target === 'ATM Cash Out') return 0;
   return Math.round(amount * (WALLET_SERVICES[service]?.feeRate || 0));
 };
 
@@ -130,6 +130,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [serviceNote, setServiceNote] = useState<string>('');
   const [serviceError, setServiceError] = useState<string | null>(null);
   const [serviceReceipt, setServiceReceipt] = useState<string | null>(null);
+  const [isServiceReview, setIsServiceReview] = useState<boolean>(false);
   const balanceStorageKey = `takasafe-balance:${userId}:${customer.wallet}`;
   const [availableBalance, setAvailableBalance] = useState<number>(() => {
     try {
@@ -152,6 +153,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     setServiceNote('');
     setServiceError(null);
     setServiceReceipt(null);
+    setIsServiceReview(false);
   }, [initialService]);
 
   useEffect(() => {
@@ -295,16 +297,42 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setServiceError(`Select a ${config.targetLabel.toLowerCase()}.`);
       return;
     }
+    const needsAgentNumber = (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit') || (activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out');
+    if (needsAgentNumber && !/^01[3-9]\d{8}$/.test(serviceNote.replace(/\D/g, ''))) {
+      setServiceError('Enter a valid 11-digit Bangladesh agent number.');
+      return;
+    }
+    if ((activeWalletService === 'Mobile Recharge' || activeWalletService === 'Pay Bill') && !serviceNote.trim()) {
+      setServiceError(activeWalletService === 'Mobile Recharge' ? 'Enter the mobile number to recharge.' : 'Enter the bill account number.');
+      return;
+    }
+    setServiceError(null);
+    setIsServiceReview(true);
+  };
+
+  const confirmWalletService = () => {
+    if (!activeWalletService || !isServiceReview) return;
+    const config = WALLET_SERVICES[activeWalletService];
+    const value = Number(serviceAmount);
+    const fee = getServiceFee(activeWalletService, serviceTarget, value);
+    const totalDebit = value + fee;
+    if (!Number.isFinite(value) || value <= 0 || (config.direction === 'OUT' && totalDebit > availableBalance)) {
+      setIsServiceReview(false);
+      setServiceError('Your available balance changed. Check the amount and try again.');
+      return;
+    }
 
     recordTransfer(value, serviceTarget, 0, 'COMPLETED', config.type, config.direction, fee, serviceNote.trim());
     const balanceAfter = availableBalance + (config.direction === 'IN' ? value : -totalDebit);
-    setServiceReceipt(`${config.title} completed for ৳${value.toLocaleString()}${fee ? ` (৳${fee.toLocaleString()} fee)` : ''}. New available balance: ৳${balanceAfter.toLocaleString()}.`);
+    setServiceReceipt(`${config.title} completed for BDT ${value.toLocaleString()}${fee ? ` (BDT ${fee.toLocaleString()} fee)` : ''}. New available balance: BDT ${balanceAfter.toLocaleString()}.`);
+    setIsServiceReview(false);
   };
 
   const closeWalletService = () => {
     setActiveWalletService(null);
     setServiceError(null);
     setServiceReceipt(null);
+    setIsServiceReview(false);
     onServiceDismiss?.();
   };
 
@@ -442,6 +470,15 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
 
   // Called when a payment or merchant QR is scanned
   const handlePaymentQRScanned = (recipientWallet: string, suggestedAmount?: number, suggestedNote?: string) => {
+    if (activeWalletService === 'Make Payment') {
+      const merchant = suggestedNote?.replace(/^QR Payment to\s*/i, '').trim() || recipientWallet;
+      setServiceTarget(merchant);
+      if (suggestedAmount && suggestedAmount > 0) setServiceAmount(String(suggestedAmount));
+      setServiceNote(`QR recipient: ${recipientWallet}`);
+      setServiceError(null);
+      setIsServiceReview(false);
+      return;
+    }
     setActiveTab('WALLET');
     setRecipient(recipientWallet);
     if (suggestedAmount) {
