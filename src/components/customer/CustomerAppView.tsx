@@ -89,6 +89,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
+  const [isScoring, setIsScoring] = useState<boolean>(false);
   const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(userId, customer.wallet));
   const [loginHistory, setLoginHistory] = useState<CustomerLogin[]>(() => loadLoginHistory(userId, customer.wallet));
 
@@ -199,13 +200,27 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [linkSuccessBanner, setLinkSuccessBanner] = useState<string | null>(null);
   const [formHighlight, setFormHighlight] = useState<boolean>(false);
 
-  const handleSendPayment = (e: React.FormEvent) => {
+  const handleSendPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     const num = Number(amount);
+    setIsScoring(true);
 
     const normalizedRecipient = recipient.trim().replace(/\D/g, '');
     const recipientIsKnown = knownRecipients.has(normalizedRecipient);
     const isKnownMule = recipient.trim().includes('510294');
+    let recipientNetworkRisk = { score: 0, reasons: [] as string[] };
+    try {
+      const response = await fetch(`/api/recipient-risk/${encodeURIComponent(normalizedRecipient)}`);
+      if (response.ok) {
+        const data = await response.json();
+        recipientNetworkRisk = {
+          score: Number(data.score) || 0,
+          reasons: Array.isArray(data.reasons) ? data.reasons.filter((reason: unknown): reason is string => typeof reason === 'string') : [],
+        };
+      }
+    } catch {
+      // Continue with individual behavior signals when network history is unavailable.
+    }
     const currentHour = new Date().getHours();
     const [usualStart = 9, usualEnd = 21] = usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
     const amountRatio = num / Math.max(medianAmount, 1);
@@ -223,9 +238,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     const recentAttemptCount = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
     const dailyTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 24 * 60 * 60 * 1000);
     const dailyAmount = dailyTransfers.reduce((total, transfer) => total + transfer.amount, num);
-    const splitPaymentPattern = dailyTransfers.length >= 2 && num <= customer.maxAmountTypical &&
-      dailyTransfers.every((transfer) => transfer.amount <= customer.maxAmountTypical) &&
-      dailyAmount > Math.max(customer.maxAmountTypical * 3, customer.avgAmount * customer.avgDailyTxns * 2.5);
+    const splitPaymentPattern = dailyTransfers.length >= 2 && num <= amountThreshold &&
+      dailyTransfers.every((transfer) => transfer.amount <= amountThreshold) &&
+      dailyAmount > Math.max(amountThreshold * 3, medianAmount * customer.avgDailyTxns * 2.5);
     const normalizeDevice = (device: string) => device.replace(/(Chrome|Firefox|Version|Safari|Edg)\/[\d.]+/g, '$1/*');
     const knownSessionDevices = loginHistory.map((login) => login.device).filter((device): device is string => Boolean(device)).map(normalizeDevice);
     const currentDevice = typeof navigator === 'undefined' ? '' : normalizeDevice(navigator.userAgent);
@@ -254,7 +269,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     }
     if (splitPaymentPattern) {
       score += 20;
-      reasons.push('Several below-limit transfers add up to an unusually high total for your recent activity.');
+      reasons.push('Several smaller transfers add up to an unusually high total for your recent activity.');
     }
     if (newDevice) {
       score += amountIsUnusual ? 28 : 16;
@@ -264,6 +279,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       score += 65;
       reasons.push('This recipient is linked to a suspicious money-mule network.');
     }
+    if (recipientNetworkRisk.score > 0) {
+      score += recipientNetworkRisk.score;
+      reasons.push(...recipientNetworkRisk.reasons);
+    }
+    setIsScoring(false);
     setRiskReasons(reasons);
     setRiskScore(Math.min(score, 100));
     // A new recipient or a routine amount alone should not interrupt a transfer.
@@ -525,10 +545,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="w-full bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-black py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                      disabled={isScoring}
+                      className="w-full bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 font-black py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer disabled:opacity-70 disabled:cursor-wait"
                     >
                       <Send className="w-4 h-4" />
-                      <span>{lang === 'BN' ? 'টাকা পাঠান' : 'Proceed to Send Money'}</span>
+                      <span>{isScoring ? 'Checking recipient and behavior…' : lang === 'BN' ? 'টাকা পাঠান' : 'Proceed to Send Money'}</span>
                     </button>
                   </div>
                 </form>
