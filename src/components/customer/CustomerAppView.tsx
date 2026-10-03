@@ -302,6 +302,10 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setServiceError('Enter a valid 11-digit Bangladesh agent number.');
       return;
     }
+    if (activeWalletService === 'Mobile Recharge' && !/^01[3-9]\d{8}$/.test(serviceNote.replace(/\D/g, ''))) {
+      setServiceError('Enter a valid 11-digit Bangladesh mobile number.');
+      return;
+    }
     if ((activeWalletService === 'Mobile Recharge' || activeWalletService === 'Pay Bill') && !serviceNote.trim()) {
       setServiceError(activeWalletService === 'Mobile Recharge' ? 'Enter the mobile number to recharge.' : 'Enter the bill account number.');
       return;
@@ -476,7 +480,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     if (activeWalletService === 'Make Payment') {
       const merchant = suggestedNote?.replace(/^QR Payment to\s*/i, '').trim() || recipientWallet;
       setServiceTarget(merchant);
-      if (suggestedAmount && suggestedAmount > 0) setServiceAmount(String(suggestedAmount));
+      setServiceAmount(suggestedAmount && suggestedAmount > 0 ? String(suggestedAmount) : '');
       setServiceNote(`QR recipient: ${recipientWallet}`);
       setServiceError(null);
       setIsServiceReview(false);
@@ -484,7 +488,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     }
     if ((activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out') || (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit')) {
       setServiceNote(recipientWallet);
-      if (suggestedAmount && suggestedAmount > 0) setServiceAmount(String(suggestedAmount));
+      setServiceAmount(suggestedAmount && suggestedAmount > 0 ? String(suggestedAmount) : '');
       setServiceError(null);
       setIsServiceReview(false);
       return;
