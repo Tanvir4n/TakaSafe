@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import path from 'path';
+import { promises as fs } from 'node:fs';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 
@@ -9,6 +10,71 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+const customerTransactionsCsv = path.resolve(process.cwd(), 'dataset', 'customer_transactions.csv');
+const customerTransactionHeaders = ['wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
+const toCsvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+const parseCsvLine = (line: string): string[] => {
+  const cells: string[] = [];
+  let cell = '';
+  let quoted = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    if (char === '"' && quoted && line[i + 1] === '"') { cell += '"'; i += 1; }
+    else if (char === '"') quoted = !quoted;
+    else if (char === ',' && !quoted) { cells.push(cell); cell = ''; }
+    else cell += char;
+  }
+  cells.push(cell);
+  return cells;
+};
+
+app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => {
+  const wallet = String(req.params.wallet || '').trim();
+  if (!wallet || wallet.length > 64) return res.status(400).json({ error: 'Invalid wallet' });
+  try {
+    const csv = await fs.readFile(customerTransactionsCsv, 'utf8').catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return '';
+      throw error;
+    });
+    const lines = csv.split(/\r?\n/).filter(Boolean);
+    const headers = lines.length ? lines.shift()!.split(',') : customerTransactionHeaders;
+    const rows = lines.map(parseCsvLine).filter((cells) => cells[0] === wallet).map((cells) => {
+      const row = Object.fromEntries(headers.map((header, index) => [header, cells[index] || '']));
+      return {
+        amount: Number(row.amount), recipient: row.recipient, timestamp: row.timestamp,
+        reference: row.reference, status: row.status, riskScore: Number(row.risk_score) || 0,
+      };
+    });
+    res.json({ success: true, history: rows });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/customer-history/:wallet', async (req: Request, res: Response) => {
+  const wallet = String(req.params.wallet || '').trim();
+  const { amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0 } = req.body || {};
+  const date = new Date(timestamp);
+  if (!wallet || wallet.length > 64 || !Number.isFinite(Number(amount)) || Number(amount) <= 0 ||
+      typeof recipient !== 'string' || !recipient.trim() || recipient.length > 128 || !Number.isFinite(date.getTime()) ||
+      typeof reference !== 'string' || reference.length > 256 || !['COMPLETED', 'PROCEEDED'].includes(status) ||
+      !Number.isFinite(Number(riskScore))) {
+    return res.status(400).json({ error: 'Invalid customer transaction record' });
+  }
+  try {
+    await fs.mkdir(path.dirname(customerTransactionsCsv), { recursive: true });
+    let needsHeader = false;
+    try { needsHeader = (await fs.stat(customerTransactionsCsv)).size === 0; }
+    catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
+    const values = [wallet, Number(amount), recipient.trim(), date.toISOString(), reference, status, Math.max(0, Math.min(100, Number(riskScore)))];
+    const content = `${needsHeader ? `${customerTransactionHeaders.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`;
+    await fs.appendFile(customerTransactionsCsv, content, 'utf8');
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Initialize Gemini Client
 const apiKey = process.env.GEMINI_API_KEY;

@@ -157,9 +157,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
 
   const handlePreFill = (type: 'NORMAL' | 'RISKY') => {
     if (type === 'NORMAL') {
-      setRecipient('01819-440129');
-      setAmount('1500');
-      setNote('Monthly grocery expense');
+      setRecipient(customer.frequentRecipients[0]?.split(' ')[0] || recipient);
+      setAmount(String(Math.round(observedAverage)));
+      setNote('');
     } else {
       setRecipient('01988-510294');
       setAmount('80000');
