@@ -261,10 +261,13 @@
       </g>
 
       <!-- Fusion Formula Bar -->
-      <g transform="translate(12, 142)">
-        <rect x="0" y="0" width="436" height="32" rx="4" fill="#0A0612" stroke="#C084FC" />
-        <text x="218" y="20" fill="#F8FAFC" font-size="10" font-weight="700" text-anchor="middle">
-          R_final = Σ ( w_i · s_i ) = 0.30·XGB + 0.20·Iso + 0.15·Vel + 0.15·Dev + 0.10·Mule + 0.10·Scam = 94 / 100
+      <g transform="translate(12, 140)">
+        <rect x="0" y="0" width="436" height="34" rx="4" fill="#0A0612" stroke="#C084FC" />
+        <text x="218" y="15" fill="#E2E8F0" font-size="8.8" font-weight="700" text-anchor="middle">
+          R_final = Σ ( w_i · s_i ) = 0.30·XGB + 0.20·Iso + 0.15·Vel + 0.15·Dev + 0.10·Mule + 0.10·Scam
+        </text>
+        <text x="218" y="27" fill="#34D399" font-size="9" font-weight="800" text-anchor="middle">
+          ⚡ Weighted Score: 94 / 100  [TIER 4: QUARANTINE &amp; STR TRIGGERED]
         </text>
       </g>
     </g>
