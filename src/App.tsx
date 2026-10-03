@@ -519,6 +519,7 @@ export default function App() {
                 // Ensure critical transaction is visible in operator queue
               }}
               initialService={requestedWalletService}
+              allowCashIn={currentUser?.role !== 'USER'}
               onServiceDismiss={() => setRequestedWalletService(null)}
               lang={lang}
             />

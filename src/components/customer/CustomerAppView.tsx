@@ -35,6 +35,7 @@ interface CustomerAppViewProps {
   userId: string;
   onSimulateRiskyPayment: () => void;
   initialService?: string | null;
+  allowCashIn?: boolean;
   onServiceDismiss?: () => void;
   lang: 'EN' | 'BN';
 }
@@ -110,6 +111,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   userId,
   onSimulateRiskyPayment,
   initialService = null,
+  allowCashIn = true,
   onServiceDismiss,
   lang,
 }) => {
@@ -147,6 +149,10 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
 
   useEffect(() => {
     if (!initialService || !WALLET_SERVICES[initialService]) return;
+    if (initialService === 'Cash In' && !allowCashIn) {
+      onServiceDismiss?.();
+      return;
+    }
     setActiveWalletService(initialService);
     setServiceTarget(WALLET_SERVICES[initialService].targets[0] || '');
     setServiceAmount('');
@@ -154,7 +160,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     setServiceError(null);
     setServiceReceipt(null);
     setIsServiceReview(false);
-  }, [initialService]);
+  }, [initialService, allowCashIn, onServiceDismiss]);
 
   useEffect(() => {
     let active = true;
