@@ -26,6 +26,7 @@ interface InvestigationModalProps {
     action: 'MONITOR' | 'ADDITIONAL_VERIFICATION' | 'HOLD_FOR_REVIEW' | 'FREEZE_WALLET',
     notes: string
   ) => void;
+  onLabelAlert: (outcome: 'CONFIRMED_FRAUD' | 'FALSE_POSITIVE' | 'NEEDS_REVIEW', notes: string) => Promise<boolean>;
 }
 
 export const InvestigationModal: React.FC<InvestigationModalProps> = ({
@@ -35,11 +36,13 @@ export const InvestigationModal: React.FC<InvestigationModalProps> = ({
   isOpen,
   onClose,
   onTakeAction,
+  onLabelAlert,
 }) => {
   const [aiReport, setAiReport] = useState<string | null>(null);
   const [isLoadingAi, setIsLoadingAi] = useState<boolean>(false);
   const [operatorNotes, setOperatorNotes] = useState<string>('');
   const [actionConfirmed, setActionConfirmed] = useState<string | null>(null);
+  const [feedbackSaved, setFeedbackSaved] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -318,6 +321,29 @@ All predictions are probabilistic decision-support signals. Final freezing or bl
 
           {/* Human-in-the-loop Action Engine Form */}
           <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+            <div className="pb-3 border-b border-slate-200">
+              <div className="text-xs font-bold text-slate-900 mb-2">Alert outcome (for model evaluation)</div>
+              <div className="flex flex-wrap gap-2">
+                {([
+                  ['CONFIRMED_FRAUD', 'Confirmed fraud'],
+                  ['FALSE_POSITIVE', 'False positive'],
+                  ['NEEDS_REVIEW', 'Needs review'],
+                ] as const).map(([outcome, label]) => (
+                  <button
+                    key={outcome}
+                    type="button"
+                    onClick={async () => {
+                      const saved = await onLabelAlert(outcome, operatorNotes);
+                      if (saved) setFeedbackSaved(label);
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-[11px] font-semibold text-slate-700 hover:border-blue-400 hover:text-blue-700"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {feedbackSaved && <div className="text-[11px] text-emerald-700 font-semibold mt-2">Saved outcome: {feedbackSaved}</div>}
+            </div>
             <div>
               <label className="font-bold text-slate-900 text-xs block mb-1">
                 Operator Decision & Audit Notes (Mandatory for High-Impact Actions)

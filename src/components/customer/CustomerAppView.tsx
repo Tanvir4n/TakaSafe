@@ -208,9 +208,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     const isKnownMule = recipient.trim().includes('510294');
     const currentHour = new Date().getHours();
     const [usualStart = 9, usualEnd = 21] = usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
-    const amountRatio = num / Math.max(observedAverage, 1);
+    const amountRatio = num / Math.max(medianAmount, 1);
     const amountThreshold = recentTransfers.length >= 5
-      ? Math.max(observedUpperRange, observedAverage * 2.5)
+      ? Math.max(medianAmount + 3 * 1.4826 * medianAbsoluteDeviation, medianAmount * 2.5, observedUpperRange)
       : Math.max(customer.maxAmountTypical, observedAverage * 3);
     const amountIsUnusual = num > amountThreshold && amountRatio >= 3;
     const outsideUsualHours = currentHour < usualStart || currentHour >= usualEnd;
@@ -221,6 +221,14 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     const peakActivityCount = Math.max(0, ...Object.values(activityHourCounts));
     const learnedUnusualTime = observedHours.length >= 6 && peakActivityCount >= 2 && (activityHourCounts[currentHour] || 0) === 0;
     const recentAttemptCount = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
+    const dailyTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 24 * 60 * 60 * 1000);
+    const dailyAmount = dailyTransfers.reduce((total, transfer) => total + transfer.amount, num);
+    const splitPaymentPattern = dailyTransfers.length >= 2 && num <= customer.maxAmountTypical &&
+      dailyTransfers.every((transfer) => transfer.amount <= customer.maxAmountTypical) &&
+      dailyAmount > Math.max(customer.maxAmountTypical * 3, customer.avgAmount * customer.avgDailyTxns * 2.5);
+    const knownSessionDevices = loginHistory.map((login) => login.device).filter((device): device is string => Boolean(device));
+    const currentDevice = typeof navigator === 'undefined' ? '' : navigator.userAgent;
+    const newDevice = knownSessionDevices.length >= 2 && Boolean(currentDevice) && !knownSessionDevices.includes(currentDevice);
     const reasons: string[] = [];
     let score = 0;
     if (amountIsUnusual) {
@@ -238,9 +246,18 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       score += 8;
       reasons.push('This is a recipient you have not sent money to before.');
     }
-    if (recentAttemptCount >= 3) {
+    const unusualPaceThreshold = Math.max(3, Math.ceil(customer.avgDailyTxns / 6));
+    if (recentAttemptCount >= unusualPaceThreshold) {
       score += 20;
       reasons.push(`${recentAttemptCount} transfers were recorded in the last 10 minutes, above your usual pace.`);
+    }
+    if (splitPaymentPattern) {
+      score += 20;
+      reasons.push('Several below-limit transfers add up to an unusually high total for your recent activity.');
+    }
+    if (newDevice) {
+      score += amountIsUnusual ? 28 : 16;
+      reasons.push(`This session is using a device or browser not seen in your previous ${knownSessionDevices.length} logins${amountIsUnusual ? ', alongside an unusually large transfer' : ''}.`);
     }
     if (isKnownMule) {
       score += 65;

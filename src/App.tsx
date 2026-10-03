@@ -302,6 +302,34 @@ export default function App() {
     showToast(`Action recorded: ${action.replace(/_/g, ' ')} for Case #${selectedTxnForInvestigation.id}`);
   };
 
+  const handleLabelAlert = async (
+    outcome: 'CONFIRMED_FRAUD' | 'FALSE_POSITIVE' | 'NEEDS_REVIEW',
+    notes: string
+  ): Promise<boolean> => {
+    if (!selectedTxnForInvestigation) return false;
+    try {
+      const response = await fetch('/api/alert-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          caseId: `CASE-${selectedTxnForInvestigation.id}`,
+          transactionId: selectedTxnForInvestigation.id,
+          analyst: currentUser?.name || 'Demo Analyst',
+          outcome,
+          riskScore: selectedTxnForInvestigation.fusedRiskScore,
+          notes,
+        }),
+      });
+      if (!response.ok) throw new Error('Could not save analyst feedback');
+      showToast(`Alert feedback saved: ${outcome.replace(/_/g, ' ')}.`);
+      return true;
+    } catch (error) {
+      console.error(error);
+      showToast('Could not save alert feedback.');
+      return false;
+    }
+  };
+
   const criticalCount = transactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
 
   return (
@@ -458,6 +486,7 @@ export default function App() {
           isOpen={!!selectedTxnForInvestigation}
           onClose={() => setSelectedTxnForInvestigation(null)}
           onTakeAction={handleTakeInvestigationAction}
+          onLabelAlert={handleLabelAlert}
         />
       )}
 
