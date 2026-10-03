@@ -977,6 +977,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
         customer={customer}
         onWalletLinked={handleWalletLinked}
         onPaymentQRScanned={handlePaymentQRScanned}
+        paymentOnly={activeWalletService === 'Make Payment'}
         lang={lang}
       />
 
