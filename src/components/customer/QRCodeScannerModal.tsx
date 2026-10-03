@@ -395,7 +395,11 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
                 <span>{scanMode === 'PAYMENT' ? 'Scan Merchant QR' : scanMode === 'AGENT' ? 'Scan Agent QR' : lang === 'BN' ? 'কিউআর স্ক্যানার ও ওয়ালেট সংযোগ' : 'QR Scanner & Secure Wallet Link'}</span>
               </h3>
               <p className="text-[11px] text-blue-100 font-medium">
-                Cryptographically verify and link bank accounts, trusted co-wallets, or scan merchant QR
+                {scanMode === 'PAYMENT'
+                  ? 'Scan a merchant QR to load the merchant and requested amount before payment.'
+                  : scanMode === 'AGENT'
+                    ? 'Scan the agent QR to fill the agent number, then review the amount before confirming.'
+                    : 'Scan to link an account or continue to a merchant payment.'}
               </p>
             </div>
           </div>
@@ -568,7 +572,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
                 {/* Quick 1-Click QR Demonstration Scenarios */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>⚡ Or select a simulated QR Code to test linking:</span>
+                    <span>{transactionScan ? 'Or choose a sample QR to preview the scan flow:' : 'Or select a simulated QR Code to test linking:'}</span>
                     <span className="text-[10px] text-slate-500 font-mono">4 Scenarios Ready</span>
                   </div>
 
@@ -718,7 +722,9 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
                       <div className="space-y-3">
                         <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
                           <span>
-                            Merchant payment ready for <strong>৳{scannedPayload.suggestedAmount?.toLocaleString()}</strong> at {scannedPayload.accountHolder}.
+                            {scanMode === 'AGENT'
+                              ? <>Agent QR found for <strong>{scannedPayload.accountHolder}</strong> ({scannedPayload.accountNumberMasked}).</>
+                              : <>Merchant payment ready for <strong>৳{scannedPayload.suggestedAmount?.toLocaleString()}</strong> at {scannedPayload.accountHolder}.</>}
                           </span>
                         </div>
                         <button
@@ -727,7 +733,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
                           className="w-full py-3 px-4 bg-[#0054A6] hover:bg-[#004284] text-white font-extrabold rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <DollarSign className="w-4 h-4 text-amber-300" />
-                          <span>Pay ৳{scannedPayload.suggestedAmount?.toLocaleString()} Now</span>
+                          <span>{scanMode === 'AGENT' ? 'Use Agent Details' : `Pay ৳${scannedPayload.suggestedAmount?.toLocaleString()} Now`}</span>
                         </button>
                       </div>
                     ) : (
