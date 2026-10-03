@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CustomerBaseline, LinkedWallet } from '../../types';
 import { MOCK_LINKED_WALLETS } from '../../data/mockData';
 import { QRCodeScannerModal } from './QRCodeScannerModal';
@@ -40,6 +40,9 @@ interface CustomerTransfer {
   amount: number;
   recipient: string;
   timestamp: string;
+  reference?: string;
+  status?: 'COMPLETED' | 'PROCEEDED';
+  riskScore?: number;
 }
 
 const loadTransferHistory = (wallet: string): CustomerTransfer[] => {
@@ -70,6 +73,31 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [riskScore, setRiskScore] = useState<number>(0);
   const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(customer.wallet));
 
+  useEffect(() => {
+    let active = true;
+    const localHistory = loadTransferHistory(customer.wallet);
+    fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('History API unavailable')))
+      .then(async ({ history }: { history: CustomerTransfer[] }) => {
+        if (!active || !Array.isArray(history)) return;
+        if (!history.length && localHistory.length) {
+          for (const record of localHistory) {
+            await fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ wallet: customer.wallet, ...record }),
+            });
+          }
+          if (!active) return;
+          setTransferHistory(localHistory);
+          return;
+        }
+        setTransferHistory(history);
+        window.localStorage.setItem(`takasafe-transfers:${customer.wallet}`, JSON.stringify(history));
+      })
+      .catch(() => { if (active) setTransferHistory(localHistory); });
+    return () => { active = false; };
+  }, [customer.wallet]);
+
   const recentTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 90 * 24 * 60 * 60 * 1000);
   const observedAverage = recentTransfers.length
     ? recentTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / recentTransfers.length
@@ -85,10 +113,18 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     ? `${String(observedHours[0]).padStart(2, '0')}:00 - ${String((observedHours[observedHours.length - 1] + 1) % 24).padStart(2, '0')}:00`
     : customer.usualHours;
 
-  const recordTransfer = (transferAmount: number, transferRecipient: string) => {
+  const recordTransfer = (transferAmount: number, transferRecipient: string, score: number, status: 'COMPLETED' | 'PROCEEDED') => {
+    const record: CustomerTransfer = {
+      amount: transferAmount,
+      recipient: transferRecipient.trim(),
+      timestamp: new Date().toISOString(),
+      reference: note.trim(),
+      status,
+      riskScore: score,
+    };
     const nextHistory = [
       ...transferHistory,
-      { amount: transferAmount, recipient: transferRecipient.trim(), timestamp: new Date().toISOString() },
+      record,
     ].slice(-500);
     setTransferHistory(nextHistory);
     try {
@@ -96,6 +132,13 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     } catch {
       // Keep the current session's in-memory history if browser storage is unavailable.
     }
+    fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: customer.wallet, ...record }),
+    }).catch(() => {
+      // Local storage remains available as an offline fallback.
+    });
   };
 
   // QR Code Scanner & Secure Wallet Linking States
@@ -149,7 +192,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setShowScamModal(true);
       onSimulateRiskyPayment();
     } else {
-      recordTransfer(num, recipient);
+      recordTransfer(num, recipient, score, 'COMPLETED');
       setNormalSuccess(true);
       setTimeout(() => setNormalSuccess(false), 4000);
     }
@@ -747,7 +790,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 {/* Option 3: Continue at Own Risk */}
                 <button
                   onClick={() => {
-                    recordTransfer(Number(amount), recipient);
+                    recordTransfer(Number(amount), recipient, riskScore, 'PROCEEDED');
                     setScamDecision('Customer chose to proceed at own risk. Action logged for compliance review.');
                     setTimeout(() => {
                       setShowScamModal(false);
