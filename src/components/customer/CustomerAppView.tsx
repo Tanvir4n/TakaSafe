@@ -121,9 +121,6 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {lang === 'BN' ? 'গ্রাহক মোড' : 'Active TakaSafe Customer Persona'}
             </span>
-            <span className="text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-              USER Role · Less Privileges (Customer Scope)
-            </span>
           </div>
           <h2 className="text-xl font-black text-slate-900 dark:text-white mt-1">
             {customer.name} ({customer.wallet})
@@ -365,7 +362,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                       </span>
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Cryptographically bound via QR handshake · 256-Bit TLS Anti-Tamper Verification
+                      Cryptographically bound via QR handshake · Anti-Tamper Verification
                     </p>
                   </div>
                 </div>

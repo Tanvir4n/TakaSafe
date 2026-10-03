@@ -137,58 +137,37 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
 
         {/* Two Options: Admin vs User Role Selector */}
         <div className="mb-6 space-y-3">
-          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center justify-between">
-            <span>Select Access Role</span>
-            <span className="text-[10px] text-indigo-600 font-mono font-bold bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
-              Role-Based Access Control (RBAC)
-            </span>
+          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+            Select Access Role
           </div>
 
-          <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200">
+          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100/90 rounded-2xl border border-slate-200">
             {/* Admin Option */}
             <button
               type="button"
               onClick={() => handleSelectRole('ADMIN')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectedRole === 'ADMIN'
-                  ? 'bg-white text-slate-950 shadow-md ring-2 ring-[#0054A6]/30'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-white text-slate-950 shadow-md ring-1 ring-slate-900/10'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <div className="flex items-center gap-1.5 font-bold text-xs">
-                <ShieldCheck className={`w-4 h-4 ${selectedRole === 'ADMIN' ? 'text-[#0054A6]' : 'text-slate-400'}`} />
-                <span>Admin</span>
-              </div>
-              <span className={`text-[10px] font-mono font-bold mt-1 px-1.5 py-0.2 rounded-md ${
-                selectedRole === 'ADMIN'
-                  ? 'bg-indigo-100 text-indigo-800'
-                  : 'text-slate-400'
-              }`}>
-                Wider Privileges
-              </span>
+              <ShieldCheck className={`w-4 h-4 ${selectedRole === 'ADMIN' ? 'text-[#0054A6]' : 'text-slate-400'}`} />
+              <span>Admin</span>
             </button>
 
             {/* User Option */}
             <button
               type="button"
               onClick={() => handleSelectRole('USER')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectedRole === 'USER'
-                  ? 'bg-white text-slate-950 shadow-md ring-2 ring-emerald-600/30'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-white text-slate-950 shadow-md ring-1 ring-slate-900/10'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <div className="flex items-center gap-1.5 font-bold text-xs">
-                <User className={`w-4 h-4 ${selectedRole === 'USER' ? 'text-emerald-600' : 'text-slate-400'}`} />
-                <span>User</span>
-              </div>
-              <span className={`text-[10px] font-mono font-bold mt-1 px-1.5 py-0.2 rounded-md ${
-                selectedRole === 'USER'
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'text-slate-400'
-              }`}>
-                Less Privileges
-              </span>
+              <User className={`w-4 h-4 ${selectedRole === 'USER' ? 'text-emerald-600' : 'text-slate-400'}`} />
+              <span>User</span>
             </button>
           </div>
 
@@ -204,7 +183,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
                   selectedRole === 'ADMIN' ? 'bg-[#0054A6]' : 'bg-emerald-600'
                 }`} />
                 <span className="font-bold text-xs">
-                  {selectedRole === 'ADMIN' ? 'Admin: Wider Privileges' : 'User: Less Privileges (Customer Scope)'}
+                  {selectedRole === 'ADMIN' ? 'Admin: Operator Intelligence' : 'User: Customer Wallet'}
                 </span>
               </div>
               <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
@@ -415,9 +394,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <>
-                <span>
-                  Sign in as {selectedRole === 'ADMIN' ? 'Admin (Wider Privileges)' : 'User (Less Privileges)'}
-                </span>
+                <span>Sign in as {selectedRole === 'ADMIN' ? 'Admin' : 'User'}</span>
                 <ChevronRight className="w-4 h-4 text-amber-300" />
               </>
             )}
@@ -436,10 +413,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
                 handleSelectRole('ADMIN');
                 onLogin(DEMO_ACCOUNTS.ADMIN);
               }}
-              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
-              <span>Demo Admin (Wider Privileges)</span>
+              <span>Demo Admin</span>
             </button>
             <button
               type="button"
@@ -447,10 +424,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
                 handleSelectRole('USER');
                 onLogin(DEMO_ACCOUNTS.USER);
               }}
-              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
             >
               <User className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Demo User (Less Privileges)</span>
+              <span>Demo User</span>
             </button>
           </div>
         </div>

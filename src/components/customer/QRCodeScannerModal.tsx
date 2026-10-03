@@ -378,9 +378,6 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
             <div>
               <h3 className="font-extrabold text-sm sm:text-base tracking-tight flex items-center gap-2">
                 <span>{lang === 'BN' ? 'কিউআর স্ক্যানার ও ওয়ালেট সংযোগ' : 'QR Scanner & Secure Wallet Link'}</span>
-                <span className="text-[10px] font-mono bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.2 rounded-full font-bold">
-                  256-Bit TLS
-                </span>
               </h3>
               <p className="text-[11px] text-blue-100 font-medium">
                 Cryptographically verify and link bank accounts, trusted co-wallets, or scan merchant QR
@@ -816,8 +813,8 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
                     className="w-56 h-56 mx-auto rounded-lg"
                   />
                   {/* Watermark in center of QR */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full p-1 shadow-md flex items-center justify-center border-2 border-[#0054A6]">
-                    <span className="text-[11px] font-black text-[#0054A6]">upay</span>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full p-0.5 shadow-md flex items-center justify-center border-2 border-[#0054A6]">
+                    <span className="text-[9px] font-black text-[#0054A6] tracking-tight">TakaSafe</span>
                   </div>
                 </div>
               ) : (
