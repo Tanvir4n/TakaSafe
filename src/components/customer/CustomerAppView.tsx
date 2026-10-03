@@ -34,6 +34,8 @@ interface CustomerAppViewProps {
   customer: CustomerBaseline;
   userId: string;
   onSimulateRiskyPayment: () => void;
+  initialService?: string | null;
+  onServiceDismiss?: () => void;
   lang: 'EN' | 'BN';
 }
 
@@ -44,12 +46,36 @@ interface CustomerTransfer {
   reference?: string;
   status?: 'COMPLETED' | 'PROCEEDED';
   riskScore?: number;
+  serviceType?: string;
+  direction?: 'IN' | 'OUT';
+  fee?: number;
 }
 
 interface CustomerLogin {
   timestamp: string;
   device?: string;
 }
+
+const WALLET_SERVICES: Record<string, {
+  title: string;
+  type: string;
+  direction: 'IN' | 'OUT';
+  targetLabel: string;
+  targets: string[];
+  feeRate: number;
+}> = {
+  'Cash In': { title: 'Cash In', type: 'CASH_IN', direction: 'IN', targetLabel: 'Deposit source', targets: ['TakaSafe Agent', 'Bank Transfer'], feeRate: 0 },
+  'Cash Out': { title: 'Cash Out', type: 'CASH_OUT', direction: 'OUT', targetLabel: 'Withdrawal point', targets: ['TakaSafe Agent', 'ATM'], feeRate: 0.014 },
+  'Make Payment': { title: 'Make Payment', type: 'MAKE_PAYMENT', direction: 'OUT', targetLabel: 'Merchant', targets: ['Aarong Dhanmondi', 'Chaldal', 'Local Merchant'], feeRate: 0 },
+  'Add Money': { title: 'Add Money', type: 'ADD_MONEY', direction: 'IN', targetLabel: 'Funding source', targets: ['Linked Bank Account', 'Debit Card'], feeRate: 0 },
+  'Pay Bill': { title: 'Pay Bill', type: 'PAY_BILL', direction: 'OUT', targetLabel: 'Biller', targets: ['DESCO', 'WASA', 'Titas Gas', 'DPDC', 'NESCO'], feeRate: 0 },
+  'Mobile Recharge': { title: 'Mobile Recharge', type: 'MOBILE_RECHARGE', direction: 'OUT', targetLabel: 'Mobile operator', targets: ['Grameenphone', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'], feeRate: 0 },
+  Remittance: { title: 'Remittance', type: 'REMITTANCE', direction: 'IN', targetLabel: 'Remittance provider', targets: ['Bank Remittance', 'International Remittance'], feeRate: 0 },
+  Savings: { title: 'Micro-Savings', type: 'SAVINGS', direction: 'OUT', targetLabel: 'Savings plan', targets: ['TakaSafe Savings Pocket', 'Monthly Savings Plan'], feeRate: 0 },
+  Education: { title: 'Education Fee', type: 'EDUCATION', direction: 'OUT', targetLabel: 'Institution', targets: ['University Tuition', 'School Fees', 'College Fees'], feeRate: 0 },
+  Insurance: { title: 'Insurance / Takaful', type: 'INSURANCE', direction: 'OUT', targetLabel: 'Plan', targets: ['Health Takaful', 'Family Takaful'], feeRate: 0 },
+  Business: { title: 'Business Payment', type: 'BUSINESS_PAYMENT', direction: 'OUT', targetLabel: 'Business or merchant', targets: ['Supplier Payment', 'Merchant Settlement', 'Business Invoice'], feeRate: 0 },
+};
 
 const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
   try {
