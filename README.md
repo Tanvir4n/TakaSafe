@@ -77,7 +77,8 @@ The TakaSafe platform is designed with a modern decoupled architecture separatin
    - Forecasts agent cash depletion 24 to 48 hours in advance and automates armored distributor vehicle route dispatch to prevent rural cash-out failures.
 
 7. **Offline Machine Learning Lab (`notebook/`)**:
-   - 34-cell end-to-end Jupyter Notebook (`xgboost_fraud_detection.ipynb`) training on `dataset/transactions.csv` (8,000 transactions × 40 features), addressing the 20.68:1 class imbalance, tuning decision thresholds, and exporting production models to `artifacts/`.
+   - **`xgboost_fraud_detection.ipynb`**: 34-cell end-to-end Jupyter Notebook training on `dataset/transactions.csv` (8,000 transactions × 40 features), addressing the 20.68:1 class imbalance with `scale_pos_weight=20.68`, sweeping decision thresholds, and exporting production models.
+   - **`xgboost_fraud_detection.py`**: Standalone interactive Python script version with `# %%` cell markers for automated and terminal execution.
 
 8. **Audit Ledger & State Persistence**:
    - Immutable audit logging of all regulatory decisions, active quarantine node registries, and 8-division regional risk indexes.
@@ -124,7 +125,7 @@ graph TD
 
     subgraph OfflineMLLab["7. Offline ML Lab (notebook/)"]
         Dataset["Synthetic Dataset (8,000 rows × 40 features)"]
-        Notebook["34-Cell XGBoost Pipeline (scale_pos_weight=20.68)"]
+        Notebook["xgboost_fraud_detection.ipynb · .py\n(Train · Calibrate · Evaluate · Export)"]
         Artifacts[("Model Artifacts: xgboost_mfs_fraud_detector.json")]
     end
 
