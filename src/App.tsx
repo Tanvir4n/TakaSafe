@@ -438,6 +438,7 @@ export default function App() {
           showToast('Signed out of TakaSafe.');
         }}
         onSwitchUserRole={(newRole) => {
+          if (currentUser?.role !== 'ADMIN' || newRole !== 'USER') return;
           const user = DEMO_ACCOUNTS[newRole];
           setCurrentUser(user);
           recordCustomerLogin(user);

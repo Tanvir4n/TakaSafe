@@ -294,7 +294,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
             </div>
 
             {/* Customer App Switcher Pill (Tablet & Desktop) */}
-            <button
+            {currentUser?.role === 'ADMIN' && <button
               onClick={() => setActiveView(activeView === 'CUSTOMER' ? 'OPERATOR' : 'CUSTOMER')}
               className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeView === 'CUSTOMER'
@@ -307,7 +307,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
               <span>
                 {activeView === 'CUSTOMER' ? 'Operator Cockpit' : 'Customer App'}
               </span>
-            </button>
+            </button>}
 
             <button
               onClick={() => onOpenModal?.('SEARCH')}
@@ -398,21 +398,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
 
                     <div className="py-1">
                       {/* 1-Click Role Switcher */}
-                      {currentUser.role === 'USER' ? (
-                        <button
-                          onClick={() => {
-                            setIsUserMenuOpen(false);
-                            onSwitchUserRole?.('ADMIN');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs bg-blue-50/80 hover:bg-blue-100 text-[#0054A6] font-bold flex items-center justify-between cursor-pointer transition-colors"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
-                            <span>Switch to Admin (Wider Privileges)</span>
-                          </span>
-                          <ChevronRight className="w-3.5 h-3.5 text-[#0054A6]" />
-                        </button>
-                      ) : (
+                      {currentUser.role === 'ADMIN' && (
                         <button
                           onClick={() => {
                             setIsUserMenuOpen(false);
@@ -653,7 +639,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                     <span className="text-[10px] text-blue-200 font-mono">Role: {currentUser.role}</span>
                   </div>
                 </div>
-                {onSwitchUserRole && (
+                {currentUser.role === 'ADMIN' && onSwitchUserRole && (
                   <button
                     onClick={() => {
                       onSwitchUserRole(currentUser.role === 'ADMIN' ? 'USER' : 'ADMIN');
