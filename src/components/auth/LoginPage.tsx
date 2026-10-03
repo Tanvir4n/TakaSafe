@@ -22,6 +22,7 @@ import {
 interface LoginPageProps {
   onLogin: (user: AuthUser) => void;
   onCancel: () => void;
+  showBackButton?: boolean;
   lang: 'EN' | 'BN';
 }
 
@@ -116,7 +117,7 @@ export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
   USER: DEMO_PROFILES.find((profile) => profile.role === 'USER')!,
 };
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, showBackButton = true, lang }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
   const [selectedProfileId, setSelectedProfileId] = useState<string>(DEMO_ACCOUNTS.ADMIN.id);
   const [email, setEmail] = useState<string>(DEMO_ACCOUNTS.ADMIN.email);
@@ -185,13 +186,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     <div className="min-h-[85vh] flex items-center justify-center py-10 px-4 sm:px-6 font-sans">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 sm:p-10 relative animate-slide-up card-hover-lift">
         {/* Top Back Navigation */}
-        <button
-          onClick={onCancel}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Home</span>
-        </button>
+        {showBackButton && (
+          <button
+            onClick={onCancel}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-6 cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Home</span>
+          </button>
+        )}
 
         {/* Header Kicker and Title matching user image reference */}
         <div className="text-center mb-6">
