@@ -1,83 +1,428 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" width="100%" height="100%" style="background:#0D1117; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" width="100%" height="100%" style="background:#090D16; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <defs>
-    <marker id="wf-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <!-- Gradients -->
+    <linearGradient id="wfBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0E1424" />
+      <stop offset="50%" stop-color="#090D16" />
+      <stop offset="100%" stop-color="#060911" />
+    </linearGradient>
+
+    <!-- Stage Gradients -->
+    <linearGradient id="card1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#162238" />
+      <stop offset="100%" stop-color="#0B1322" />
+    </linearGradient>
+    <linearGradient id="card2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1C1E3D" />
+      <stop offset="100%" stop-color="#0C0F24" />
+    </linearGradient>
+    <linearGradient id="card3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#281B3D" />
+      <stop offset="100%" stop-color="#120D24" />
+    </linearGradient>
+    <linearGradient id="card4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#331A26" />
+      <stop offset="100%" stop-color="#180B13" />
+    </linearGradient>
+    <linearGradient id="card5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0E2D2B" />
+      <stop offset="100%" stop-color="#061816" />
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="wf-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38BDF8" />
+    </marker>
+    <marker id="wf-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#818CF8" />
+    </marker>
+    <marker id="wf-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#C084FC" />
+    </marker>
+    <marker id="wf-rose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#FB7185" />
+    </marker>
+    <marker id="wf-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#34D399" />
     </marker>
   </defs>
 
-  <text x="40" y="45" fill="#F0F6FC" font-size="22" font-weight="700">TakaSafe End-to-End Transaction Evaluation Workflow</text>
-  <text x="40" y="68" fill="#8B949E" font-size="12">Lifecycle of a transaction event through multi-modal intelligence &amp; action resolution</text>
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#wfBg)" />
 
-  <!-- Step 1: Initiation -->
-  <g transform="translate(40, 120)">
-    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
-    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">1</text>
-    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Event Ingestion</text>
-    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• App / USSD / Agent</text>
-    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Sender &amp; Receiver ID</text>
-    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Amount &amp; Timestamp</text>
-    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Device &amp; IP Geolocation</text>
+  <!-- Subtle Blueprint Grid Lines -->
+  <g opacity="0.04" stroke="#FFFFFF" stroke-width="1">
+    <line x1="0" y1="120" x2="1440" y2="120" />
+    <line x1="0" y1="280" x2="1440" y2="280" />
+    <line x1="0" y1="440" x2="1440" y2="440" />
+    <line x1="0" y1="600" x2="1440" y2="600" />
+    <line x1="288" y1="0" x2="288" y2="720" />
+    <line x1="576" y1="0" x2="576" y2="720" />
+    <line x1="864" y1="0" x2="864" y2="720" />
+    <line x1="1152" y1="0" x2="1152" y2="720" />
   </g>
 
-  <line x1="210" y1="210" x2="252" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+  <!-- ==================== HEADER ==================== -->
+  <g transform="translate(48, 48)">
+    <text x="0" y="0" fill="#F8FAFC" font-size="28" font-weight="800" letter-spacing="-0.5">TakaSafe Multi-Modal Transaction Lifecycle &amp; Evaluation Pipeline</text>
+    <text x="0" y="24" fill="#94A3B8" font-size="13" font-weight="500">
+      Deterministic 5-Stage Orchestration: Ingestion → Real-Time Feature Store → Ensemble Scoring → Policy Matrix → Explainability &amp; BFIU Audit
+    </text>
 
-  <!-- Step 2: Feature Engineering -->
-  <g transform="translate(255, 120)">
-    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
-    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">2</text>
-    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Feature Extraction</text>
-    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Velocity 7d / 30d ratio</text>
-    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Amount vs avg ratio</text>
-    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Circadian nocturnal flag</text>
-    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• IP vs district mismatch</text>
+    <!-- Top Right Badges -->
+    <g transform="translate(1030, -18)">
+      <rect x="0" y="0" width="125" height="26" rx="4" fill="#1E293B" stroke="#334155" />
+      <text x="10" y="17" fill="#94A3B8" font-size="11" font-weight="600">pipeline</text>
+      <rect x="58" y="0" width="67" height="26" rx="4" fill="#38BDF8" />
+      <text x="66" y="17" fill="#090D16" font-size="11" font-weight="800">&lt; 18ms SLA</text>
+
+      <g transform="translate(135, 0)">
+        <rect x="0" y="0" width="105" height="26" rx="4" fill="#1E293B" stroke="#334155" />
+        <text x="10" y="17" fill="#94A3B8" font-size="11" font-weight="600">audit</text>
+        <rect x="46" y="0" width="59" height="26" rx="4" fill="#10B981" />
+        <text x="53" y="17" fill="#FFFFFF" font-size="11" font-weight="800">BFIU STR</text>
+      </g>
+    </g>
   </g>
 
-  <line x1="425" y1="210" x2="467" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+  <!-- ======================================================================== -->
+  <!-- STAGE 1: INGRESS & ATTRIBUTION (01) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(48, 115)">
+    <rect x="0" y="0" width="250" height="460" rx="12" fill="url(#card1)" stroke="#38BDF8" stroke-width="1.2" />
+    
+    <!-- Stage Header Badge -->
+    <rect x="18" y="16" width="34" height="24" rx="4" fill="#0284C7" />
+    <text x="35" y="32" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">01</text>
+    <text x="60" y="32" fill="#38BDF8" font-size="13" font-weight="800">Ingress &amp; Perimeter</text>
+    <text x="18" y="58" fill="#94A3B8" font-size="10">Multi-Channel Ingestion &amp; Sanitization</text>
+    <rect x="180" y="18" width="54" height="18" rx="3" fill="#0C4A6E" />
+    <text x="207" y="30" fill="#7DD3FC" font-size="9" font-weight="700" text-anchor="middle">~2.1 ms</text>
 
-  <!-- Step 3: Multi-Modal AI Fusion -->
-  <g transform="translate(470, 120)">
-    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
-    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">3</text>
-    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Model Inference</text>
-    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• XGBoost Classifier</text>
-    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Isolation Forest Baseline</text>
-    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Graph Mule Centrality</text>
-    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• SHAP attribution breakdown</text>
+    <line x1="18" y1="70" x2="232" y2="70" stroke="#1E293B" stroke-width="1" />
+
+    <!-- Channel Sources -->
+    <text x="18" y="90" fill="#E2E8F0" font-size="11" font-weight="700">Channel Attribution</text>
+    
+    <g transform="translate(18, 100)">
+      <rect x="0" y="0" width="214" height="26" rx="4" fill="#091424" stroke="#1E293B" />
+      <text x="10" y="17" fill="#94A3B8" font-size="10">• Mobile App (iOS / Android React)</text>
+    </g>
+    <g transform="translate(18, 132)">
+      <rect x="0" y="0" width="214" height="26" rx="4" fill="#091424" stroke="#1E293B" />
+      <text x="10" y="17" fill="#94A3B8" font-size="10">• USSD Gateway (*268# Feature Phone)</text>
+    </g>
+    <g transform="translate(18, 164)">
+      <rect x="0" y="0" width="214" height="26" rx="4" fill="#091424" stroke="#1E293B" />
+      <text x="10" y="17" fill="#94A3B8" font-size="10">• Agent Counter (Cash-in / Out Portal)</text>
+    </g>
+    <g transform="translate(18, 196)">
+      <rect x="0" y="0" width="214" height="26" rx="4" fill="#091424" stroke="#1E293B" />
+      <text x="10" y="17" fill="#94A3B8" font-size="10">• Dynamic QR Scan &amp; Merchant Web</text>
+    </g>
+
+    <!-- Edge Security Checks -->
+    <text x="18" y="246" fill="#E2E8F0" font-size="11" font-weight="700">Edge Perimeter Checks</text>
+    <g transform="translate(18, 256)">
+      <rect x="0" y="0" width="214" height="68" rx="6" fill="#0B1322" stroke="#1E293B" />
+      <text x="10" y="18" fill="#38BDF8" font-size="10" font-weight="600">✓ Token &amp; Signature Validation</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9.5">• Cryptographic HMAC-SHA256 Auth</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="9.5">• Leaky-Bucket Per-Wallet Rate Limit</text>
+      <text x="10" y="62" fill="#94A3B8" font-size="9.5">• Schema Sanitization (BDT limits)</text>
+    </g>
+
+    <!-- Output Payload -->
+    <g transform="translate(18, 340)">
+      <rect x="0" y="0" width="214" height="100" rx="6" fill="#030712" stroke="#1E293B" />
+      <text x="10" y="18" fill="#38BDF8" font-size="10" font-weight="700">Normalized Event Stream:</text>
+      <text x="10" y="34" fill="#64748B" font-size="8.5 font-family:monospace">{</text>
+      <text x="16" y="48" fill="#64748B" font-size="8.5 font-family:monospace">"tx_id": "TXN_78129", "amt": 85000,</text>
+      <text x="16" y="62" fill="#64748B" font-size="8.5 font-family:monospace">"sender": "CUST_88017...", "div": "DHK",</text>
+      <text x="16" y="76" fill="#64748B" font-size="8.5 font-family:monospace">"timestamp": "2026-10-03T02:44:11Z"</text>
+      <text x="10" y="90" fill="#64748B" font-size="8.5 font-family:monospace">}</text>
+    </g>
   </g>
 
-  <line x1="640" y1="210" x2="682" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+  <!-- Flow 1 -> 2 -->
+  <line x1="298" y1="345" x2="322" y2="345" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#wf-cyan)" />
 
-  <!-- Step 4: Policy & Action Engine -->
-  <g transform="translate(685, 120)">
-    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
-    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
-    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">4</text>
-    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Action Resolution</text>
-    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Straight-Through Pass</text>
-    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Out-of-Band OTP Step-up</text>
-    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• 24h Cooling-Off Window</text>
-    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Instant Freeze &amp; Quarantine</text>
+  <!-- ======================================================================== -->
+  <!-- STAGE 2: REAL-TIME FEATURE ENGINE (02) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(325, 115)">
+    <rect x="0" y="0" width="250" height="460" rx="12" fill="url(#card2)" stroke="#818CF8" stroke-width="1.2" />
+
+    <!-- Stage Header Badge -->
+    <rect x="18" y="16" width="34" height="24" rx="4" fill="#4F46E5" />
+    <text x="35" y="32" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">02</text>
+    <text x="60" y="32" fill="#A5B4FC" font-size="13" font-weight="800">Feature Store &amp; State</text>
+    <text x="18" y="58" fill="#94A3B8" font-size="10">Sub-Millisecond Sliding Windows</text>
+    <rect x="180" y="18" width="54" height="18" rx="3" fill="#312E81" />
+    <text x="207" y="30" fill="#C7D2FE" font-size="9" font-weight="700" text-anchor="middle">~3.4 ms</text>
+
+    <line x1="18" y1="70" x2="232" y2="70" stroke="#1E293B" stroke-width="1" />
+
+    <!-- Temporal State Engines -->
+    <text x="18" y="90" fill="#E2E8F0" font-size="11" font-weight="700">Dynamic Stateful Features</text>
+
+    <g transform="translate(18, 100)">
+      <rect x="0" y="0" width="214" height="48" rx="6" fill="#0C0E24" stroke="#1E293B" />
+      <text x="10" y="17" fill="#A5B4FC" font-size="10" font-weight="700">Temporal Velocity Burst</text>
+      <text x="10" y="31" fill="#94A3B8" font-size="9">• 10m &amp; 60m transaction counters</text>
+      <text x="10" y="43" fill="#94A3B8" font-size="9">• Amount / 30-day historical mean (53x)</text>
+    </g>
+
+    <g transform="translate(18, 156)">
+      <rect x="0" y="0" width="214" height="48" rx="6" fill="#0C0E24" stroke="#1E293B" />
+      <text x="10" y="17" fill="#A5B4FC" font-size="10" font-weight="700">Circadian Nocturnal Clock</text>
+      <text x="10" y="31" fill="#94A3B8" font-size="9">• Sine/Cosine cyclic hour transform</text>
+      <text x="10" y="43" fill="#F43F5E" font-size="9" font-weight="600">• Nocturnal off-hour flag (00h - 06h)</text>
+    </g>
+
+    <g transform="translate(18, 212)">
+      <rect x="0" y="0" width="214" height="48" rx="6" fill="#0C0E24" stroke="#1E293B" />
+      <text x="10" y="17" fill="#A5B4FC" font-size="10" font-weight="700">Device Hardware Integrity</text>
+      <text x="10" y="31" fill="#94A3B8" font-size="9">• IMEI hash collision check</text>
+      <text x="10" y="43" fill="#94A3B8" font-size="9">• SIM swap indicator (72h cooldown)</text>
+    </g>
+
+    <g transform="translate(18, 268)">
+      <rect x="0" y="0" width="214" height="48" rx="6" fill="#0C0E24" stroke="#1E293B" />
+      <text x="10" y="17" fill="#A5B4FC" font-size="10" font-weight="700">Geospatial Delta Matrix</text>
+      <text x="10" y="31" fill="#94A3B8" font-size="9">• IP ASN vs. Cell Tower Division match</text>
+      <text x="10" y="43" fill="#94A3B8" font-size="9">• Velocity of travel (> 800 km/h flag)</text>
+    </g>
+
+    <!-- Output Feature Vector -->
+    <g transform="translate(18, 332)">
+      <rect x="0" y="0" width="214" height="108" rx="6" fill="#030712" stroke="#1E293B" />
+      <text x="10" y="18" fill="#818CF8" font-size="10" font-weight="700">Synchronized Feature Vector:</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="9">X_dense = [</text>
+      <text x="16" y="48" fill="#CBD5E1" font-size="8.5 font-family:monospace">amt_ratio: 53.2, vel_10m: 7,</text>
+      <text x="16" y="62" fill="#CBD5E1" font-size="8.5 font-family:monospace">is_nocturnal: 1, dev_sim_flag: 1,</text>
+      <text x="16" y="76" fill="#CBD5E1" font-size="8.5 font-family:monospace">mule_degree: 9, ip_mismatch: 1</text>
+      <text x="10" y="92" fill="#94A3B8" font-size="9">] (40-dimensional tensor)</text>
+    </g>
   </g>
 
-  <line x1="855" y1="210" x2="897" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+  <!-- Flow 2 -> 3 -->
+  <line x1="575" y1="345" x2="599" y2="345" stroke="#818CF8" stroke-width="2.5" marker-end="url(#wf-indigo)" />
 
-  <!-- Step 5: Explainability & Audit -->
-  <g transform="translate(900, 120)">
-    <rect x="0" y="0" width="160" height="180" rx="8" fill="#161B22" stroke="#C084FC" stroke-width="1.2" />
-    <circle cx="80" cy="40" r="20" fill="#2E1065" stroke="#C084FC" />
-    <text x="80" y="46" fill="#C084FC" font-size="14" font-weight="700" text-anchor="middle">5</text>
-    <text x="80" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Audit &amp; Intelligence</text>
-    <text x="80" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Gemini Case Dossier</text>
-    <text x="80" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Regulatory BFIU STR</text>
-    <text x="80" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Division Risk Radar</text>
-    <text x="80" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Immutable Audit Ledger</text>
+  <!-- ======================================================================== -->
+  <!-- STAGE 3: MULTI-MODAL MODEL INFERENCE (03) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(602, 115)">
+    <rect x="0" y="0" width="250" height="460" rx="12" fill="url(#card3)" stroke="#C084FC" stroke-width="1.2" />
+
+    <!-- Stage Header Badge -->
+    <rect x="18" y="16" width="34" height="24" rx="4" fill="#7E22CE" />
+    <text x="35" y="32" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">03</text>
+    <text x="60" y="32" fill="#E9D5FF" font-size="13" font-weight="800">Multi-Modal AI Scoring</text>
+    <text x="18" y="58" fill="#94A3B8" font-size="10">Parallel Supervised &amp; Unsupervised</text>
+    <rect x="180" y="18" width="54" height="18" rx="3" fill="#581C87" />
+    <text x="207" y="30" fill="#F3E8FF" font-size="9" font-weight="700" text-anchor="middle">~5.8 ms</text>
+
+    <line x1="18" y1="70" x2="232" y2="70" stroke="#1E293B" stroke-width="1" />
+
+    <!-- 4 Sub-Models in Parallel -->
+    <text x="18" y="90" fill="#E2E8F0" font-size="11" font-weight="700">Parallel Scoring Ensemble</text>
+
+    <g transform="translate(18, 100)">
+      <rect x="0" y="0" width="214" height="46" rx="6" fill="#130D24" stroke="#C084FC" stroke-width="1" />
+      <text x="10" y="16" fill="#C084FC" font-size="10" font-weight="700">XGBoost Classifier (w=0.30)</text>
+      <text x="10" y="28" fill="#94A3B8" font-size="8.5">scale_pos_weight=20.68 calibration</text>
+      <text x="10" y="40" fill="#34D399" font-size="9" font-weight="700">Output: s_fraud = 96 / 100</text>
+    </g>
+
+    <g transform="translate(18, 154)">
+      <rect x="0" y="0" width="214" height="46" rx="6" fill="#130D24" stroke="#1E293B" />
+      <text x="10" y="16" fill="#E9D5FF" font-size="10" font-weight="700">Isolation Forest (w=0.20)</text>
+      <text x="10" y="28" fill="#94A3B8" font-size="8.5">90-Day Spending Profile Distance</text>
+      <text x="10" y="40" fill="#34D399" font-size="9" font-weight="700">Output: s_anomaly = 91 / 100</text>
+    </g>
+
+    <g transform="translate(18, 208)">
+      <rect x="0" y="0" width="214" height="46" rx="6" fill="#130D24" stroke="#1E293B" />
+      <text x="10" y="16" fill="#E9D5FF" font-size="10" font-weight="700">MuleVision GNN Graph (w=0.10)</text>
+      <text x="10" y="28" fill="#94A3B8" font-size="8.5">Betweenness Centrality &amp; Hop Depth</text>
+      <text x="10" y="40" fill="#34D399" font-size="9" font-weight="700">Output: s_mule = 98 / 100</text>
+    </g>
+
+    <g transform="translate(18, 262)">
+      <rect x="0" y="0" width="214" height="46" rx="6" fill="#130D24" stroke="#1E293B" />
+      <text x="10" y="16" fill="#E9D5FF" font-size="10" font-weight="700">ScamShield Heuristic (w=0.10)</text>
+      <text x="10" y="28" fill="#94A3B8" font-size="8.5">First-Time Unknown Recipient Duress</text>
+      <text x="10" y="40" fill="#34D399" font-size="9" font-weight="700">Output: s_scam = 88 / 100</text>
+    </g>
+
+    <!-- Fused Score Calculation -->
+    <g transform="translate(18, 320)">
+      <rect x="0" y="0" width="214" height="120" rx="6" fill="#030712" stroke="#1E293B" />
+      <text x="10" y="18" fill="#C084FC" font-size="10" font-weight="700">Fused Score R_final:</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="8.5">R = Σ ( w_i · s_i )</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="8.5">= 0.30(96) + 0.20(91) + 0.15(94)</text>
+      <text x="10" y="60" fill="#94A3B8" font-size="8.5">+ 0.15(95) + 0.10(98) + 0.10(88)</text>
+      
+      <!-- Big Score Pill -->
+      <rect x="10" y="74" width="194" height="34" rx="4" fill="#881337" stroke="#F43F5E" />
+      <text x="107" y="96" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">
+        COMPOSITE SCORE: 94 / 100
+      </text>
+    </g>
   </g>
 
-  <!-- Execution speed bar at bottom -->
-  <rect x="40" y="340" width="1020" height="40" rx="6" fill="#161B22" stroke="#30363D" />
-  <text x="60" y="365" fill="#34D399" font-size="12" font-weight="700">Real-Time Performance SLA:</text>
-  <text x="240" y="365" fill="#8B949E" font-size="12">&lt; 18ms End-to-End Pipeline Evaluation · Zero Latency Customer Friction on Normal Transactions</text>
+  <!-- Flow 3 -> 4 -->
+  <line x1="852" y1="345" x2="876" y2="345" stroke="#C084FC" stroke-width="2.5" marker-end="url(#wf-purple)" />
+
+  <!-- ======================================================================== -->
+  <!-- STAGE 4: DETERMINISTIC POLICY ACTION ROUTER (04) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(879, 115)">
+    <rect x="0" y="0" width="250" height="460" rx="12" fill="url(#card4)" stroke="#FB7185" stroke-width="1.2" />
+
+    <!-- Stage Header Badge -->
+    <rect x="18" y="16" width="34" height="24" rx="4" fill="#BE123C" />
+    <text x="35" y="32" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">04</text>
+    <text x="60" y="32" fill="#FDA4AF" font-size="13" font-weight="800">Action Resolution</text>
+    <text x="18" y="58" fill="#94A3B8" font-size="10">Deterministic Policy &amp; Intervention</text>
+    <rect x="180" y="18" width="54" height="18" rx="3" fill="#4C0519" />
+    <text x="207" y="30" fill="#FECDD3" font-size="9" font-weight="700" text-anchor="middle">~1.9 ms</text>
+
+    <line x1="18" y1="70" x2="232" y2="70" stroke="#1E293B" stroke-width="1" />
+
+    <!-- 4 Policy Threshold Tiers -->
+    <text x="18" y="90" fill="#E2E8F0" font-size="11" font-weight="700">Enforcement Action Matrix</text>
+
+    <!-- Tier 1 -->
+    <g transform="translate(18, 100)">
+      <rect x="0" y="0" width="214" height="52" rx="6" fill="#064E3B" fill-opacity="0.3" stroke="#10B981" stroke-width="1" />
+      <text x="10" y="16" fill="#34D399" font-size="10" font-weight="800">LOW (0 - 30): Pass</text>
+      <text x="10" y="30" fill="#E2E8F0" font-size="9">• Straight-Through Processing</text>
+      <text x="10" y="42" fill="#94A3B8" font-size="8.5">Immediate fund settlement &amp; receipt</text>
+    </g>
+
+    <!-- Tier 2 -->
+    <g transform="translate(18, 158)">
+      <rect x="0" y="0" width="214" height="52" rx="6" fill="#78350F" fill-opacity="0.3" stroke="#FBBF24" stroke-width="1" />
+      <text x="10" y="16" fill="#FCD34D" font-size="10" font-weight="800">MED (31 - 60): Challenge</text>
+      <text x="10" y="30" fill="#E2E8F0" font-size="9">• Step-Up Out-of-Band SMS OTP</text>
+      <text x="10" y="42" fill="#94A3B8" font-size="8.5">In-app biometric face/finger challenge</text>
+    </g>
+
+    <!-- Tier 3 -->
+    <g transform="translate(18, 216)">
+      <rect x="0" y="0" width="214" height="52" rx="6" fill="#7C2D12" fill-opacity="0.3" stroke="#FB923C" stroke-width="1" />
+      <text x="10" y="16" fill="#FDBA74" font-size="10" font-weight="800">HIGH (61 - 80): ScamShield</text>
+      <text x="10" y="30" fill="#E2E8F0" font-size="9">• Cognitive Duress Intercept Modal</text>
+      <text x="10" y="42" fill="#94A3B8" font-size="8.5">24-Hour Cooling-Off cancellation option</text>
+    </g>
+
+    <!-- Tier 4 ACTIVE -->
+    <g transform="translate(18, 274)">
+      <rect x="0" y="0" width="214" height="58" rx="6" fill="#881337" fill-opacity="0.5" stroke="#F43F5E" stroke-width="1.5" />
+      <text x="10" y="18" fill="#FDA4AF" font-size="10.5" font-weight="800">CRIT (81 - 100): QUARANTINE</text>
+      <text x="10" y="34" fill="#FFFFFF" font-size="9.5" font-weight="700">• Instant Outflow Freeze &amp; Lock</text>
+      <text x="10" y="48" fill="#FECDD3" font-size="8.5">• Mule Node Isolated from Cluster</text>
+    </g>
+
+    <!-- Operational Presets -->
+    <g transform="translate(18, 344)">
+      <rect x="0" y="0" width="214" height="96" rx="6" fill="#030712" stroke="#1E293B" />
+      <text x="10" y="18" fill="#FB7185" font-size="10" font-weight="700">Dynamic Tuner Presets:</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="8.5">• Production Baseline (Standard)</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="8.5">• Nocturnal Guard (Off-hours 00-06h)</text>
+      <text x="10" y="62" fill="#94A3B8" font-size="8.5">• Anti-Mule Ring Enforcement</text>
+      <text x="10" y="76" fill="#34D399" font-size="8.5">• Disaster Relief Mode (Low friction)</text>
+    </g>
+  </g>
+
+  <!-- Flow 4 -> 5 -->
+  <line x1="1129" y1="345" x2="1153" y2="345" stroke="#FB7185" stroke-width="2.5" marker-end="url(#wf-rose)" />
+
+  <!-- ======================================================================== -->
+  <!-- STAGE 5: EXPLAINABILITY, GEMINI BRIEF & BFIU AUDIT (05) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(1156, 115)">
+    <rect x="0" y="0" width="236" height="460" rx="12" fill="url(#card5)" stroke="#34D399" stroke-width="1.2" />
+
+    <!-- Stage Header Badge -->
+    <rect x="18" y="16" width="34" height="24" rx="4" fill="#059669" />
+    <text x="35" y="32" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">05</text>
+    <text x="60" y="32" fill="#A7F3D0" font-size="13" font-weight="800">Audit &amp; Intelligence</text>
+    <text x="18" y="58" fill="#94A3B8" font-size="10">SHAP Attributions &amp; BFIU STR</text>
+    <rect x="166" y="18" width="54" height="18" rx="3" fill="#064E3B" />
+    <text x="193" y="30" fill="#6EE7B7" font-size="9" font-weight="700" text-anchor="middle">Async</text>
+
+    <line x1="18" y1="70" x2="218" y2="70" stroke="#1E293B" stroke-width="1" />
+
+    <!-- SHAP Attribution Breakdown -->
+    <text x="18" y="90" fill="#E2E8F0" font-size="11" font-weight="700">SHAP Feature Vectors</text>
+    
+    <g transform="translate(18, 100)">
+      <rect x="0" y="0" width="200" height="70" rx="6" fill="#051C1A" stroke="#1E293B" />
+      <text x="10" y="18" fill="#F87171" font-size="9" font-weight="700">Circadian Time: +31%</text>
+      <rect x="10" y="24" width="120" height="4" rx="2" fill="#EF4444" />
+      <text x="10" y="38" fill="#F87171" font-size="9" font-weight="700">Velocity Burst: +24%</text>
+      <rect x="10" y="44" width="90" height="4" rx="2" fill="#EF4444" />
+      <text x="10" y="58" fill="#F87171" font-size="9" font-weight="700">Hardware / SIM Mismatch: +17%</text>
+      <rect x="10" y="64" width="65" height="4" rx="2" fill="#EF4444" />
+    </g>
+
+    <!-- Gemini 2.5 Flash Synthesizer -->
+    <text x="18" y="190" fill="#E2E8F0" font-size="11" font-weight="700">Gemini 2.5 Flash Brief</text>
+    <g transform="translate(18, 200)">
+      <rect x="0" y="0" width="200" height="90" rx="6" fill="#051C1A" stroke="#059669" stroke-width="1" />
+      <text x="10" y="18" fill="#6EE7B7" font-size="10" font-weight="700">Forensic Case Narrative</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="8.5">• Converts SHAP math into</text>
+      <text x="10" y="46" fill="#94A3B8" font-size="8.5">  plain English AML dossiers</text>
+      <text x="10" y="58" fill="#94A3B8" font-size="8.5">• Highlights syndicate links</text>
+      <text x="10" y="72" fill="#34D399" font-size="8.5" font-weight="700">• Auto-populates BFIU Form 2</text>
+    </g>
+
+    <!-- Regulatory Compliance & Sign-off -->
+    <text x="18" y="310" fill="#E2E8F0" font-size="11" font-weight="700">Immutable Compliance</text>
+    <g transform="translate(18, 320)">
+      <rect x="0" y="0" width="200" height="120" rx="6" fill="#030712" stroke="#1E293B" />
+      <text x="10" y="18" fill="#FBBF24" font-size="10" font-weight="700">Regulatory Assurance:</text>
+      <text x="10" y="34" fill="#94A3B8" font-size="8.5">• AMLA 2012 (Sec 19) Filing</text>
+      <text x="10" y="48" fill="#94A3B8" font-size="8.5">• BFIU STR Formal Dossier</text>
+      <text x="10" y="62" fill="#94A3B8" font-size="8.5">• Authorized Officer E-Sign</text>
+      <text x="10" y="76" fill="#94A3B8" font-size="8.5">• SHA-256 Ledger Audit Log</text>
+      <rect x="10" y="88" width="180" height="22" rx="3" fill="#064E3B" />
+      <text x="100" y="102" fill="#A7F3D0" font-size="8" font-weight="700" text-anchor="middle">
+        AUDIT RECORD IMMUTABLE
+      </text>
+    </g>
+  </g>
+
+  <!-- ======================================================================== -->
+  <!-- REAL-TIME PERFORMANCE SLA & COMPLIANCE BAR (BOTTOM) -->
+  <!-- ======================================================================== -->
+  <g transform="translate(48, 600)">
+    <rect x="0" y="0" width="1344" height="75" rx="10" fill="#101726" stroke="#1E293B" stroke-width="1.2" />
+    
+    <!-- SLA Badge -->
+    <rect x="20" y="18" width="195" height="38" rx="6" fill="#0284C7" />
+    <text x="117" y="36" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">PIPELINE PERFORMANCE SLA</text>
+    <text x="117" y="49" fill="#E0F2FE" font-size="10" font-weight="600" text-anchor="middle">&lt; 18.0 ms End-to-End Latency</text>
+
+    <!-- Detailed SLA Metrics -->
+    <g transform="translate(235, 18)">
+      <text x="0" y="16" fill="#F8FAFC" font-size="12" font-weight="700">Real-Time Operational Guarantees:</text>
+      <text x="0" y="34" fill="#94A3B8" font-size="10">
+        • Zero Latency Friction on Benign Transfers (95.4% of volume approved straight-through in &lt; 8ms)
+      </text>
+      <text x="0" y="48" fill="#94A3B8" font-size="10">
+        • Regulatory Compliance: Bangladesh Bank PSD Circular 12 · Anti-Money Laundering Act 2012 (Sec 19) · BFIU STR Standards
+      </text>
+    </g>
+
+    <!-- Resilience Guarantee -->
+    <g transform="translate(1060, 20)">
+      <rect x="0" y="0" width="260" height="34" rx="6" fill="#064E3B" stroke="#059669" />
+      <text x="130" y="21" fill="#D1FAE5" font-size="10.5" font-weight="700" text-anchor="middle">
+        🛡️ High-Throughput MFS Shield Active
+      </text>
+    </g>
+  </g>
 </svg>
