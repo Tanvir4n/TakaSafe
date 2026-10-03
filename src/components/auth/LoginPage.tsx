@@ -398,15 +398,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
                 type="email"
                 value={email}
                 onChange={(e) => {
-                  const nextEmail = e.target.value;
-                  setEmail(nextEmail);
-                  const matchingProfile = DEMO_PROFILES.find((profile) => profile.email.toLowerCase() === nextEmail.trim().toLowerCase());
-                  if (matchingProfile) {
-                    setSelectedRole(matchingProfile.role);
-                    setSelectedProfileId(matchingProfile.id);
-                  }
+                  // Keep the chosen access mode stable while typing. Deriving the
+                  // role from email caused autofill/input to silently switch a
+                  // customer sign-in back to the admin view.
+                  setEmail(e.target.value);
                 }}
                 placeholder="Enter Your Email"
+                autoComplete="off"
                 required
                 className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#164E3D] focus:border-transparent transition-all"
               />
