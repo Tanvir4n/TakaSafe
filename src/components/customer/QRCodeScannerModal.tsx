@@ -41,6 +41,7 @@ interface QRCodeScannerModalProps {
   customer: CustomerBaseline;
   onWalletLinked: (newWallet: LinkedWallet) => void;
   onPaymentQRScanned?: (recipientWallet: string, amount?: number, note?: string) => void;
+  paymentOnly?: boolean;
   lang: 'EN' | 'BN';
 }
 
@@ -50,6 +51,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
   customer,
   onWalletLinked,
   onPaymentQRScanned,
+  paymentOnly = false,
   lang,
 }) => {
   const [modalTab, setModalTab] = useState<'SCANNER' | 'MY_QR'>('SCANNER');
@@ -70,6 +72,14 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isOpen || !paymentOnly) return;
+    setModalTab('SCANNER');
+    setIsScanning(true);
+    setScannedPayload(null);
+    setUploadError(null);
+  }, [isOpen, paymentOnly]);
 
   // Generate My QR Code for current customer
   useEffect(() => {
@@ -190,6 +200,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
         };
       }
 
+      if (paymentOnly) payload.action = 'MERCHANT_CHECKOUT';
       setIsScanning(false);
       const isThreat = !payload.muleCheckPassed || payload.riskAssessmentScore >= 80;
       playScanBeep(isThreat);
@@ -208,6 +219,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
     let isActive = true;
 
     if (isOpen && modalTab === 'SCANNER' && isScanning && navigator.mediaDevices?.getUserMedia) {
+      setHasCameraPermission(null);
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode: cameraFacing === 'ENVIRONMENT' ? { ideal: 'environment' } : { ideal: 'user' },
@@ -256,10 +268,12 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
 
           animFrameRef.current = requestAnimationFrame(scanFrame);
         })
-        .catch(() => {
+      .catch(() => {
           // Camera permission denied or not available (e.g. desktop/iframe)
           setHasCameraPermission(false);
-        });
+      });
+    } else if (isOpen && modalTab === 'SCANNER' && isScanning) {
+      setHasCameraPermission(false);
     }
 
     return () => {
@@ -274,7 +288,7 @@ export const QRCodeScannerModal: React.FC<QRCodeScannerModalProps> = ({
         videoRef.current.srcObject = null;
       }
     };
-  }, [isOpen, modalTab, isScanning, cameraFacing]);
+    }, [isOpen, modalTab, isScanning, cameraFacing]);
 
   // Handle Image File Upload (QR from photo/screenshot)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

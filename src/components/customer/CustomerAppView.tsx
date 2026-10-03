@@ -1003,17 +1003,26 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
               <form onSubmit={handleWalletServiceSubmit} className="space-y-4">
                 <label className="block text-xs font-semibold text-slate-700">
                   {WALLET_SERVICES[activeWalletService].targetLabel}
-                  <select value={serviceTarget} onChange={(event) => setServiceTarget(event.target.value)} required className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]">
-                    {WALLET_SERVICES[activeWalletService].targets.map((target) => <option key={target} value={target}>{target}</option>)}
-                  </select>
+                  {WALLET_SERVICES[activeWalletService].targets.length ? (
+                    <select value={serviceTarget} onChange={(event) => setServiceTarget(event.target.value)} required className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]">
+                      {WALLET_SERVICES[activeWalletService].targets.map((target) => <option key={target} value={target}>{target}</option>)}
+                    </select>
+                  ) : (
+                    <input value={serviceTarget} onChange={(event) => setServiceTarget(event.target.value)} required placeholder="Enter merchant name or scan its QR" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                  )}
                 </label>
-                {(activeWalletService === 'Cash Out' || activeWalletService === 'Make Payment' || activeWalletService === 'Pay Bill' || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Education' || activeWalletService === 'Insurance' || activeWalletService === 'Business') && (
+                {activeWalletService === 'Make Payment' && (
+                  <button type="button" onClick={() => setIsQRScannerOpen(true)} className="w-full py-2.5 rounded-xl border border-[#0054A6] text-[#0054A6] hover:bg-blue-50 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer">
+                    <QrCode className="w-4 h-4" /> Scan merchant QR with camera
+                  </button>
+                )}
+                {(activeWalletService === 'Cash In' || activeWalletService === 'Cash Out' || activeWalletService === 'Make Payment' || activeWalletService === 'Pay Bill' || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Education' || activeWalletService === 'Insurance' || activeWalletService === 'Business') && (
                   <label className="block text-xs font-semibold text-slate-700">
-                    {activeWalletService === 'Mobile Recharge' ? 'Mobile number' : activeWalletService === 'Pay Bill' ? 'Customer / bill account number' : activeWalletService === 'Cash Out' ? 'Cash collection number (optional)' : 'Reference or account number (optional)'}
-                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Enter a reference" required={activeWalletService === 'Mobile Recharge' || activeWalletService === 'Pay Bill'} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                    {activeWalletService === 'Cash In' ? serviceTarget === 'Agent Deposit' ? 'Agent number' : 'Bank reference (optional)' : activeWalletService === 'Cash Out' ? serviceTarget === 'Agent Cash Out' ? 'Agent number' : 'ATM booth (optional)' : activeWalletService === 'Mobile Recharge' ? 'Mobile number' : activeWalletService === 'Pay Bill' ? 'Customer / bill account number' : activeWalletService === 'Make Payment' ? 'Merchant QR recipient' : 'Reference or account number (optional)'}
+                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder={activeWalletService === 'Cash In' || activeWalletService === 'Cash Out' ? '01XXXXXXXXX' : activeWalletService === 'Mobile Recharge' ? '01XXXXXXXXX' : 'Enter a reference'} required={(activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit') || (activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out') || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Pay Bill'} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
                   </label>
                 )}
-                {(activeWalletService === 'Cash In' || activeWalletService === 'Add Money' || activeWalletService === 'Remittance' || activeWalletService === 'Savings') && (
+                {(activeWalletService === 'Add Money' || activeWalletService === 'Remittance' || activeWalletService === 'Savings') && (
                   <label className="block text-xs font-semibold text-slate-700">
                     Note (optional)
                     <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Add a note" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
