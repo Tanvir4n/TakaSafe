@@ -36,6 +36,24 @@ interface CustomerAppViewProps {
   lang: 'EN' | 'BN';
 }
 
+interface CustomerTransfer {
+  amount: number;
+  recipient: string;
+  timestamp: string;
+}
+
+const loadTransferHistory = (wallet: string): CustomerTransfer[] => {
+  try {
+    const saved = window.localStorage.getItem(`takasafe-transfers:${wallet}`);
+    const parsed: unknown = saved ? JSON.parse(saved) : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is CustomerTransfer =>
+      typeof item?.amount === 'number' && typeof item?.recipient === 'string' && typeof item?.timestamp === 'string'
+    ) : [];
+  } catch {
+    return [];
+  }
+};
+
 export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   customer,
   onSimulateRiskyPayment,
@@ -50,6 +68,34 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
+  const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(customer.wallet));
+
+  const recentTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 90 * 24 * 60 * 60 * 1000);
+  const observedAverage = recentTransfers.length
+    ? recentTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / recentTransfers.length
+    : customer.avgAmount;
+  const observedMaximum = recentTransfers.length
+    ? Math.max(...recentTransfers.map((transfer) => transfer.amount))
+    : customer.maxAmountTypical;
+  const observedRecipients = new Set(recentTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')));
+  const knownRecipients = observedRecipients.size ? observedRecipients : new Set(customer.frequentRecipients.map((item) => item.replace(/\D/g, '')));
+  const observedHours = recentTransfers.map((transfer) => new Date(transfer.timestamp).getHours()).sort((a, b) => a - b);
+  const usualHours = observedHours.length >= 3
+    ? `${String(observedHours[0]).padStart(2, '0')}:00 - ${String((observedHours[observedHours.length - 1] + 1) % 24).padStart(2, '0')}:00`
+    : customer.usualHours;
+
+  const recordTransfer = (transferAmount: number, transferRecipient: string) => {
+    const nextHistory = [
+      ...transferHistory,
+      { amount: transferAmount, recipient: transferRecipient.trim(), timestamp: new Date().toISOString() },
+    ].slice(-500);
+    setTransferHistory(nextHistory);
+    try {
+      window.localStorage.setItem(`takasafe-transfers:${customer.wallet}`, JSON.stringify(nextHistory));
+    } catch {
+      // Keep the current session's in-memory history if browser storage is unavailable.
+    }
+  };
 
   // QR Code Scanner & Secure Wallet Linking States
   const [isQRScannerOpen, setIsQRScannerOpen] = useState<boolean>(false);
