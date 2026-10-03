@@ -23,11 +23,41 @@ import {
   REGIONAL_RADAR_METRICS,
   INITIAL_AUDIT_LOGS,
 } from './data/mockData';
-import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep, AuthUser } from './types';
+import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep, AuthUser, CustomerBaseline } from './types';
 import { ShieldCheck, Info } from 'lucide-react';
 
 const APP_SESSION_KEY = 'takasafe-app-session';
 type AppView = 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN';
+
+const getCustomerProfile = (user: AuthUser | null): CustomerBaseline => {
+  if (!user) return CURRENT_CUSTOMER;
+  const existingCustomerProfile = DEMO_CUSTOMER_PROFILES[user.id];
+  if (existingCustomerProfile) return existingCustomerProfile;
+
+  // Admin demo accounts can also open Send Money. Give each account its own
+  // identity and data namespace instead of showing Rafiqul's customer record.
+  return {
+    ...CURRENT_CUSTOMER,
+    wallet: user.phone,
+    name: user.name,
+    nationalIdMasked: 'Not provided',
+    balance: 100000,
+    avgDailyTxns: 2,
+    avgAmount: 2500,
+    maxAmountTypical: 10000,
+    usualHours: '09:00 - 21:00',
+    homeDistrict: 'Not provided',
+    knownDevices: ['Current device'],
+    frequentRecipients: [],
+    financialResilienceScore: 70,
+    resilienceComponents: {
+      incomeStability: 70,
+      spendingDiscipline: 70,
+      emergencyBufferDays: 30,
+      cashOutDependency: 40,
+    },
+  };
+};
 
 export default function App() {
   const [initialSession] = useState(() => {
@@ -477,8 +507,8 @@ export default function App() {
 
           {activeView === 'CUSTOMER' && (
             <CustomerAppView
-              customer={DEMO_CUSTOMER_PROFILES[currentUser?.id || ''] || CURRENT_CUSTOMER}
-              userId={currentUser?.id || CURRENT_CUSTOMER.wallet}
+              customer={getCustomerProfile(currentUser)}
+              userId={currentUser?.id || 'guest'}
               onSimulateRiskyPayment={() => {
                 // Ensure critical transaction is visible in operator queue
               }}
