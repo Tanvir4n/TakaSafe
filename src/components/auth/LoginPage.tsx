@@ -25,8 +25,26 @@ interface LoginPageProps {
   lang: 'EN' | 'BN';
 }
 
-export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
-  ADMIN: {
+const adminPermissions: AuthUser['permissions'] = {
+  canViewOperatorDashboard: true,
+  canFreezeWallets: true,
+  canDispatchLiquidity: true,
+  canTunePolicyWeights: true,
+  canExportAuditLogs: true,
+  canPerformInvestigationActions: true,
+};
+
+const customerPermissions: AuthUser['permissions'] = {
+  canViewOperatorDashboard: false,
+  canFreezeWallets: false,
+  canDispatchLiquidity: false,
+  canTunePolicyWeights: false,
+  canExportAuditLogs: false,
+  canPerformInvestigationActions: false,
+};
+
+export const DEMO_PROFILES: AuthUser[] = [
+  {
     id: 'USR-ADM-01',
     name: 'Md. Tanvir Hasan',
     email: 'tanvir.hasan@takasafe.upay.bd',
@@ -34,16 +52,27 @@ export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
     role: 'ADMIN',
     designation: 'Chief Risk Analyst & AML Supervisor',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-    permissions: {
-      canViewOperatorDashboard: true,
-      canFreezeWallets: true,
-      canDispatchLiquidity: true,
-      canTunePolicyWeights: true,
-      canExportAuditLogs: true,
-      canPerformInvestigationActions: true,
-    },
+    permissions: adminPermissions,
   },
-  USER: {
+  {
+    id: 'USR-ADM-02',
+    name: 'Sourov Kumar',
+    email: 'sourov.kumar@takasafe.upay.bd',
+    phone: '+880 1812-402921',
+    role: 'ADMIN',
+    designation: 'SOC Operations & Risk Governance',
+    permissions: adminPermissions,
+  },
+  {
+    id: 'USR-ADM-03',
+    name: 'Md. Sadman Al Islam Shabab',
+    email: 'sadman.shabab@takasafe.upay.bd',
+    phone: '+880 1912-403922',
+    role: 'ADMIN',
+    designation: 'Model Architecture & Explainability Lead',
+    permissions: adminPermissions,
+  },
+  {
     id: 'USR-CUST-88',
     name: 'Rafiqul Islam',
     email: 'rafiqul.islam@gmail.com',
@@ -51,19 +80,45 @@ export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
     role: 'USER',
     designation: 'Verified Upay MFS Customer',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
-    permissions: {
-      canViewOperatorDashboard: false,
-      canFreezeWallets: false,
-      canDispatchLiquidity: false,
-      canTunePolicyWeights: false,
-      canExportAuditLogs: false,
-      canPerformInvestigationActions: false,
-    },
+    permissions: customerPermissions,
   },
+  {
+    id: 'USR-CUST-89',
+    name: 'Nusrat Jahan',
+    email: 'nusrat.jahan@example.com',
+    phone: '01818-234567',
+    role: 'USER',
+    designation: 'Verified Upay MFS Customer',
+    permissions: customerPermissions,
+  },
+  {
+    id: 'USR-CUST-90',
+    name: 'Imran Hossain',
+    email: 'imran.hossain@example.com',
+    phone: '01919-345678',
+    role: 'USER',
+    designation: 'Verified Upay MFS Customer',
+    permissions: customerPermissions,
+  },
+  {
+    id: 'USR-CUST-91',
+    name: 'Farzana Akter',
+    email: 'farzana.akter@example.com',
+    phone: '01616-456789',
+    role: 'USER',
+    designation: 'Verified Upay MFS Customer',
+    permissions: customerPermissions,
+  },
+];
+
+export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
+  ADMIN: DEMO_PROFILES.find((profile) => profile.role === 'ADMIN')!,
+  USER: DEMO_PROFILES.find((profile) => profile.role === 'USER')!,
 };
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
+  const [selectedProfileId, setSelectedProfileId] = useState<string>(DEMO_ACCOUNTS.ADMIN.id);
   const [email, setEmail] = useState<string>(DEMO_ACCOUNTS.ADMIN.email);
   const [password, setPassword] = useState<string>('••••••••••••');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -74,7 +129,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
   // Switch role selection and autofill matching demo credentials
   const handleSelectRole = (role: UserRole) => {
     setSelectedRole(role);
-    setEmail(DEMO_ACCOUNTS[role].email);
+    const profile = DEMO_PROFILES.find((candidate) => candidate.role === role)!;
+    setSelectedProfileId(profile.id);
+    setEmail(profile.email);
     setPassword('••••••••••••');
     setErrorMsg(null);
   };
@@ -93,10 +150,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      const user = {
-        ...DEMO_ACCOUNTS[selectedRole],
-        email: email.trim(),
-      };
+      const user = DEMO_PROFILES.find((profile) => profile.id === selectedProfileId && profile.role === selectedRole && profile.email.toLowerCase() === email.trim().toLowerCase());
+      if (!user) {
+        setErrorMsg('Choose a demo profile that matches the selected role and email.');
+        return;
+      }
       onLogin(user);
     }, 400);
   };
@@ -105,7 +163,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      onLogin(DEMO_ACCOUNTS[selectedRole]);
+      onLogin(DEMO_PROFILES.find((profile) => profile.id === selectedProfileId)!);
     }, 450);
   };
 
