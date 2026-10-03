@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && cp dist/index.html dist/404.html",
+    "build": "vite build && node --input-type=module -e \"import { copyFileSync } from 'node:fs'; copyFileSync('dist/index.html', 'dist/404.html')\"",
     "start": "node server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
