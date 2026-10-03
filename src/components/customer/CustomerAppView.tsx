@@ -87,9 +87,21 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [showScamModal, setShowScamModal] = useState<boolean>(false);
   const [scamDecision, setScamDecision] = useState<string | null>(null);
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
+  const [balanceError, setBalanceError] = useState<string | null>(null);
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
   const [isScoring, setIsScoring] = useState<boolean>(false);
+  const balanceStorageKey = `takasafe-balance:${userId}:${customer.wallet}`;
+  const [availableBalance, setAvailableBalance] = useState<number>(() => {
+    try {
+      const savedBalance = Number(window.localStorage.getItem(balanceStorageKey));
+      return window.localStorage.getItem(balanceStorageKey) !== null && Number.isFinite(savedBalance) && savedBalance >= 0
+        ? savedBalance
+        : customer.balance;
+    } catch {
+      return customer.balance;
+    }
+  });
   const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(userId, customer.wallet));
   const [loginHistory, setLoginHistory] = useState<CustomerLogin[]>(() => loadLoginHistory(userId, customer.wallet));
 
@@ -179,6 +191,14 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       ...transferHistory,
       record,
     ].slice(-500);
+    const nextBalance = Math.max(0, availableBalance - transferAmount);
+    setAvailableBalance(nextBalance);
+    setBalanceError(null);
+    try {
+      window.localStorage.setItem(balanceStorageKey, String(nextBalance));
+    } catch {
+      // Keep the balance update in memory if browser storage is unavailable.
+    }
     setTransferHistory(nextHistory);
     try {
       window.localStorage.setItem(`takasafe-transfers:${userId}:${customer.wallet}`, JSON.stringify(nextHistory));
@@ -203,6 +223,15 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const handleSendPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     const num = Number(amount);
+    if (!Number.isFinite(num) || num <= 0) {
+      setBalanceError('Enter an amount greater than ৳0.');
+      return;
+    }
+    if (num > availableBalance) {
+      setBalanceError(`Insufficient balance. You have ৳${availableBalance.toLocaleString()} available.`);
+      return;
+    }
+    setBalanceError(null);
     setIsScoring(true);
 
     const normalizedRecipient = recipient.trim().replace(/\D/g, '');
@@ -420,7 +449,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
               {/* Balance & Card Details */}
               <div className="md:col-span-1 space-y-4">
                 {/* Digital Wallet Card - Sovereign Luxury Centurion Inspired */}
-                <TakaSafeSovereignCard customer={customer} lang={lang} />
+                <TakaSafeSovereignCard customer={{ ...customer, balance: availableBalance }} lang={lang} />
 
                 {/* Quick Demo Pre-fills */}
                 <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
@@ -482,6 +511,12 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                   </div>
                 )}
 
+                {balanceError && (
+                  <div role="alert" className="mt-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-semibold">
+                    {balanceError}
+                  </div>
+                )}
+
                 <form onSubmit={handleSendPayment} className="space-y-4 mt-4">
                   <div>
                     <div className="flex items-center justify-between mb-1">
@@ -518,7 +553,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                       <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        min="1"
+                        onChange={(e) => {
+                          setAmount(e.target.value);
+                          setBalanceError(null);
+                        }}
                         placeholder="1000"
                         required
                         className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-4 py-2.5 text-base font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]"
