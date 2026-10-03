@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/hero.svg" alt="TakaSafe - AI Financial Trust &amp; Resilience Network" width="100%" />
+</p>
+
 # TakaSafe - AI Financial Trust & Resilience Network
 > **Explainable AI-Powered Fraud Intelligence, Mule Syndicate Defense, Consumer ScamShield & Disaster-Aware Liquidity Resilience for Mobile Financial Services (MFS)**
 
@@ -335,6 +339,7 @@ takasafe/
 │   ├── requirements.txt            # Python dependencies (xgboost, shap, scikit-learn)
 │   └── README.md                   # Notebook documentation & model benchmarks
 ├── docs/
+│   ├── hero.svg                    # Repository hero banner graphic
 │   ├── architecture.svg            # Full system architecture diagram
 │   ├── workflow.svg                # 5-step evaluation workflow diagram
 │   └── decision_tree.svg           # Deterministic policy decision tree diagram
