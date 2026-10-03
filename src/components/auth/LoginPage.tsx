@@ -150,7 +150,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      const user = DEMO_PROFILES.find((profile) => profile.role === selectedRole && profile.email.toLowerCase() === email.trim().toLowerCase());
+      const emailProfile = DEMO_PROFILES.find((profile) => profile.email.toLowerCase() === email.trim().toLowerCase());
+      const selectedRoleProfile = DEMO_PROFILES.find((profile) => profile.id === selectedProfileId && profile.role === selectedRole)
+        || DEMO_ACCOUNTS[selectedRole];
+      // The explicit role choice wins if browser autofill leaves an email from the other role.
+      const user = emailProfile?.role === selectedRole ? emailProfile : selectedRoleProfile;
       if (!user) {
         setErrorMsg('Choose a demo profile that matches the selected role and email.');
         return;
@@ -163,7 +167,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      onLogin(DEMO_PROFILES.find((profile) => profile.id === selectedProfileId)!);
+      const profile = DEMO_PROFILES.find((candidate) => candidate.id === selectedProfileId && candidate.role === selectedRole)
+        || DEMO_ACCOUNTS[selectedRole];
+      onLogin(profile);
     }, 450);
   };
 
