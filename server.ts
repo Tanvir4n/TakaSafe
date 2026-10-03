@@ -13,6 +13,7 @@ app.use(express.json());
 
 const customerTransactionsCsv = path.resolve(process.cwd(), 'dataset', 'customer_transactions.csv');
 const customerLoginsCsv = path.resolve(process.cwd(), 'dataset', 'customer_logins.csv');
+const alertFeedbackCsv = path.resolve(process.cwd(), 'dataset', 'alert_feedback.csv');
 const customerTransactionHeaders = ['user_id', 'wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
 const toCsvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 const parseCsvLine = (line: string): string[] => {
@@ -39,10 +40,10 @@ app.get('/api/customer-logins/:userId', async (req: Request, res: Response) => {
       throw error;
     });
     const lines = csv.split(/\r?\n/).filter(Boolean);
-    const headers = lines.length ? parseCsvLine(lines.shift()!) : ['user_id', 'wallet', 'timestamp'];
+    const headers = lines.length ? parseCsvLine(lines.shift()!) : ['user_id', 'wallet', 'timestamp', 'device'];
     const logins = lines.map(parseCsvLine).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ''])))
       .filter((row) => row.user_id === userId)
-      .map((row) => ({ timestamp: row.timestamp }));
+      .map((row) => ({ timestamp: row.timestamp, device: row.device || '' }));
     res.json({ success: true, logins });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -51,9 +52,9 @@ app.get('/api/customer-logins/:userId', async (req: Request, res: Response) => {
 
 app.post('/api/customer-logins/:userId', async (req: Request, res: Response) => {
   const userId = String(req.params.userId || '').trim();
-  const { wallet, timestamp } = req.body || {};
+  const { wallet, timestamp, device = '' } = req.body || {};
   const date = new Date(timestamp);
-  if (!userId || userId.length > 64 || typeof wallet !== 'string' || !wallet.trim() || wallet.length > 64 || !Number.isFinite(date.getTime())) {
+  if (!userId || userId.length > 64 || typeof wallet !== 'string' || !wallet.trim() || wallet.length > 64 || !Number.isFinite(date.getTime()) || typeof device !== 'string' || device.length > 512) {
     return res.status(400).json({ error: 'Invalid customer login record' });
   }
   try {
@@ -61,9 +62,33 @@ app.post('/api/customer-logins/:userId', async (req: Request, res: Response) => 
     let needsHeader = false;
     try { needsHeader = (await fs.stat(customerLoginsCsv)).size === 0; }
     catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
-    const headers = ['user_id', 'wallet', 'timestamp'];
-    const values = [userId, wallet.trim(), date.toISOString()];
+    const headers = ['user_id', 'wallet', 'timestamp', 'device'];
+    const values = [userId, wallet.trim(), date.toISOString(), device];
     await fs.appendFile(customerLoginsCsv, `${needsHeader ? `${headers.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`, 'utf8');
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/alert-feedback', async (req: Request, res: Response) => {
+  const { caseId, transactionId, analyst, outcome, riskScore, notes = '' } = req.body || {};
+  const allowedOutcomes = ['CONFIRMED_FRAUD', 'FALSE_POSITIVE', 'NEEDS_REVIEW'];
+  if (typeof caseId !== 'string' || !caseId.trim() || caseId.length > 128 ||
+      typeof transactionId !== 'string' || !transactionId.trim() || transactionId.length > 128 ||
+      typeof analyst !== 'string' || analyst.length > 128 || !allowedOutcomes.includes(outcome) ||
+      !Number.isFinite(Number(riskScore)) || Number(riskScore) < 0 || Number(riskScore) > 100 ||
+      typeof notes !== 'string' || notes.length > 1000) {
+    return res.status(400).json({ error: 'Invalid alert feedback' });
+  }
+  try {
+    await fs.mkdir(path.dirname(alertFeedbackCsv), { recursive: true });
+    let needsHeader = false;
+    try { needsHeader = (await fs.stat(alertFeedbackCsv)).size === 0; }
+    catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
+    const headers = ['timestamp', 'case_id', 'transaction_id', 'analyst', 'outcome', 'risk_score', 'notes'];
+    const values = [new Date().toISOString(), caseId.trim(), transactionId.trim(), analyst.trim(), outcome, Number(riskScore), notes];
+    await fs.appendFile(alertFeedbackCsv, `${needsHeader ? `${headers.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`, 'utf8');
     res.json({ success: true });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
