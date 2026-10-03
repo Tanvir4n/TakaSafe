@@ -490,11 +490,9 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
             </span>
             <span className="text-[11px] text-slate-500 mt-0.5">DESCO, WASA, Titas</span>
           </div>
-        </div>
-
-        {/* Expanded Services Grid (Revealed on View More) */}
-        {showAllServices && (
-          <div className="services-card-grid grid w-full min-w-0 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6 mt-6 stagger-grid">
+          {/* Expanded services continue in the same responsive grid so mobile rows fill side by side. */}
+          {showAllServices && (
+            <>
             {/* 7. Mobile Recharge */}
             <div
               onClick={() => onServiceSelect?.('Mobile Recharge')}
@@ -578,8 +576,9 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               </span>
               <span className="text-[11px] text-slate-500 mt-0.5">Payroll & Bulk MFS</span>
             </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
 
         {/* View More / View Less Button */}
         <div className="mt-8 text-center">
