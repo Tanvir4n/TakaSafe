@@ -973,7 +973,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 {(activeWalletService === 'Cash Out' || activeWalletService === 'Make Payment' || activeWalletService === 'Pay Bill' || activeWalletService === 'Mobile Recharge' || activeWalletService === 'Education' || activeWalletService === 'Insurance' || activeWalletService === 'Business') && (
                   <label className="block text-xs font-semibold text-slate-700">
                     {activeWalletService === 'Mobile Recharge' ? 'Mobile number' : activeWalletService === 'Pay Bill' ? 'Customer / bill account number' : activeWalletService === 'Cash Out' ? 'Cash collection number (optional)' : 'Reference or account number (optional)'}
-                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Enter a reference" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
+                    <input value={serviceNote} onChange={(event) => setServiceNote(event.target.value)} placeholder="Enter a reference" required={activeWalletService === 'Mobile Recharge' || activeWalletService === 'Pay Bill'} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0054A6]" />
                   </label>
                 )}
                 {(activeWalletService === 'Cash In' || activeWalletService === 'Add Money' || activeWalletService === 'Remittance' || activeWalletService === 'Savings') && (
