@@ -60,9 +60,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   lang,
 }) => {
   const [activeTab, setActiveTab] = useState<'WALLET' | 'RESILIENCE'>('WALLET');
-  const [recipient, setRecipient] = useState<string>('01988-510294');
-  const [amount, setAmount] = useState<string>('80000');
-  const [note, setNote] = useState<string>('Urgent emergency medical fee');
+  const [recipient, setRecipient] = useState<string>(customer.frequentRecipients[0]?.split(' ')[0] || '');
+  const [amount, setAmount] = useState<string>(String(Math.round(customer.avgAmount)));
+  const [note, setNote] = useState<string>('');
   const [showScamModal, setShowScamModal] = useState<boolean>(false);
   const [scamDecision, setScamDecision] = useState<string | null>(null);
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
@@ -74,8 +74,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const observedAverage = recentTransfers.length
     ? recentTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / recentTransfers.length
     : customer.avgAmount;
-  const observedMaximum = recentTransfers.length
-    ? Math.max(...recentTransfers.map((transfer) => transfer.amount))
+  const sortedAmounts = recentTransfers.map((transfer) => transfer.amount).sort((a, b) => a - b);
+  const observedUpperRange = sortedAmounts.length
+    ? sortedAmounts[Math.floor((sortedAmounts.length - 1) * 0.9)]
     : customer.maxAmountTypical;
   const observedRecipients = new Set(recentTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')));
   const knownRecipients = observedRecipients.size ? observedRecipients : new Set(customer.frequentRecipients.map((item) => item.replace(/\D/g, '')));
@@ -107,26 +108,35 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     e.preventDefault();
     const num = Number(amount);
 
-    const recipientIsKnown = customer.frequentRecipients.some((known) => known.includes(recipient.trim()));
+    const normalizedRecipient = recipient.trim().replace(/\D/g, '');
+    const recipientIsKnown = knownRecipients.has(normalizedRecipient);
     const isKnownMule = recipient.trim().includes('510294');
     const currentHour = new Date().getHours();
-    const [usualStart = 9, usualEnd = 21] = customer.usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
-    const amountRatio = num / Math.max(customer.avgAmount, 1);
-    const amountIsUnusual = num > customer.maxAmountTypical && amountRatio >= 3;
+    const [usualStart = 9, usualEnd = 21] = usualHours.split('-').map((time) => Number(time.trim().split(':')[0]));
+    const amountRatio = num / Math.max(observedAverage, 1);
+    const amountThreshold = recentTransfers.length >= 5
+      ? Math.max(observedUpperRange, observedAverage * 2.5)
+      : Math.max(customer.maxAmountTypical, observedAverage * 3);
+    const amountIsUnusual = num > amountThreshold && amountRatio >= 3;
     const outsideUsualHours = currentHour < usualStart || currentHour >= usualEnd;
+    const recentAttemptCount = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
     const reasons: string[] = [];
     let score = 0;
     if (amountIsUnusual) {
       score += Math.min(40, 15 + Math.round((amountRatio - 3) * 3));
-      reasons.push(`Unusual amount: ৳${num.toLocaleString()} is ${amountRatio.toFixed(1)}× your usual average of ৳${customer.avgAmount.toLocaleString()}.`);
+      reasons.push(`Unusual amount: ৳${num.toLocaleString()} is ${amountRatio.toFixed(1)}× your recent average of ৳${Math.round(observedAverage).toLocaleString()}.`);
     }
     if (outsideUsualHours) {
       score += 12;
-      reasons.push(`This transfer is outside your usual activity hours (${customer.usualHours}).`);
+      reasons.push(`This transfer is outside your usual activity hours (${usualHours}).`);
     }
     if (!recipientIsKnown) {
       score += 8;
       reasons.push('This is a recipient you have not sent money to before.');
+    }
+    if (recentAttemptCount >= 3) {
+      score += 20;
+      reasons.push(`${recentAttemptCount} transfers were recorded in the last 10 minutes, above your usual pace.`);
     }
     if (isKnownMule) {
       score += 65;
@@ -139,6 +149,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setShowScamModal(true);
       onSimulateRiskyPayment();
     } else {
+      recordTransfer(num, recipient);
       setNormalSuccess(true);
       setTimeout(() => setNormalSuccess(false), 4000);
     }
@@ -324,7 +335,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                     <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                     <div>
                       <div className="font-bold">Payment Completed Successfully!</div>
-                      <div>Sent ৳1,500 to {customer.frequentRecipients[0]}. Transaction fee: ৳0.</div>
+                      <div>Sent ৳{Number(amount).toLocaleString()} to {recipient}. Transaction fee: ৳0.</div>
                     </div>
                   </div>
                 )}
@@ -372,7 +383,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                       />
                     </div>
                     <span className="text-[11px] text-slate-500 mt-1 block">
-                      Your regular 90-day transfer average is <strong>৳1,500</strong>.
+                      Your recent 90-day transfer average is <strong>৳{Math.round(observedAverage).toLocaleString()}</strong> ({recentTransfers.length} recorded transfers).
                     </span>
                   </div>
 
@@ -736,6 +747,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 {/* Option 3: Continue at Own Risk */}
                 <button
                   onClick={() => {
+                    recordTransfer(Number(amount), recipient);
                     setScamDecision('Customer chose to proceed at own risk. Action logged for compliance review.');
                     setTimeout(() => {
                       setShowScamModal(false);
