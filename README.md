@@ -37,8 +37,6 @@ In Bangladesh's hyper-dense Mobile Financial Services (MFS) ecosystem (transacti
 
 The TakaSafe platform is designed with a modern decoupled architecture separating client interfaces, high-throughput API gateways, multi-modal model evaluation services, policy engines, and offline machine learning pipelines.
 
-![TakaSafe System Architecture](docs/architecture.svg)
-
 ### Architectural Components:
 
 1. **Frontend Presentation Layer (`React 19 + TypeScript on Vite / Cloud Run`)**:
@@ -304,7 +302,6 @@ takasafe/
 │   ├── requirements.txt            # Python dependencies (xgboost, shap, scikit-learn)
 │   └── README.md                   # Notebook documentation & model benchmarks
 ├── docs/
-│   ├── architecture.svg            # Full system architecture diagram
 │   ├── workflow.svg                # 5-step evaluation workflow diagram
 │   └── decision_tree.svg           # Deterministic policy decision tree diagram
 ├── src/
