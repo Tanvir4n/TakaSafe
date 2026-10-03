@@ -382,3 +382,20 @@ html.dark {
   cursor: pointer;
 }
 
+@media (min-width: 420px) {
+  .services-grid-without-cash-in {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .services-grid-without-cash-in > * {
+    grid-column: span 2;
+  }
+
+  .services-grid-without-cash-in > :nth-child(4) {
+    grid-column-start: 2;
+  }
+
+  .services-grid-without-cash-in > :nth-child(5) {
+    grid-column-start: 4;
+  }
+}
