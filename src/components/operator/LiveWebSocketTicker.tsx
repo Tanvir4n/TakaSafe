@@ -98,7 +98,7 @@ export const LiveWebSocketTicker: React.FC<LiveWebSocketTickerProps> = ({
         </div>
 
         {/* Center: Live Transaction Ticker Item */}
-        <div className="flex-1 min-w-[280px] max-w-2xl flex items-center gap-2.5 bg-slate-50 dark:bg-slate-900/70 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xs">
+        <div className="flex-1 min-w-0 w-full sm:w-auto sm:min-w-[240px] max-w-2xl flex items-center gap-2 sm:gap-2.5 bg-slate-50 dark:bg-slate-900/70 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xs">
           {latestTransaction ? (
             <>
               <span className="text-[10px] font-mono font-bold text-[#0054A6] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-1.5 py-0.5 rounded border border-blue-200/50 dark:border-blue-900/50 shrink-0">

@@ -52,7 +52,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
   };
 
   return (
-    <div className="w-full bg-white select-none">
+    <div className="w-full max-w-full overflow-hidden bg-white select-none">
       {/* Hero Carousel Container */}
       <div
         className="relative overflow-hidden border-b border-amber-200/60"
@@ -110,7 +110,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               {/* Right Visual Card */}
               <div
                 onClick={() => onOpenModal?.('ABOUT_US')}
-                className="w-64 h-48 sm:w-80 sm:h-56 bg-white/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-amber-300 shadow-xl flex flex-col justify-between relative overflow-hidden cursor-pointer hover:border-amber-400 transition-colors"
+                className="w-full max-w-[270px] h-48 sm:max-w-xs sm:h-56 bg-white/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-amber-300 shadow-xl flex flex-col justify-between relative overflow-hidden cursor-pointer hover:border-amber-400 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#0054A6]">TakaSafe Digital Trust</span>
@@ -194,7 +194,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               </div>
 
               {/* Right Graphic: Sleek Modern Smartphone & Floating 3D Financial Badges */}
-              <div className="w-72 h-64 sm:w-96 sm:h-72 relative flex items-center justify-center select-none">
+              <div className="w-full max-w-[270px] h-64 sm:max-w-xs sm:h-72 relative flex items-center justify-center select-none">
                 {/* Floating Background Glass Glow */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-amber-200/30 via-sky-100/40 to-blue-200/30 rounded-full blur-2xl pointer-events-none" />
 
@@ -329,7 +329,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               </div>
 
               {/* Luminous 3D Glass Trust Shield Card */}
-              <div className="w-72 h-60 sm:w-84 sm:h-64 bg-white/15 backdrop-blur-xl rounded-3xl p-6 border-2 border-white/40 shadow-2xl flex flex-col justify-center items-center gap-4 relative overflow-hidden">
+              <div className="w-full max-w-[270px] h-60 sm:max-w-xs sm:h-64 bg-white/15 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border-2 border-white/40 shadow-2xl flex flex-col justify-center items-center gap-3 sm:gap-4 relative overflow-hidden">
                 {/* Shiny top glass glare */}
                 <div className="absolute -top-10 -left-10 right-10 h-28 bg-white/15 rounded-full blur-xl pointer-events-none" />
 

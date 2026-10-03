@@ -286,7 +286,7 @@ export default function App() {
   const criticalCount = transactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 transition-colors duration-200 relative">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-slate-100 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 transition-colors duration-200 relative">
       {/* Route & Page Change Transition Glow Bar */}
       {isTransitioning && (
         <div key={`${activeView}-${operatorTab}`} className="page-progress-bar" />
@@ -342,7 +342,7 @@ export default function App() {
       )}
 
       {/* Main Interactive Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 min-w-0 overflow-x-hidden">
         <div key={activeView} className="page-enter">
           {activeView === 'LOGIN' && (
             <LoginPage
