@@ -78,10 +78,13 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   const [alertFeedback, setAlertFeedback] = useState<Array<{ outcome: string }>>([]);
 
   useEffect(() => {
-    fetch('/api/alert-feedback')
+    const refreshFeedback = () => fetch('/api/alert-feedback')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Alert feedback unavailable')))
       .then((data) => { if (Array.isArray(data.feedback)) setAlertFeedback(data.feedback); })
       .catch(() => undefined);
+    refreshFeedback();
+    window.addEventListener('takasafe-alert-feedback', refreshFeedback);
+    return () => window.removeEventListener('takasafe-alert-feedback', refreshFeedback);
   }, []);
 
   useEffect(() => {

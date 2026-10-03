@@ -321,6 +321,7 @@ export default function App() {
         }),
       });
       if (!response.ok) throw new Error('Could not save analyst feedback');
+      window.dispatchEvent(new Event('takasafe-alert-feedback'));
       showToast(`Alert feedback saved: ${outcome.replace(/_/g, ' ')}.`);
       return true;
     } catch (error) {
