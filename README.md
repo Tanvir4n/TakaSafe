@@ -12,7 +12,6 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![D3.js](https://img.shields.io/badge/D3.js-v7.9-F9A03C?logo=d3.js&logoColor=white)](https://d3js.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-EB5424?logo=python&logoColor=white)](notebook/)
-[![Google Gemini API](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E75C4?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
 [![Compliance](https://img.shields.io/badge/BFIU-AML%2FCFT_Compliant-10B981)](#-regulatory-compliance)
 [![Hackathon](https://img.shields.io/badge/DIU_CPC_×_upay-Hackathon_2026-FAB915)](#-team--credits)
 
