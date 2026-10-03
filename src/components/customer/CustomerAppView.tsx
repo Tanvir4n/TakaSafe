@@ -811,6 +811,37 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 </button>
               </div>
             </div>
+
+            <section className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3 className="font-extrabold text-sm text-slate-900">Recent Wallet Activity</h3>
+                <span className="text-[10px] font-mono text-slate-500">{transferHistory.length} records</span>
+              </div>
+              {transferHistory.length === 0 ? (
+                <p className="text-xs text-slate-500 py-3">Completed wallet services will appear here.</p>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {[...transferHistory].reverse().slice(0, 8).map((transfer, index) => {
+                    const isCredit = (transfer.direction || 'OUT') === 'IN';
+                    const serviceName = (transfer.serviceType || 'SEND_MONEY').replace(/_/g, ' ');
+                    return (
+                      <div key={`${transfer.timestamp}-${index}`} className="py-3 flex items-center justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-800 truncate">{serviceName} · {transfer.recipient}</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">{new Date(transfer.timestamp).toLocaleString()} {transfer.reference ? `· ${transfer.reference}` : ''}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className={`text-xs font-black ${isCredit ? 'text-emerald-700' : 'text-slate-900'}`}>
+                            {isCredit ? '+' : '−'}৳{transfer.amount.toLocaleString()}
+                          </p>
+                          {Boolean(transfer.fee) && <p className="text-[10px] text-slate-500">Fee ৳{transfer.fee!.toLocaleString()}</p>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
           </div>
         ) : (
           /* Customer Financial Resilience Tab */
