@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" width="100%" height="100%" style="background:#0D1117; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <marker id="wf-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38BDF8" />
+    </marker>
+  </defs>
+
+  <text x="40" y="45" fill="#F0F6FC" font-size="22" font-weight="700">TakaSafe End-to-End Transaction Evaluation Workflow</text>
+  <text x="40" y="68" fill="#8B949E" font-size="12">Lifecycle of a transaction event through multi-modal intelligence &amp; action resolution</text>
+
+  <!-- Step 1: Initiation -->
+  <g transform="translate(40, 120)">
+    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
+    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">1</text>
+    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Event Ingestion</text>
+    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• App / USSD / Agent</text>
+    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Sender &amp; Receiver ID</text>
+    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Amount &amp; Timestamp</text>
+    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Device &amp; IP Geolocation</text>
+  </g>
+
+  <line x1="210" y1="210" x2="252" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+
+  <!-- Step 2: Feature Engineering -->
+  <g transform="translate(255, 120)">
+    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
+    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">2</text>
+    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Feature Extraction</text>
+    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Velocity 7d / 30d ratio</text>
+    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Amount vs avg ratio</text>
+    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Circadian nocturnal flag</text>
+    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• IP vs district mismatch</text>
+  </g>
+
+  <line x1="425" y1="210" x2="467" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+
+  <!-- Step 3: Multi-Modal AI Fusion -->
+  <g transform="translate(470, 120)">
+    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
+    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">3</text>
+    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Model Inference</text>
+    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• XGBoost Classifier</text>
+    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Isolation Forest Baseline</text>
+    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Graph Mule Centrality</text>
+    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• SHAP attribution breakdown</text>
+  </g>
+
+  <line x1="640" y1="210" x2="682" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+
+  <!-- Step 4: Policy & Action Engine -->
+  <g transform="translate(685, 120)">
+    <rect x="0" y="0" width="170" height="180" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+    <circle cx="85" cy="40" r="20" fill="#1E293B" stroke="#38BDF8" />
+    <text x="85" y="46" fill="#38BDF8" font-size="14" font-weight="700" text-anchor="middle">4</text>
+    <text x="85" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Action Resolution</text>
+    <text x="85" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Straight-Through Pass</text>
+    <text x="85" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Out-of-Band OTP Step-up</text>
+    <text x="85" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• 24h Cooling-Off Window</text>
+    <text x="85" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Instant Freeze &amp; Quarantine</text>
+  </g>
+
+  <line x1="855" y1="210" x2="897" y2="210" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#wf-arrow)" />
+
+  <!-- Step 5: Explainability & Audit -->
+  <g transform="translate(900, 120)">
+    <rect x="0" y="0" width="160" height="180" rx="8" fill="#161B22" stroke="#C084FC" stroke-width="1.2" />
+    <circle cx="80" cy="40" r="20" fill="#2E1065" stroke="#C084FC" />
+    <text x="80" y="46" fill="#C084FC" font-size="14" font-weight="700" text-anchor="middle">5</text>
+    <text x="80" y="85" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Audit &amp; Intelligence</text>
+    <text x="80" y="112" fill="#8B949E" font-size="10" text-anchor="middle">• Gemini Case Dossier</text>
+    <text x="80" y="128" fill="#8B949E" font-size="10" text-anchor="middle">• Regulatory BFIU STR</text>
+    <text x="80" y="144" fill="#8B949E" font-size="10" text-anchor="middle">• Division Risk Radar</text>
+    <text x="80" y="160" fill="#8B949E" font-size="10" text-anchor="middle">• Immutable Audit Ledger</text>
+  </g>
+
+  <!-- Execution speed bar at bottom -->
+  <rect x="40" y="340" width="1020" height="40" rx="6" fill="#161B22" stroke="#30363D" />
+  <text x="60" y="365" fill="#34D399" font-size="12" font-weight="700">Real-Time Performance SLA:</text>
+  <text x="240" y="365" fill="#8B949E" font-size="12">&lt; 18ms End-to-End Pipeline Evaluation · Zero Latency Customer Friction on Normal Transactions</text>
+</svg>

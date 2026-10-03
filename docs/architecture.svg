@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#0D1117; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8B949E" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38BDF8" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#C084FC" />
+    </marker>
+
+    <!-- Subtle Gradients -->
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#161B22" />
+      <stop offset="100%" stop-color="#0E131A" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Title & Top Badges -->
+  <text x="40" y="48" fill="#F0F6FC" font-size="26" font-weight="700" letter-spacing="-0.5">Architecture</text>
+  <text x="40" y="72" fill="#8B949E" font-size="13" font-weight="400">TakaSafe Multi-Modal AI Financial Trust, Explainable Fraud Shield &amp; Disaster Resilience</text>
+
+  <!-- Top Right Synthetic Data & License Tags -->
+  <g transform="translate(940, 30)">
+    <rect x="0" y="0" width="105" height="24" rx="4" fill="#21262D" stroke="#30363D"/>
+    <text x="8" y="16" fill="#8B949E" font-size="11" font-weight="600">data</text>
+    <rect x="36" y="0" width="69" height="24" rx="4" fill="#A3E635"/>
+    <text x="42" y="16" fill="#0D1117" font-size="11" font-weight="800">synthetic</text>
+  </g>
+  <g transform="translate(1060, 30)">
+    <rect x="0" y="0" width="100" height="24" rx="4" fill="#21262D" stroke="#30363D"/>
+    <text x="8" y="16" fill="#8B949E" font-size="11" font-weight="600">license</text>
+    <rect x="52" y="0" width="48" height="24" rx="4" fill="#3B82F6"/>
+    <text x="61" y="16" fill="#FFFFFF" font-size="11" font-weight="800">MIT</text>
+  </g>
+
+  <!-- ==================== 1. FRONTEND CONTAINER (LEFT) ==================== -->
+  <rect x="40" y="105" width="200" height="420" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+  <text x="60" y="132" fill="#8B949E" font-size="11" font-weight="600" text-anchor="start">React 19 + TypeScript on Vite</text>
+
+  <!-- Frontend Sub-modules -->
+  <!-- Homepage + 3D -->
+  <rect x="60" y="150" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+  <text x="140" y="179" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Homepage + Overview</text>
+
+  <!-- Customer -->
+  <rect x="60" y="225" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+  <text x="140" y="254" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Customer (TakaSafe)</text>
+
+  <!-- Agent -->
+  <rect x="60" y="300" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+  <text x="140" y="329" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Agent (Float / Cash-out)</text>
+
+  <!-- Operations -->
+  <rect x="60" y="375" width="160" height="48" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+  <text x="140" y="404" fill="#E6EDF3" font-size="12" font-weight="600" text-anchor="middle">Operations (Risk Cockpit)</text>
+
+  <!-- ==================== 2. API GATEWAY NODE (MIDDLE-LEFT) ==================== -->
+  <g transform="translate(290, 275)">
+    <!-- Parallelogram / Rhomboid Shape for Gateway -->
+    <polygon points="12,0 190,0 178,56 0,56" fill="#1C2128" stroke="#38BDF8" stroke-width="1.2" />
+    <text x="95" y="34" fill="#38BDF8" font-size="11" font-weight="700" text-anchor="middle">v1 routes · JWT · rate limit</text>
+  </g>
+
+  <!-- ==================== 3. BACKEND CORE SERVICES (CENTER-RIGHT) ==================== -->
+  <rect x="520" y="105" width="640" height="420" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+  <text x="840" y="132" fill="#8B949E" font-size="11" font-weight="600" text-anchor="middle">Backend Core Services (Express &amp; Python ML Runtime)</text>
+
+  <!-- Model services node -->
+  <rect x="550" y="275" width="150" height="56" rx="6" fill="#0D1117" stroke="#38BDF8" stroke-width="1.2" />
+  <text x="625" y="308" fill="#F0F6FC" font-size="12" font-weight="700" text-anchor="middle">Model services</text>
+
+  <!-- TOP BRANCH: Policy · YAML rules -->
+  <rect x="760" y="150" width="150" height="52" rx="6" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+  <text x="835" y="181" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Policy · Dynamic Rules</text>
+
+  <!-- Brief: Gemini + validator + cache -->
+  <rect x="960" y="150" width="170" height="52" rx="6" fill="#0D1117" stroke="#C084FC" stroke-width="1.2" />
+  <text x="1045" y="174" fill="#F0F6FC" font-size="11" font-weight="700" text-anchor="middle">Brief: Gemini 2.5 Flash</text>
+  <text x="1045" y="191" fill="#8B949E" font-size="9" text-anchor="middle">+ validator + cache</text>
+
+  <!-- MIDDLE BRANCH: SQLite / Audit DB Cylinder -->
+  <g transform="translate(760, 270)">
+    <rect x="0" y="8" width="160" height="48" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+    <ellipse cx="80" cy="8" rx="80" ry="10" fill="#161B22" stroke="#30363D" stroke-width="1" />
+    <ellipse cx="80" cy="56" rx="80" ry="10" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+    <text x="80" y="36" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Database / Ledger</text>
+    <text x="80" y="50" fill="#8B949E" font-size="9" text-anchor="middle">cases · actions · audit</text>
+  </g>
+
+  <!-- BOTTOM BRANCH: Artifacts Cylinder -->
+  <g transform="translate(760, 395)">
+    <rect x="0" y="8" width="160" height="52" fill="#0D1117" stroke="#10B981" stroke-width="1.2" />
+    <ellipse cx="80" cy="8" rx="80" ry="10" fill="#161B22" stroke="#10B981" stroke-width="1.2" />
+    <ellipse cx="80" cy="60" rx="80" ry="10" fill="#0D1117" stroke="#10B981" stroke-width="1.2" />
+    <text x="80" y="36" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">artifacts/: models</text>
+    <text x="80" y="52" fill="#8B949E" font-size="9" text-anchor="middle">calibrators · forecasts · JSON</text>
+  </g>
+
+  <!-- ==================== 4. NOTEBOOK / ML TRAINING (BOTTOM) ==================== -->
+  <rect x="420" y="560" width="260" height="95" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1.2" />
+  <text x="550" y="583" fill="#8B949E" font-size="11" font-weight="600" text-anchor="middle">Jupyter / Kaggle Notebooks NB00-NB99</text>
+
+  <rect x="440" y="598" width="220" height="42" rx="6" fill="#0D1117" stroke="#A3E635" stroke-width="1" />
+  <text x="550" y="623" fill="#E6EDF3" font-size="11" font-weight="600" text-anchor="middle">Train · calibrate · evaluate · export</text>
+
+  <!-- ==================== CONNECTING ARROWS & PATHS ==================== -->
+
+  <!-- Frontend -> Gateway connections -->
+  <path d="M 220 174 C 260 174, 260 290, 290 290" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+  <path d="M 220 249 C 255 249, 265 298, 290 298" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+  <path d="M 220 324 C 255 324, 265 306, 290 306" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+  <path d="M 220 399 C 260 399, 260 314, 290 314" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+
+  <!-- Gateway -> Model services -->
+  <line x1="475" y1="303" x2="546" y2="303" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+
+  <!-- Model services -> Top Branch (Policy) -->
+  <path d="M 700 295 C 725 295, 735 176, 756 176" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+
+  <!-- Policy -> Gemini Brief -->
+  <line x1="910" y1="176" x2="956" y2="176" stroke="#C084FC" stroke-width="1.5" marker-end="url(#arrow-purple)" />
+
+  <!-- Model services -> Middle Branch (Database) -->
+  <line x1="700" y1="303" x2="756" y2="303" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+
+  <!-- Model services -> Bottom Branch (Artifacts) -->
+  <path d="M 700 312 C 725 312, 735 425, 756 425" fill="none" stroke="#8B949E" stroke-width="1.3" marker-end="url(#arrow)" />
+
+  <!-- Notebook -> Artifacts (Curved Upwards) -->
+  <path d="M 660 619 C 750 619, 755 490, 758 450" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-green)" />
+  <!-- Label on Notebook arrow -->
+  <rect x="675" y="535" width="110" height="20" rx="3" fill="#1C2128" stroke="#30363D" />
+  <text x="730" y="549" fill="#10B981" font-size="9.5" font-weight="700" text-anchor="middle">artifacts + reports</text>
+</svg>
