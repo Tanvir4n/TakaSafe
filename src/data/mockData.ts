@@ -28,6 +28,40 @@ export const CURRENT_CUSTOMER: CustomerBaseline = {
   },
 };
 
+export const DEMO_CUSTOMER_PROFILES: Record<string, CustomerBaseline> = {
+  'USR-CUST-88': CURRENT_CUSTOMER,
+  'USR-CUST-89': {
+    ...CURRENT_CUSTOMER,
+    wallet: '01818-234567', name: 'Nusrat Jahan', nationalIdMasked: '1993-XXXX-XXXX-4812',
+    balance: 62750, avgDailyTxns: 2.6, avgAmount: 2400, maxAmountTypical: 8000,
+    usualHours: '08:00 - 22:00', homeDistrict: 'Chattogram',
+    knownDevices: ['Xiaomi Redmi Note 12 (dev-nusrat)'],
+    frequentRecipients: ['01819-440129 (Sister)', '01712-883104 (Market)'],
+    financialResilienceScore: 76,
+    resilienceComponents: { incomeStability: 78, spendingDiscipline: 74, emergencyBufferDays: 32, cashOutDependency: 39 },
+  },
+  'USR-CUST-90': {
+    ...CURRENT_CUSTOMER,
+    wallet: '01919-345678', name: 'Imran Hossain', nationalIdMasked: '1989-XXXX-XXXX-1963',
+    balance: 118400, avgDailyTxns: 5.1, avgAmount: 4200, maxAmountTypical: 15000,
+    usualHours: '06:00 - 23:00', homeDistrict: 'Sylhet',
+    knownDevices: ['Samsung Galaxy A34 (dev-imran)'],
+    frequentRecipients: ['01911-330812 (Brother)', '01814-770125 (Supplier)'],
+    financialResilienceScore: 81,
+    resilienceComponents: { incomeStability: 84, spendingDiscipline: 79, emergencyBufferDays: 41, cashOutDependency: 31 },
+  },
+  'USR-CUST-91': {
+    ...CURRENT_CUSTOMER,
+    wallet: '01616-456789', name: 'Farzana Akter', nationalIdMasked: '1997-XXXX-XXXX-7305',
+    balance: 28400, avgDailyTxns: 2.1, avgAmount: 900, maxAmountTypical: 3000,
+    usualHours: '09:00 - 20:00', homeDistrict: 'Rajshahi',
+    knownDevices: ['Oppo A78 (dev-farzana)'],
+    frequentRecipients: ['01710-605442 (Mother)', '01825-115800 (Utilities)'],
+    financialResilienceScore: 69,
+    resilienceComponents: { incomeStability: 71, spendingDiscipline: 72, emergencyBufferDays: 25, cashOutDependency: 46 },
+  },
+};
+
 export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: 'TXN-90824',

@@ -383,7 +383,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  const nextEmail = e.target.value;
+                  setEmail(nextEmail);
+                  const matchingProfile = DEMO_PROFILES.find((profile) => profile.email.toLowerCase() === nextEmail.trim().toLowerCase());
+                  if (matchingProfile) {
+                    setSelectedRole(matchingProfile.role);
+                    setSelectedProfileId(matchingProfile.id);
+                  }
+                }}
                 placeholder="Enter Your Email"
                 required
                 className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#164E3D] focus:border-transparent transition-all"
@@ -464,29 +472,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
           <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-2">
             Quick 1-Click Demo Logins for Evaluators
           </span>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                handleSelectRole('ADMIN');
-                onLogin(DEMO_ACCOUNTS.ADMIN);
-              }}
-              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
-              <span>Demo Admin</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                handleSelectRole('USER');
-                onLogin(DEMO_ACCOUNTS.USER);
-              }}
-              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-            >
-              <User className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Demo User</span>
-            </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {DEMO_PROFILES.map((profile) => (
+              <button
+                key={profile.id}
+                type="button"
+                onClick={() => onLogin(profile)}
+                className={`w-full text-[11px] font-bold text-slate-800 ${profile.role === 'ADMIN' ? 'bg-blue-50 hover:bg-blue-100 border-blue-200' : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-200'} border px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs`}
+              >
+                {profile.role === 'ADMIN'
+                  ? <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
+                  : <User className="w-3.5 h-3.5 text-emerald-600" />}
+                <span>{profile.name}</span>
+              </button>
+            ))}
           </div>
         </div>
       </div>

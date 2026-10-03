@@ -17,6 +17,7 @@ import { AccessRestrictedGate } from './components/common/AccessRestrictedGate';
 import {
   MOCK_TRANSACTIONS,
   CURRENT_CUSTOMER,
+  DEMO_CUSTOMER_PROFILES,
   MULE_NETWORK_17,
   MOCK_AGENTS_BARISHAL,
   REGIONAL_RADAR_METRICS,
@@ -402,7 +403,7 @@ export default function App() {
 
           {activeView === 'CUSTOMER' && (
             <CustomerAppView
-              customer={CURRENT_CUSTOMER}
+              customer={DEMO_CUSTOMER_PROFILES[currentUser?.id || ''] || CURRENT_CUSTOMER}
               userId={currentUser?.id || CURRENT_CUSTOMER.wallet}
               onSimulateRiskyPayment={() => {
                 // Ensure critical transaction is visible in operator queue
