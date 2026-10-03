@@ -353,8 +353,9 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     }, {} as Record<number, number>);
     const peakActivityCount = Math.max(0, ...Object.values(activityHourCounts));
     const learnedUnusualTime = observedHours.length >= 6 && peakActivityCount >= 2 && (activityHourCounts[currentHour] || 0) === 0;
-    const recentAttemptCount = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
-    const dailyTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 24 * 60 * 60 * 1000);
+    const outgoingHistory = transferHistory.filter((transfer) => (transfer.direction || 'OUT') === 'OUT');
+    const recentAttemptCount = outgoingHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 10 * 60 * 1000).length;
+    const dailyTransfers = outgoingHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 24 * 60 * 60 * 1000);
     const dailyAmount = dailyTransfers.reduce((total, transfer) => total + transfer.amount, num);
     const splitPaymentPattern = dailyTransfers.length >= 2 && num <= amountThreshold &&
       dailyTransfers.every((transfer) => transfer.amount <= amountThreshold) &&
