@@ -48,6 +48,7 @@ interface CustomerTransfer {
 
 interface CustomerLogin {
   timestamp: string;
+  device?: string;
 }
 
 const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
@@ -142,17 +143,21 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   }, [userId, customer.wallet]);
 
   const recentTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 90 * 24 * 60 * 60 * 1000);
-  const observedAverage = recentTransfers.length
-    ? recentTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / recentTransfers.length
+  const baselineTransfers = recentTransfers.filter((transfer) => transfer.status !== 'PROCEEDED' && (transfer.riskScore ?? 0) < 40);
+  const observedAverage = baselineTransfers.length
+    ? baselineTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / baselineTransfers.length
     : customer.avgAmount;
-  const sortedAmounts = recentTransfers.map((transfer) => transfer.amount).sort((a, b) => a - b);
+  const sortedAmounts = baselineTransfers.map((transfer) => transfer.amount).sort((a, b) => a - b);
+  const medianAmount = sortedAmounts.length ? sortedAmounts[Math.floor(sortedAmounts.length / 2)] : customer.avgAmount;
+  const absoluteDeviations = sortedAmounts.map((value) => Math.abs(value - medianAmount)).sort((a, b) => a - b);
+  const medianAbsoluteDeviation = absoluteDeviations.length ? absoluteDeviations[Math.floor(absoluteDeviations.length / 2)] : 0;
   const observedUpperRange = sortedAmounts.length
     ? sortedAmounts[Math.floor((sortedAmounts.length - 1) * 0.9)]
     : customer.maxAmountTypical;
   const observedRecipients = new Set(recentTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')));
   const knownRecipients = observedRecipients.size ? observedRecipients : new Set(customer.frequentRecipients.map((item) => item.replace(/\D/g, '')));
   const activityTimestamps = [
-    ...recentTransfers.map((transfer) => transfer.timestamp),
+    ...baselineTransfers.map((transfer) => transfer.timestamp),
     ...loginHistory.map((login) => login.timestamp).filter((timestamp) => Date.now() - Date.parse(timestamp) <= 90 * 24 * 60 * 60 * 1000),
   ];
   const observedHours = activityTimestamps.map((timestamp) => new Date(timestamp).getHours()).sort((a, b) => a - b);

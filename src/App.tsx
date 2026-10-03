@@ -97,7 +97,7 @@ export default function App() {
     const storageKey = `takasafe-logins:${user.id}:${user.phone}`;
     try {
       const prior = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      const logins = [...(Array.isArray(prior) ? prior : []), { timestamp }].slice(-200);
+      const logins = [...(Array.isArray(prior) ? prior : []), { timestamp, device: navigator.userAgent }].slice(-200);
       localStorage.setItem(storageKey, JSON.stringify(logins));
     } catch {
       // Server logging below remains available if browser storage is unavailable.
@@ -105,7 +105,7 @@ export default function App() {
     fetch(`/api/customer-logins/${encodeURIComponent(user.id)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ wallet: user.phone, timestamp }),
+      body: JSON.stringify({ wallet: user.phone, timestamp, device: navigator.userAgent }),
     }).catch(() => undefined);
   };
   const [activeModal, setActiveModal] = useState<string | null>(null);
