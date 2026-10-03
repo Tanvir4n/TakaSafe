@@ -333,6 +333,16 @@ export default function App() {
 
   const criticalCount = transactions.filter((t) => t.riskBand === 'CRITICAL' || t.riskBand === 'HIGH').length;
 
+  // Customer accounts should stay in the customer experience even when shared
+  // navigation controls request the operator view.
+  const navigateToView = (view: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN') => {
+    if (view === 'OPERATOR' && currentUser?.role === 'USER') {
+      setActiveView('CUSTOMER');
+      return;
+    }
+    setActiveView(view);
+  };
+
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-slate-100 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 transition-colors duration-200 relative">
       {/* Route & Page Change Transition Glow Bar */}
@@ -343,7 +353,7 @@ export default function App() {
       {/* Upay Header with Logo, Navigation, Mode Switcher & Accreditation */}
       <UpayHeader
         activeView={activeView}
-        setActiveView={setActiveView}
+        setActiveView={navigateToView}
         operatorTab={operatorTab}
         setOperatorTab={setOperatorTab}
         lang={lang}
@@ -378,11 +388,7 @@ export default function App() {
             if (svc === 'Send Money') {
               setActiveView('CUSTOMER');
             } else {
-              if (currentUser?.role === 'USER') {
-                setActiveView('OPERATOR'); // Will trigger AccessRestrictedGate
-              } else {
-                setActiveView('OPERATOR');
-              }
+              navigateToView('OPERATOR');
             }
           }}
           onOpenModal={(modal) => setActiveModal(modal)}
@@ -497,7 +503,7 @@ export default function App() {
         onClose={() => setActiveModal(null)}
         lang={lang}
         onNavigateView={(v) => {
-          setActiveView(v);
+          navigateToView(v);
           setActiveModal(null);
         }}
       />
@@ -506,7 +512,7 @@ export default function App() {
       <UpayFooter
         onOpenModal={(modal) => setActiveModal(modal)}
         onNavigateHome={() => {
-          setActiveView('OPERATOR');
+          navigateToView('OPERATOR');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
