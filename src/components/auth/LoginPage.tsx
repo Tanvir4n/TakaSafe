@@ -62,36 +62,6 @@ export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
   },
 };
 
-export const ADMIN_ACCOUNTS: AuthUser[] = [
-  DEMO_ACCOUNTS.ADMIN,
-  {
-    ...DEMO_ACCOUNTS.ADMIN,
-    id: 'USR-ADM-02',
-    name: 'Sourov Kumar',
-    email: 'sourov.kumar@takasafe.upay.bd',
-    phone: '',
-    designation: 'SOC Operations & Risk Governance',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
-  },
-  {
-    ...DEMO_ACCOUNTS.ADMIN,
-    id: 'USR-ADM-03',
-    name: 'Md. Sadman Al Islam Shabab',
-    email: 'sadman.shabab@takasafe.upay.bd',
-    phone: '',
-    designation: 'Model Architecture & Explainability Lead',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80',
-  },
-];
-
-const getLoginAccount = (role: UserRole, email: string): AuthUser => {
-  if (role === 'ADMIN') {
-    return ADMIN_ACCOUNTS.find((account) => account.email.toLowerCase() === email.trim().toLowerCase())
-      ?? { ...DEMO_ACCOUNTS.ADMIN, email: email.trim() };
-  }
-  return { ...DEMO_ACCOUNTS.USER, email: email.trim() };
-};
-
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
   const [email, setEmail] = useState<string>(DEMO_ACCOUNTS.ADMIN.email);
@@ -123,7 +93,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      const user = getLoginAccount(selectedRole, email);
+      const user = {
+        ...DEMO_ACCOUNTS[selectedRole],
+        email: email.trim(),
+      };
       onLogin(user);
     }, 400);
   };
@@ -132,7 +105,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      onLogin(getLoginAccount(selectedRole, email));
+      onLogin(DEMO_ACCOUNTS[selectedRole]);
     }, 450);
   };
 
