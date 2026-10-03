@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { CustomerBaseline, LinkedWallet } from '../../types';
 import { MOCK_LINKED_WALLETS } from '../../data/mockData';
 import { QRCodeScannerModal } from './QRCodeScannerModal';
+import { TakaSafeSovereignCard } from './TakaSafeSovereignCard';
 import {
   Send,
   ArrowUpRight,
+  ArrowLeft,
   ShieldCheck,
   AlertTriangle,
   Clock,
@@ -25,6 +27,7 @@ import {
   ExternalLink,
   Shield,
   Zap,
+  X,
 } from 'lucide-react';
 
 interface CustomerAppViewProps {
@@ -188,31 +191,8 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-grid">
               {/* Balance & Card Details */}
               <div className="md:col-span-1 space-y-4">
-                {/* Digital Wallet Card */}
-                <div className="bg-gradient-to-br from-[#0054A6] via-[#004080] to-[#002B57] text-white p-6 rounded-3xl shadow-xl border border-blue-400/20 relative overflow-hidden card-hover-lift">
-                  <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-blue-200 font-medium">TakaSafe Digital Account</span>
-                    <span className="text-[10px] bg-amber-400 text-blue-950 font-black px-2 py-0.5 rounded-full">
-                      SCAMSHIELD 24/7
-                    </span>
-                  </div>
-
-                  <div className="mt-6">
-                    <span className="text-xs text-blue-200 block">Available Balance</span>
-                    <div className="flex items-baseline gap-1 mt-1">
-                      <span className="text-sm font-bold text-amber-300">৳</span>
-                      <span className="text-3xl font-black font-mono tracking-tight">
-                        {customer.balance.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-blue-200">
-                    <span>A/C: {customer.wallet}</span>
-                    <span className="text-emerald-300 font-semibold">Tier 2 Verified</span>
-                  </div>
-                </div>
+                {/* Digital Wallet Card - Sovereign Luxury Centurion Inspired */}
+                <TakaSafeSovereignCard customer={customer} lang={lang} />
 
                 {/* Quick Demo Pre-fills */}
                 <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
@@ -571,21 +551,46 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
 
       {/* ScamShield Pre-Payment Modal (Human-Choice Protection) */}
       {showScamModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-2 border-rose-300 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                <AlertTriangle className="w-7 h-7" />
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+          onClick={() => {
+            setShowScamModal(false);
+            setScamDecision(null);
+          }}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-2 border-rose-300 space-y-5 animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header with Title and Cross Button */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                  <AlertTriangle className="w-7 h-7" />
+                </div>
+                <div>
+                  <span className="text-[10px] bg-rose-600 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    ScamShield Pre-Payment Warning
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 mt-0.5">
+                    High Risk Transaction (Score: 94/100)
+                  </h3>
+                </div>
               </div>
-              <div>
-                <span className="text-[10px] bg-rose-600 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  ScamShield Pre-Payment Warning
-                </span>
-                <h3 className="text-lg font-black text-slate-900 mt-0.5">
-                  High Risk Transaction (Score: 94/100)
-                </h3>
-              </div>
+
+              {/* Cross / Close Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowScamModal(false);
+                  setScamDecision(null);
+                }}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Close warning"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             <p className="text-xs text-slate-700 leading-relaxed">
@@ -616,8 +621,22 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
             </div>
 
             {scamDecision ? (
-              <div className="p-3 bg-slate-100 rounded-xl text-center text-xs text-slate-700 font-medium">
-                {scamDecision}
+              <div className="space-y-3 pt-1">
+                <div className="p-4 bg-slate-100 rounded-2xl text-center text-xs text-slate-700 font-medium leading-relaxed border border-slate-200">
+                  {scamDecision}
+                </div>
+                {/* Back / Close Action Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowScamModal(false);
+                    setScamDecision(null);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-[#0054A6] hover:bg-[#003f7a] text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Customer App</span>
+                </button>
               </div>
             ) : (
               <div className="space-y-2 pt-2">
@@ -628,7 +647,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 {/* Option 1: Verify */}
                 <button
                   onClick={() => setScamDecision('Recipient verification requested. Please call the recipient directly to verify identity before re-attempting.')}
-                  className="w-full flex items-center justify-center gap-2 bg-[#0054A6] hover:bg-blue-800 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all"
+                  className="w-full flex items-center justify-center gap-2 bg-[#0054A6] hover:bg-blue-800 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all cursor-pointer"
                 >
                   <UserCheck className="w-4 h-4 text-amber-300" />
                   <span>Verify Recipient Identity</span>
@@ -638,9 +657,12 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 <button
                   onClick={() => {
                     setScamDecision('Payment placed in 24-Hour Cooling-Off Hold. You can cancel anytime without moving funds.');
-                    setTimeout(() => setShowScamModal(false), 2500);
+                    setTimeout(() => {
+                      setShowScamModal(false);
+                      setScamDecision(null);
+                    }, 2500);
                   }}
-                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all"
+                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all cursor-pointer"
                 >
                   <Clock className="w-4 h-4" />
                   <span>Delay Payment (24-Hour Cooling-Off Window)</span>
@@ -650,12 +672,30 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 <button
                   onClick={() => {
                     setScamDecision('Customer chose to proceed at own risk. Action logged for compliance review.');
-                    setTimeout(() => setShowScamModal(false), 2000);
+                    setTimeout(() => {
+                      setShowScamModal(false);
+                      setScamDecision(null);
+                    }, 2000);
                   }}
-                  className="w-full text-center text-slate-500 hover:text-slate-800 text-xs font-medium py-1.5 transition-colors"
+                  className="w-full text-center text-slate-500 hover:text-slate-800 text-xs font-medium py-1.5 transition-colors cursor-pointer"
                 >
                   Continue Anyway at My Own Risk
                 </button>
+
+                {/* Option 4: Cancel & Go Back */}
+                <div className="pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowScamModal(false);
+                      setScamDecision(null);
+                    }}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Cancel Transfer & Go Back</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
