@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Transaction, CustomerBaseline } from '../../types';
+import { Transaction, CustomerBaseline, AuthUser } from '../../types';
 import {
   X,
   Sparkles,
@@ -13,9 +13,11 @@ import {
   Lock,
   Loader2,
   AlertTriangle,
+  UserCheck,
 } from 'lucide-react';
 
 interface InvestigationModalProps {
+  currentUser?: AuthUser | null;
   transaction: Transaction;
   customerProfile: CustomerBaseline;
   isOpen: boolean;
@@ -27,6 +29,7 @@ interface InvestigationModalProps {
 }
 
 export const InvestigationModal: React.FC<InvestigationModalProps> = ({
+  currentUser,
   transaction,
   customerProfile,
   isOpen,

@@ -6,6 +6,7 @@ import {
   AgentLiquidityNode,
   RegionalRiskMetric,
   RiskBand,
+  AuthUser,
 } from '../../types';
 import { MuleVisionGraph } from './MuleVisionGraph';
 import { DisasterResilienceSimulator } from './DisasterResilienceSimulator';
@@ -37,6 +38,7 @@ import {
 } from 'lucide-react';
 
 interface OperatorDashboardProps {
+  currentUser?: AuthUser | null;
   transactions: Transaction[];
   customerProfile: CustomerBaseline;
   muleCluster: MuleCluster;
@@ -53,6 +55,7 @@ interface OperatorDashboardProps {
 }
 
 export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
+  currentUser,
   transactions,
   customerProfile,
   muleCluster,
@@ -206,6 +209,10 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   };
 
   const handleDownloadAuditCSV = () => {
+    if (currentUser?.permissions && !currentUser.permissions.canExportAuditLogs) {
+      alert('Access Restricted: You need Administrator Audit Export privileges to download BFIU compliance logs.');
+      return;
+    }
     if (!auditLogs || auditLogs.length === 0) return;
 
     const headers = [
@@ -267,6 +274,38 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
 
   return (
     <div id="operator-workspace" className="space-y-6 scroll-mt-24">
+      {/* Operator Authorization & Privilege Clearance Strip */}
+      <div className="bg-white dark:bg-[#0F172A] p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0054A6] dark:text-blue-400 border border-blue-200 dark:border-blue-800 flex items-center justify-center shrink-0 font-bold">
+            <ShieldCheck className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-slate-900 dark:text-white">
+                Authorized Session: {currentUser?.name || 'Md. Tanvir Hasan'}
+              </span>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
+                {currentUser?.role || 'ADMIN'} · Wider Privileges Active
+              </span>
+              <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                Clearance: Level 3 AML Officer
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              Authorized for National Fraud Surveillance, MuleVision Graph Quarantine, Emergency Float Dispatch & BFIU Regulatory Compliance
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-200/80 dark:border-emerald-800">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Full AML Privileges (6/6 Active)</span>
+          </div>
+        </div>
+      </div>
+
       {/* Live Real-Time WebSocket Ticker Bar */}
       <LiveWebSocketTicker
         latestTransaction={latestTickerTxn}

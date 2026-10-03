@@ -114,18 +114,21 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Customer Mode Header */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#0F172A] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {lang === 'BN' ? 'গ্রাহক মোড' : 'Active TakaSafe Customer Persona'}
             </span>
+            <span className="text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              USER Role · Less Privileges (Customer Scope)
+            </span>
           </div>
-          <h2 className="text-xl font-black text-slate-900 mt-1">
+          <h2 className="text-xl font-black text-slate-900 dark:text-white mt-1">
             {customer.name} ({customer.wallet})
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Registered Base: {customer.homeDistrict} · Verified NID · Primary Device: {customer.knownDevices[0]}
           </p>
         </div>

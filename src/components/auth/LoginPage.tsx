@@ -14,6 +14,9 @@ import {
   Smartphone,
   AlertCircle,
   ChevronRight,
+  ShieldAlert,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 
 interface LoginPageProps {
@@ -22,7 +25,7 @@ interface LoginPageProps {
   lang: 'EN' | 'BN';
 }
 
-const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
+export const DEMO_ACCOUNTS: Record<UserRole, AuthUser> = {
   ADMIN: {
     id: 'USR-ADM-01',
     name: 'Md. Tanvir Hasan',
@@ -64,6 +67,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
   const [email, setEmail] = useState<string>(DEMO_ACCOUNTS.ADMIN.email);
   const [password, setPassword] = useState<string>('••••••••••••');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showMatrixModal, setShowMatrixModal] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -132,56 +136,156 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
         </div>
 
         {/* Two Options: Admin vs User Role Selector */}
-        <div className="mb-6">
-          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2 flex items-center justify-between">
+        <div className="mb-6 space-y-3">
+          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center justify-between">
             <span>Select Access Role</span>
-            <span className="text-[10px] text-indigo-600 font-mono font-normal">2 Account Types</span>
+            <span className="text-[10px] text-indigo-600 font-mono font-bold bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+              Role-Based Access Control (RBAC)
+            </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100/90 rounded-2xl border border-slate-200">
+          <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200">
             {/* Admin Option */}
             <button
               type="button"
               onClick={() => handleSelectRole('ADMIN')}
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all cursor-pointer ${
                 selectedRole === 'ADMIN'
-                  ? 'bg-white text-slate-950 shadow-md ring-1 ring-slate-900/10'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-950 shadow-md ring-2 ring-[#0054A6]/30'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
-              <ShieldCheck className={`w-4 h-4 ${selectedRole === 'ADMIN' ? 'text-[#0054A6]' : 'text-slate-400'}`} />
-              <span>Admin</span>
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <ShieldCheck className={`w-4 h-4 ${selectedRole === 'ADMIN' ? 'text-[#0054A6]' : 'text-slate-400'}`} />
+                <span>Admin</span>
+              </div>
+              <span className={`text-[10px] font-mono font-bold mt-1 px-1.5 py-0.2 rounded-md ${
+                selectedRole === 'ADMIN'
+                  ? 'bg-indigo-100 text-indigo-800'
+                  : 'text-slate-400'
+              }`}>
+                Wider Privileges
+              </span>
             </button>
 
             {/* User Option */}
             <button
               type="button"
               onClick={() => handleSelectRole('USER')}
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all cursor-pointer ${
                 selectedRole === 'USER'
-                  ? 'bg-white text-slate-950 shadow-md ring-1 ring-slate-900/10'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-950 shadow-md ring-2 ring-emerald-600/30'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
-              <User className={`w-4 h-4 ${selectedRole === 'USER' ? 'text-emerald-600' : 'text-slate-400'}`} />
-              <span>User</span>
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <User className={`w-4 h-4 ${selectedRole === 'USER' ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <span>User</span>
+              </div>
+              <span className={`text-[10px] font-mono font-bold mt-1 px-1.5 py-0.2 rounded-md ${
+                selectedRole === 'USER'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'text-slate-400'
+              }`}>
+                Less Privileges
+              </span>
             </button>
           </div>
 
-          {/* Active Role Quick Description */}
-          <div className="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full shrink-0 ${selectedRole === 'ADMIN' ? 'bg-[#0054A6]' : 'bg-emerald-600'}`} />
-            <p className="leading-tight">
+          {/* Dynamic Active Role Privileges Panel */}
+          <div className={`p-3.5 rounded-2xl border text-xs transition-all ${
+            selectedRole === 'ADMIN'
+              ? 'bg-blue-50/80 border-blue-200 text-blue-950'
+              : 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+          }`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${
+                  selectedRole === 'ADMIN' ? 'bg-[#0054A6]' : 'bg-emerald-600'
+                }`} />
+                <span className="font-bold text-xs">
+                  {selectedRole === 'ADMIN' ? 'Admin: Wider Privileges' : 'User: Less Privileges (Customer Scope)'}
+                </span>
+              </div>
+              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
+                selectedRole === 'ADMIN'
+                  ? 'bg-[#0054A6] text-white'
+                  : 'bg-emerald-600 text-white'
+              }`}>
+                {selectedRole === 'ADMIN' ? '6/6 Authorizations' : '2/6 Authorizations'}
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-600 mb-2.5 leading-snug">
               {selectedRole === 'ADMIN' ? (
                 <span>
-                  <strong>Admin Role:</strong> Full access to Operator Cockpit, MuleVision graph, and BFIU AML audit controls.
+                  <strong>Full Administrative Access:</strong> Authorized for National Risk Cockpit, multi-hop MuleVision graph, suspicious wallet quarantine, coastal float dispatch, policy tuning & BFIU regulatory compliance.
                 </span>
               ) : (
                 <span>
-                  <strong>User Role:</strong> Access Upay customer app, ScamShield protection, and Send Money transfers.
+                  <strong>Scoped Customer Access:</strong> Authorized for personal Upay customer wallet, Send Money with ScamShield protection & linked accounts. Administrative surveillance and network freezing are restricted.
                 </span>
               )}
             </p>
+
+            {/* Privilege Checklist */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/80 text-[11px]">
+              {selectedRole === 'ADMIN' ? (
+                <>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>Operator Cockpit & Live Ticker</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>Quarantine & Freeze Wallets</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>Dispatch Emergency Agent Floats</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>Tune ML Policy Weights</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>Export BFIU Audit Logs (CSV)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0054A6] shrink-0" />
+                    <span>AI Dossier Case Investigations</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-1.5 text-slate-800 font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Personal Wallet & Balances</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-800 font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Send Money & ScamShield</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <XCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                    <span className="line-through">Operator Surveillance</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <XCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                    <span className="line-through">Quarantine Wallets</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <XCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                    <span className="line-through">Dispatch Cash Floats</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <XCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                    <span className="line-through">Policy Tuning & Audit Export</span>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -297,18 +401,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
             <span className="text-slate-700 underline font-medium cursor-pointer">Privacy Policy</span>
           </div>
 
-          {/* Primary Sign In Button matching reference */}
+          {/* Primary Sign In Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 bg-[#164E3D] hover:bg-[#113C2F] text-white font-bold rounded-full text-xs shadow-md hover:shadow-lg transition-all transform active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2"
+            className={`w-full py-3 px-4 text-white font-bold rounded-full text-xs shadow-md hover:shadow-lg transition-all transform active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2 ${
+              selectedRole === 'ADMIN'
+                ? 'bg-[#0054A6] hover:bg-[#004080]'
+                : 'bg-[#164E3D] hover:bg-[#113C2F]'
+            }`}
           >
             {isSubmitting ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <>
-                <span>Sign in as {selectedRole === 'ADMIN' ? 'Admin' : 'User'}</span>
-                <ChevronRight className="w-4 h-4 text-emerald-300" />
+                <span>
+                  Sign in as {selectedRole === 'ADMIN' ? 'Admin (Wider Privileges)' : 'User (Less Privileges)'}
+                </span>
+                <ChevronRight className="w-4 h-4 text-amber-300" />
               </>
             )}
           </button>
@@ -317,18 +427,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
         {/* Quick 1-Click Demo Profiles Footer for Evaluators */}
         <div className="mt-6 pt-5 border-t border-slate-200/80 text-center">
           <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-2">
-            Quick 1-Click Demo Logins
+            Quick 1-Click Demo Logins for Evaluators
           </span>
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => {
                 handleSelectRole('ADMIN');
                 onLogin(DEMO_ACCOUNTS.ADMIN);
               }}
-              className="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
             >
-              Demo Admin (Md. Tanvir Hasan)
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
+              <span>Demo Admin (Wider Privileges)</span>
             </button>
             <button
               type="button"
@@ -336,9 +447,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
                 handleSelectRole('USER');
                 onLogin(DEMO_ACCOUNTS.USER);
               }}
-              className="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
             >
-              Demo User (Rafiqul Islam)
+              <User className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Demo User (Less Privileges)</span>
             </button>
           </div>
         </div>

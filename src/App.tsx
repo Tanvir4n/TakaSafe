@@ -12,7 +12,8 @@ import { CustomerAppView } from './components/customer/CustomerAppView';
 import { StorylineRunner } from './components/storyline/StorylineRunner';
 import { InvestigationModal } from './components/investigation/InvestigationModal';
 import { UpayInfoModal } from './components/common/UpayInfoModal';
-import { LoginPage } from './components/auth/LoginPage';
+import { LoginPage, DEMO_ACCOUNTS } from './components/auth/LoginPage';
+import { AccessRestrictedGate } from './components/common/AccessRestrictedGate';
 import {
   MOCK_TRANSACTIONS,
   CURRENT_CUSTOMER,
@@ -307,6 +308,17 @@ export default function App() {
           setCurrentUser(null);
           showToast('Signed out of TakaSafe.');
         }}
+        onSwitchUserRole={(newRole) => {
+          const user = DEMO_ACCOUNTS[newRole];
+          setCurrentUser(user);
+          if (newRole === 'ADMIN') {
+            setActiveView('OPERATOR');
+            showToast(`Switched to Admin role (${user.name}). Wider privileges unlocked.`);
+          } else {
+            setActiveView('CUSTOMER');
+            showToast(`Switched to User role (${user.name}). Standard customer access active.`);
+          }
+        }}
         onOpenModal={(modal) => setActiveModal(modal)}
       />
 
@@ -317,7 +329,11 @@ export default function App() {
             if (svc === 'Send Money') {
               setActiveView('CUSTOMER');
             } else {
-              setActiveView('OPERATOR');
+              if (currentUser?.role === 'USER') {
+                setActiveView('OPERATOR'); // Will trigger AccessRestrictedGate
+              } else {
+                setActiveView('OPERATOR');
+              }
             }
           }}
           onOpenModal={(modal) => setActiveModal(modal)}
@@ -334,10 +350,11 @@ export default function App() {
                 setCurrentUser(user);
                 if (user.role === 'ADMIN') {
                   setActiveView('OPERATOR');
+                  showToast(`Welcome back, ${user.name}! Signed in as Admin with Wider Privileges.`);
                 } else {
                   setActiveView('CUSTOMER');
+                  showToast(`Welcome back, ${user.name}! Signed in as User with Scoped Privileges.`);
                 }
-                showToast(`Welcome back, ${user.name}! Signed in as ${user.role}.`);
               }}
               onCancel={() => {
                 if (currentUser) {
@@ -351,21 +368,36 @@ export default function App() {
           )}
 
           {activeView === 'OPERATOR' && (
-            <OperatorDashboard
-              transactions={transactions}
-              customerProfile={CURRENT_CUSTOMER}
-              muleCluster={muleCluster}
-              agents={agents}
-              regionalMetrics={regionalMetrics}
-              onOpenInvestigation={(txn) => setSelectedTxnForInvestigation(txn)}
-              onFreezeWallet={handleFreezeWallet}
-              onDispatchLiquidity={handleDispatchLiquidity}
-              onActivateMonitoring={handleActivateMonitoring}
-              auditLogs={auditLogs}
-              initialTab={operatorTab}
-              onTabChange={(tab) => setOperatorTab(tab)}
-              lang={lang}
-            />
+            currentUser?.role === 'USER' ? (
+              <AccessRestrictedGate
+                currentUser={currentUser}
+                onElevateToAdmin={() => {
+                  setCurrentUser(DEMO_ACCOUNTS.ADMIN);
+                  setActiveView('OPERATOR');
+                  showToast('Elevated to Admin (Md. Tanvir Hasan). Wider privileges unlocked.');
+                }}
+                onGoToCustomerApp={() => setActiveView('CUSTOMER')}
+                onSwitchAccount={() => setActiveView('LOGIN')}
+                lang={lang}
+              />
+            ) : (
+              <OperatorDashboard
+                currentUser={currentUser}
+                transactions={transactions}
+                customerProfile={CURRENT_CUSTOMER}
+                muleCluster={muleCluster}
+                agents={agents}
+                regionalMetrics={regionalMetrics}
+                onOpenInvestigation={(txn) => setSelectedTxnForInvestigation(txn)}
+                onFreezeWallet={handleFreezeWallet}
+                onDispatchLiquidity={handleDispatchLiquidity}
+                onActivateMonitoring={handleActivateMonitoring}
+                auditLogs={auditLogs}
+                initialTab={operatorTab}
+                onTabChange={(tab) => setOperatorTab(tab)}
+                lang={lang}
+              />
+            )
           )}
 
           {activeView === 'CUSTOMER' && (
@@ -398,6 +430,7 @@ export default function App() {
       {/* Full Explainable AI SHAP Investigation Modal */}
       {selectedTxnForInvestigation && (
         <InvestigationModal
+          currentUser={currentUser}
           transaction={selectedTxnForInvestigation}
           customerProfile={CURRENT_CUSTOMER}
           isOpen={!!selectedTxnForInvestigation}

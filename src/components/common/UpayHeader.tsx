@@ -22,7 +22,7 @@ import {
   Sun,
   Moon,
 } from 'lucide-react';
-import { AuthUser } from '../../types';
+import { AuthUser, UserRole } from '../../types';
 
 interface UpayHeaderProps {
   activeView: 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN';
@@ -34,6 +34,7 @@ interface UpayHeaderProps {
   criticalAlertCount: number;
   currentUser?: AuthUser | null;
   onLogout?: () => void;
+  onSwitchUserRole?: (role: UserRole) => void;
   onOpenModal?: (modalType: string) => void;
   theme?: 'light' | 'dark';
   onToggleTheme?: () => void;
@@ -49,6 +50,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
   criticalAlertCount,
   currentUser,
   onLogout,
+  onSwitchUserRole,
   onOpenModal,
   theme = 'light',
   onToggleTheme,
@@ -174,6 +176,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
             {OPERATOR_MODULES.map((mod) => {
               const Icon = mod.icon;
               const isSelected = activeView === 'OPERATOR' && operatorTab === mod.id;
+              const isUserRole = currentUser?.role === 'USER';
               return (
                 <button
                   key={mod.id}
@@ -183,10 +186,15 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                       ? 'bg-white text-[#0054A6] shadow-md border-b-2 border-amber-400'
                       : 'text-blue-100 hover:text-white hover:bg-white/10'
                   }`}
-                  title={mod.label}
+                  title={isUserRole ? `${mod.label} (Admin Clearance Required)` : mod.label}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span>{mod.label}</span>
+                  {isUserRole && (
+                    <span className="text-[9px] bg-black/25 text-amber-200 px-1 py-0.2 rounded font-mono font-normal">
+                      🔒
+                    </span>
+                  )}
                   {mod.badge !== undefined && mod.badge > 0 && (
                     <span className="bg-rose-500 text-white text-[9px] font-mono px-1.5 py-0.2 rounded-full font-black animate-pulse shadow-xs">
                       {mod.badge}
@@ -360,17 +368,63 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-500 font-mono truncate mt-0.5">{currentUser.email}</div>
-                      <div className="text-[10px] text-indigo-600 font-medium mt-1">{currentUser.designation}</div>
+                      <div className="text-[10px] text-indigo-600 font-medium mt-0.5">{currentUser.designation}</div>
+
+                      {/* Privilege level indicator tag */}
+                      <div className="mt-2 p-2 rounded-xl text-[10px] border leading-tight bg-slate-50 border-slate-200">
+                        {currentUser.role === 'ADMIN' ? (
+                          <div className="text-[#0054A6] font-semibold flex items-center gap-1.5">
+                            <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                            <span>Wider Privileges: Full Surveillance & Wallet Freezing</span>
+                          </div>
+                        ) : (
+                          <div className="text-emerald-700 font-semibold flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 shrink-0" />
+                            <span>Less Privileges: Personal Upay Wallet & ScamShield</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="py-1">
+                      {/* 1-Click Role Switcher */}
+                      {currentUser.role === 'USER' ? (
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            onSwitchUserRole?.('ADMIN');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs bg-blue-50/80 hover:bg-blue-100 text-[#0054A6] font-bold flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
+                            <span>Switch to Admin (Wider Privileges)</span>
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-[#0054A6]" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            onSwitchUserRole?.('USER');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs bg-emerald-50/80 hover:bg-emerald-100 text-emerald-800 font-bold flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Switch to User (Less Privileges)</span>
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-emerald-700" />
+                        </button>
+                      )}
+
                       <button
                         onClick={() => {
                           setIsUserMenuOpen(false);
                           if (currentUser.role === 'ADMIN') setActiveView('OPERATOR');
                           else setActiveView('CUSTOMER');
                         }}
-                        className="w-full px-4 py-2 text-left text-xs hover:bg-blue-50 flex items-center justify-between text-slate-700 cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs hover:bg-slate-50 flex items-center justify-between text-slate-700 cursor-pointer"
                       >
                         <span>Go to {currentUser.role === 'ADMIN' ? 'Operator Cockpit' : 'Customer App'}</span>
                         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -381,9 +435,9 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                           setIsUserMenuOpen(false);
                           setActiveView('LOGIN');
                         }}
-                        className="w-full px-4 py-2 text-left text-xs hover:bg-blue-50 flex items-center justify-between text-slate-700 cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs hover:bg-slate-50 flex items-center justify-between text-slate-700 cursor-pointer"
                       >
-                        <span>Switch Account / Role</span>
+                        <span>Change Account / Log In</span>
                         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                       </button>
                     </div>
