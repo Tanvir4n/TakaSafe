@@ -403,7 +403,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
         </div>
 
         {/* 6 Core Services Grid matching wireframe Image 4 with Staggered Slide Up Animation */}
-        <div className={`grid w-full min-w-0 grid-cols-2 min-[420px]:grid-cols-3 ${showCashIn ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-3 sm:gap-5 lg:gap-6 stagger-grid`}>
+        <div className={`services-card-grid grid w-full min-w-0 grid-cols-2 sm:grid-cols-3 ${showCashIn ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-3 sm:gap-5 lg:gap-6 stagger-grid`}>
           {/* 1. Cash In */}
           {showCashIn && <div
             onClick={() => onServiceSelect?.('Cash In')}
@@ -494,7 +494,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
 
         {/* Expanded Services Grid (Revealed on View More) */}
         {showAllServices && (
-          <div className="grid w-full min-w-0 grid-cols-2 min-[420px]:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6 mt-6 stagger-grid">
+          <div className="services-card-grid grid w-full min-w-0 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6 mt-6 stagger-grid">
             {/* 7. Mobile Recharge */}
             <div
               onClick={() => onServiceSelect?.('Mobile Recharge')}

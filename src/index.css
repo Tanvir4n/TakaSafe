@@ -381,3 +381,23 @@ html.dark {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
+
+@media (max-width: 639px) {
+  .services-card-grid > * {
+    min-width: 0;
+    padding: 0.75rem;
+  }
+
+  .services-card-grid > * > div:first-child {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    flex: 0 0 auto;
+  }
+
+  .services-card-grid > * > span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+}
