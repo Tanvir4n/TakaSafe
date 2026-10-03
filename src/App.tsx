@@ -495,7 +495,29 @@ export default function App() {
           )}
 
           {activeView === 'OPERATOR' && (
-            currentUser?.role === 'USER' ? (
+            !currentUser ? (
+              <section className="max-w-5xl mx-auto py-8 sm:py-14">
+                <div className="rounded-3xl bg-gradient-to-br from-[#004080] via-[#0054A6] to-slate-900 p-7 sm:p-12 text-white shadow-xl">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Digital finance, made safer</p>
+                  <h1 className="mt-3 max-w-3xl text-3xl sm:text-5xl font-black leading-tight">A safer way to move and manage money</h1>
+                  <p className="mt-5 max-w-2xl text-sm sm:text-base leading-7 text-blue-100">TakaSafe brings secure mobile financial services and intelligent fraud protection together, helping customers transact with confidence.</p>
+                  <button onClick={() => setActiveView('LOGIN')} className="mt-7 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 shadow hover:bg-amber-300">Sign in to get started</button>
+                </div>
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                  {[
+                    { title: 'Everyday payments', description: 'Send money, pay merchants, and manage your wallet from one place.' },
+                    { title: 'Safer transactions', description: 'Built-in protections help identify suspicious activity and reduce scams.' },
+                    { title: 'Service access', description: 'Explore customer services and account tools after signing in.' },
+                  ].map((item) => (
+                    <button key={item.title} onClick={() => setActiveView('LOGIN')} className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
+                      <h2 className="font-bold text-[#0054A6] dark:text-blue-300">{item.title}</h2>
+                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{item.description}</p>
+                      <span className="mt-4 inline-block text-xs font-bold text-amber-700 dark:text-amber-300">Sign in to use this feature →</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            ) : currentUser.role === 'USER' ? (
               <AccessRestrictedGate
                 currentUser={currentUser}
                 onElevateToAdmin={() => {

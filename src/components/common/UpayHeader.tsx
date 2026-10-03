@@ -175,7 +175,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
           </button>
 
           {/* Operator Modules Tabs directly in Top Navbar (Hidden on smaller screens, shown on XL) */}
-          <nav className="hidden xl:flex flex-1 min-w-0 items-center gap-1 overflow-x-auto py-1 px-1 scrollbar-none mx-2">
+          {currentUser?.role === 'ADMIN' && <nav className="hidden xl:flex flex-1 min-w-0 items-center gap-1 overflow-x-auto py-1 px-1 scrollbar-none mx-2">
             {OPERATOR_MODULES.map((mod) => {
               const Icon = mod.icon;
               const isSelected = activeView === 'OPERATOR' && operatorTab === mod.id;
@@ -206,7 +206,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                 </button>
               );
             })}
-          </nav>
+          </nav>}
 
           {/* Right Action Utilities & Clean Services Dropdown */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
@@ -499,7 +499,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
       {isMobileMenuOpen && (
         <div className="xl:hidden bg-[#004080] border-t border-blue-400/20 px-4 py-4 space-y-4 animate-in slide-in-from-top-2 text-white shadow-2xl max-h-[85vh] overflow-y-auto">
           {/* Quick View Switcher */}
-          <div className="flex items-center gap-1.5 p-1 bg-black/25 rounded-xl">
+          {currentUser?.role === 'ADMIN' && <div className="flex items-center gap-1.5 p-1 bg-black/25 rounded-xl">
             <button
               onClick={() => {
                 setActiveView('OPERATOR');
@@ -533,10 +533,10 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
             >
               Storyline
             </button>
-          </div>
+          </div>}
 
           {/* Operator Modules Quick Links */}
-          <div>
+          {currentUser?.role === 'ADMIN' && <div>
             <div className="text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-2">
               Operator Modules
             </div>
@@ -568,7 +568,7 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                 );
               })}
             </div>
-          </div>
+          </div>}
 
           {/* Services & Quick Links */}
           <div className="pt-2 border-t border-blue-400/20">
