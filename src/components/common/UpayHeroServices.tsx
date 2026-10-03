@@ -24,10 +24,11 @@ import {
 interface UpayHeroServicesProps {
   onServiceSelect?: (serviceName: string) => void;
   onOpenModal?: (modalType: string) => void;
+  showCashIn?: boolean;
   lang: 'EN' | 'BN';
 }
 
-export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSelect, onOpenModal, lang }) => {
+export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSelect, onOpenModal, showCashIn = true, lang }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [showAllServices, setShowAllServices] = useState<boolean>(false);
@@ -97,7 +98,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
 
                 <div className="mt-5 flex items-center justify-center md:justify-start gap-4">
                   <button
-                    onClick={() => onServiceSelect?.('Cash In')}
+                    onClick={() => onOpenModal?.('ABOUT_US')}
                     className="flex items-center gap-2 bg-[#FAB915] hover:bg-[#e5a80f] text-slate-950 px-6 py-2.5 rounded-full font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>{lang === 'BN' ? 'বিস্তারিত দেখুন' : 'Read More'}</span>
@@ -402,9 +403,9 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
         </div>
 
         {/* 6 Core Services Grid matching wireframe Image 4 with Staggered Slide Up Animation */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 stagger-grid">
+        <div className={`grid grid-cols-2 sm:grid-cols-3 ${showCashIn ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-4 sm:gap-6 stagger-grid`}>
           {/* 1. Cash In */}
-          <div
+          {showCashIn && <div
             onClick={() => onServiceSelect?.('Cash In')}
             className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer text-center card-hover-lift"
           >
@@ -415,7 +416,7 @@ export const UpayHeroServices: React.FC<UpayHeroServicesProps> = ({ onServiceSel
               {lang === 'BN' ? 'ক্যাশ ইন' : 'Cash In'}
             </span>
             <span className="text-[11px] text-slate-500 mt-0.5">Free from Agents</span>
-          </div>
+          </div>}
 
           {/* 2. Cash Out */}
           <div

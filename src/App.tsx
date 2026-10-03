@@ -440,10 +440,12 @@ export default function App() {
       {activeView !== 'LOGIN' && (
         <UpayHeroServices
           onServiceSelect={(svc) => {
+            if (svc === 'Cash In' && currentUser?.role === 'USER') return;
             setRequestedWalletService(svc === 'Send Money' ? null : svc);
             navigateToView('CUSTOMER');
           }}
           onOpenModal={(modal) => setActiveModal(modal)}
+          showCashIn={currentUser?.role !== 'USER'}
           lang={lang}
         />
       )}

@@ -9,3 +9,4 @@ user_id,wallet,amount,recipient,timestamp,reference,status,risk_score
 "USR-CUST-91","01616-456789","900","01710-605442","2026-10-03T15:37:45.012Z","","COMPLETED","35"
 "USR-ADM-01","+880 1712-401920","50000","Bank Transfer","2026-10-03T19:24:56.007Z","","COMPLETED","0"
 "USR-ADM-02","+880 1812-402921","600","Grameenphone","2026-10-03T19:39:21.145Z","01717962506","COMPLETED","0"
+"USR-ADM-02","+880 1812-402921","10000","Debit Card","2026-10-03T19:40:36.785Z","","COMPLETED","0"
