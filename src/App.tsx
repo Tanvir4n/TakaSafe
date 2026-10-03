@@ -139,6 +139,7 @@ export default function App() {
   const [auditLogs, setAuditLogs] = useState<any[]>(INITIAL_AUDIT_LOGS);
   const [selectedTxnForInvestigation, setSelectedTxnForInvestigation] = useState<Transaction | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [requestedWalletService, setRequestedWalletService] = useState<string | null>(null);
 
   const recordCustomerLogin = (user: AuthUser) => {
     if (user.role !== 'USER') return;
@@ -439,11 +440,8 @@ export default function App() {
       {activeView !== 'LOGIN' && (
         <UpayHeroServices
           onServiceSelect={(svc) => {
-            if (svc === 'Send Money') {
-              setActiveView('CUSTOMER');
-            } else {
-              navigateToView('OPERATOR');
-            }
+            setRequestedWalletService(svc === 'Send Money' ? null : svc);
+            navigateToView('CUSTOMER');
           }}
           onOpenModal={(modal) => setActiveModal(modal)}
           lang={lang}
@@ -518,6 +516,8 @@ export default function App() {
               onSimulateRiskyPayment={() => {
                 // Ensure critical transaction is visible in operator queue
               }}
+              initialService={requestedWalletService}
+              onServiceDismiss={() => setRequestedWalletService(null)}
               lang={lang}
             />
           )}

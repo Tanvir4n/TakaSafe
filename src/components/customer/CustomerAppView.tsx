@@ -104,6 +104,8 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   customer,
   userId,
   onSimulateRiskyPayment,
+  initialService = null,
+  onServiceDismiss,
   lang,
 }) => {
   const [activeTab, setActiveTab] = useState<'WALLET' | 'RESILIENCE'>('WALLET');
@@ -117,6 +119,12 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
   const [isScoring, setIsScoring] = useState<boolean>(false);
+  const [activeWalletService, setActiveWalletService] = useState<string | null>(null);
+  const [serviceTarget, setServiceTarget] = useState<string>('');
+  const [serviceAmount, setServiceAmount] = useState<string>('');
+  const [serviceNote, setServiceNote] = useState<string>('');
+  const [serviceError, setServiceError] = useState<string | null>(null);
+  const [serviceReceipt, setServiceReceipt] = useState<string | null>(null);
   const balanceStorageKey = `takasafe-balance:${userId}:${customer.wallet}`;
   const [availableBalance, setAvailableBalance] = useState<number>(() => {
     try {
@@ -130,6 +138,16 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   });
   const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(userId, customer.wallet));
   const [loginHistory, setLoginHistory] = useState<CustomerLogin[]>(() => loadLoginHistory(userId, customer.wallet));
+
+  useEffect(() => {
+    if (!initialService || !WALLET_SERVICES[initialService]) return;
+    setActiveWalletService(initialService);
+    setServiceTarget(WALLET_SERVICES[initialService].targets[0] || '');
+    setServiceAmount('');
+    setServiceNote('');
+    setServiceError(null);
+    setServiceReceipt(null);
+  }, [initialService]);
 
   useEffect(() => {
     let active = true;
@@ -182,7 +200,8 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   }, [userId, customer.wallet]);
 
   const recentTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 90 * 24 * 60 * 60 * 1000);
-  const baselineTransfers = recentTransfers.filter((transfer) => transfer.status !== 'PROCEEDED' && (transfer.riskScore ?? 0) < 40);
+  const sendMoneyTransfers = recentTransfers.filter((transfer) => !transfer.serviceType || transfer.serviceType === 'SEND_MONEY');
+  const baselineTransfers = sendMoneyTransfers.filter((transfer) => transfer.status !== 'PROCEEDED' && (transfer.riskScore ?? 0) < 40);
   const observedAverage = baselineTransfers.length
     ? baselineTransfers.reduce((sum, transfer) => sum + transfer.amount, 0) / baselineTransfers.length
     : customer.avgAmount;
@@ -193,7 +212,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const observedUpperRange = sortedAmounts.length
     ? sortedAmounts[Math.floor((sortedAmounts.length - 1) * 0.9)]
     : customer.maxAmountTypical;
-  const observedRecipients = new Set(recentTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')));
+  const observedRecipients = new Set(sendMoneyTransfers.map((transfer) => transfer.recipient.replace(/\D/g, '')).filter(Boolean));
   const knownRecipients = observedRecipients.size ? observedRecipients : new Set(customer.frequentRecipients.map((item) => item.replace(/\D/g, '')));
   const activityTimestamps = [
     ...baselineTransfers.map((transfer) => transfer.timestamp),
@@ -204,20 +223,32 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     ? `${String(observedHours[0]).padStart(2, '0')}:00 - ${String((observedHours[observedHours.length - 1] + 1) % 24).padStart(2, '0')}:00`
     : customer.usualHours;
 
-  const recordTransfer = (transferAmount: number, transferRecipient: string, score: number, status: 'COMPLETED' | 'PROCEEDED') => {
+  const recordTransfer = (
+    transferAmount: number,
+    transferRecipient: string,
+    score: number,
+    status: 'COMPLETED' | 'PROCEEDED',
+    serviceType = 'SEND_MONEY',
+    direction: 'IN' | 'OUT' = 'OUT',
+    fee = 0,
+    reference = note.trim(),
+  ) => {
     const record: CustomerTransfer = {
       amount: transferAmount,
       recipient: transferRecipient.trim(),
       timestamp: new Date().toISOString(),
-      reference: note.trim(),
+      reference,
       status,
       riskScore: score,
+      serviceType,
+      direction,
+      fee,
     };
     const nextHistory = [
       ...transferHistory,
       record,
     ].slice(-500);
-    const nextBalance = Math.max(0, availableBalance - transferAmount);
+    const nextBalance = Math.max(0, availableBalance + (direction === 'IN' ? transferAmount : -(transferAmount + fee)));
     setAvailableBalance(nextBalance);
     setBalanceError(null);
     try {
@@ -238,6 +269,38 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     }).catch(() => {
       // Local storage remains available as an offline fallback.
     });
+  };
+
+  const handleWalletServiceSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!activeWalletService) return;
+    const config = WALLET_SERVICES[activeWalletService];
+    const value = Number(serviceAmount);
+    if (!Number.isFinite(value) || value <= 0) {
+      setServiceError('Enter an amount greater than ৳0.');
+      return;
+    }
+    const fee = Math.round(value * config.feeRate);
+    const totalDebit = value + fee;
+    if (config.direction === 'OUT' && totalDebit > availableBalance) {
+      setServiceError(`Insufficient balance. This service needs ৳${totalDebit.toLocaleString()} including fees; ৳${availableBalance.toLocaleString()} is available.`);
+      return;
+    }
+    if (!serviceTarget.trim()) {
+      setServiceError(`Select a ${config.targetLabel.toLowerCase()}.`);
+      return;
+    }
+
+    recordTransfer(value, serviceTarget, 0, 'COMPLETED', config.type, config.direction, fee, serviceNote.trim());
+    const balanceAfter = availableBalance + (config.direction === 'IN' ? value : -totalDebit);
+    setServiceReceipt(`${config.title} completed for ৳${value.toLocaleString()}${fee ? ` (৳${fee.toLocaleString()} fee)` : ''}. New available balance: ৳${balanceAfter.toLocaleString()}.`);
+  };
+
+  const closeWalletService = () => {
+    setActiveWalletService(null);
+    setServiceError(null);
+    setServiceReceipt(null);
+    onServiceDismiss?.();
   };
 
   // QR Code Scanner & Secure Wallet Linking States
