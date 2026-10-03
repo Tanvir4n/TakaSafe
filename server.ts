@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 const customerTransactionsCsv = path.resolve(process.cwd(), 'dataset', 'customer_transactions.csv');
-const customerTransactionHeaders = ['wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
+const customerTransactionHeaders = ['user_id', 'wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
 const toCsvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 const parseCsvLine = (line: string): string[] => {
   const cells: string[] = [];
@@ -38,14 +38,17 @@ app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => 
       throw error;
     });
     const lines = csv.split(/\r?\n/).filter(Boolean);
-    const headers = lines.length ? lines.shift()!.split(',') : customerTransactionHeaders;
-    const rows = lines.map(parseCsvLine).filter((cells) => cells[0] === wallet).map((cells) => {
+    const headers = lines.length ? parseCsvLine(lines.shift()!) : customerTransactionHeaders;
+    const rows = lines.map(parseCsvLine).map((cells) => {
       const row = Object.fromEntries(headers.map((header, index) => [header, cells[index] || '']));
+      // Older CSV rows predate user IDs, so preserve their wallet as the legacy owner key.
+      const ownerId = row.user_id || row.wallet;
+      if (ownerId !== wallet) return null;
       return {
         amount: Number(row.amount), recipient: row.recipient, timestamp: row.timestamp,
         reference: row.reference, status: row.status, riskScore: Number(row.risk_score) || 0,
       };
-    });
+    }).filter(Boolean);
     res.json({ success: true, history: rows });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -54,9 +57,9 @@ app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => 
 
 app.post('/api/customer-history/:wallet', async (req: Request, res: Response) => {
   const wallet = String(req.params.wallet || '').trim();
-  const { amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0 } = req.body || {};
+  const { wallet: customerWallet, amount, recipient, timestamp, reference = '', status = 'COMPLETED', riskScore = 0 } = req.body || {};
   const date = new Date(timestamp);
-  if (!wallet || wallet.length > 64 || !Number.isFinite(Number(amount)) || Number(amount) <= 0 ||
+  if (!wallet || wallet.length > 64 || typeof customerWallet !== 'string' || !customerWallet.trim() || customerWallet.length > 64 || !Number.isFinite(Number(amount)) || Number(amount) <= 0 ||
       typeof recipient !== 'string' || !recipient.trim() || recipient.length > 128 || !Number.isFinite(date.getTime()) ||
       typeof reference !== 'string' || reference.length > 256 || !['COMPLETED', 'PROCEEDED'].includes(status) ||
       !Number.isFinite(Number(riskScore))) {
@@ -65,9 +68,24 @@ app.post('/api/customer-history/:wallet', async (req: Request, res: Response) =>
   try {
     await fs.mkdir(path.dirname(customerTransactionsCsv), { recursive: true });
     let needsHeader = false;
-    try { needsHeader = (await fs.stat(customerTransactionsCsv)).size === 0; }
-    catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
-    const values = [wallet, Number(amount), recipient.trim(), date.toISOString(), reference, status, Math.max(0, Math.min(100, Number(riskScore)))];
+    try {
+      if ((await fs.stat(customerTransactionsCsv)).size === 0) needsHeader = true;
+      else {
+        const existing = await fs.readFile(customerTransactionsCsv, 'utf8');
+        const [headerLine, ...oldLines] = existing.split(/\r?\n/).filter(Boolean);
+        const oldHeaders = parseCsvLine(headerLine);
+        if (!oldHeaders.includes('user_id')) {
+          const migrated = oldLines.map((line) => {
+            const oldCells = parseCsvLine(line);
+            const oldRow = Object.fromEntries(oldHeaders.map((header, index) => [header, oldCells[index] || '']));
+            return [oldRow.wallet, oldRow.wallet, oldRow.amount, oldRow.recipient, oldRow.timestamp, oldRow.reference, oldRow.status, oldRow.risk_score]
+              .map(toCsvCell).join(',');
+          });
+          await fs.writeFile(customerTransactionsCsv, `${customerTransactionHeaders.join(',')}\r\n${migrated.join('\r\n')}${migrated.length ? '\r\n' : ''}`, 'utf8');
+        }
+      }
+    } catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
+    const values = [wallet, customerWallet.trim(), Number(amount), recipient.trim(), date.toISOString(), reference, status, Math.max(0, Math.min(100, Number(riskScore)))];
     const content = `${needsHeader ? `${customerTransactionHeaders.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`;
     await fs.appendFile(customerTransactionsCsv, content, 'utf8');
     res.json({ success: true });

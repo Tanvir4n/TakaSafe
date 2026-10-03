@@ -32,6 +32,7 @@ import {
 
 interface CustomerAppViewProps {
   customer: CustomerBaseline;
+  userId: string;
   onSimulateRiskyPayment: () => void;
   lang: 'EN' | 'BN';
 }
@@ -45,9 +46,9 @@ interface CustomerTransfer {
   riskScore?: number;
 }
 
-const loadTransferHistory = (wallet: string): CustomerTransfer[] => {
+const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
   try {
-    const saved = window.localStorage.getItem(`takasafe-transfers:${wallet}`);
+    const saved = window.localStorage.getItem(`takasafe-transfers:${userId}:${wallet}`);
     const parsed: unknown = saved ? JSON.parse(saved) : [];
     return Array.isArray(parsed) ? parsed.filter((item): item is CustomerTransfer =>
       typeof item?.amount === 'number' && typeof item?.recipient === 'string' && typeof item?.timestamp === 'string'
@@ -59,6 +60,7 @@ const loadTransferHistory = (wallet: string): CustomerTransfer[] => {
 
 export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   customer,
+  userId,
   onSimulateRiskyPayment,
   lang,
 }) => {
@@ -71,18 +73,18 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
   const [normalSuccess, setNormalSuccess] = useState<boolean>(false);
   const [riskReasons, setRiskReasons] = useState<string[]>([]);
   const [riskScore, setRiskScore] = useState<number>(0);
-  const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(customer.wallet));
+  const [transferHistory, setTransferHistory] = useState<CustomerTransfer[]>(() => loadTransferHistory(userId, customer.wallet));
 
   useEffect(() => {
     let active = true;
-    const localHistory = loadTransferHistory(customer.wallet);
-    fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`)
+    const localHistory = loadTransferHistory(userId, customer.wallet);
+    fetch(`/api/customer-history/${encodeURIComponent(userId)}`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('History API unavailable')))
       .then(async ({ history }: { history: CustomerTransfer[] }) => {
         if (!active || !Array.isArray(history)) return;
         if (!history.length && localHistory.length) {
           for (const record of localHistory) {
-            await fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`, {
+            await fetch(`/api/customer-history/${encodeURIComponent(userId)}`, {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ wallet: customer.wallet, ...record }),
             });
@@ -92,11 +94,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
           return;
         }
         setTransferHistory(history);
-        window.localStorage.setItem(`takasafe-transfers:${customer.wallet}`, JSON.stringify(history));
+        window.localStorage.setItem(`takasafe-transfers:${userId}:${customer.wallet}`, JSON.stringify(history));
       })
       .catch(() => { if (active) setTransferHistory(localHistory); });
     return () => { active = false; };
-  }, [customer.wallet]);
+  }, [userId, customer.wallet]);
 
   const recentTransfers = transferHistory.filter((transfer) => Date.now() - Date.parse(transfer.timestamp) <= 90 * 24 * 60 * 60 * 1000);
   const observedAverage = recentTransfers.length
@@ -128,11 +130,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
     ].slice(-500);
     setTransferHistory(nextHistory);
     try {
-      window.localStorage.setItem(`takasafe-transfers:${customer.wallet}`, JSON.stringify(nextHistory));
+      window.localStorage.setItem(`takasafe-transfers:${userId}:${customer.wallet}`, JSON.stringify(nextHistory));
     } catch {
       // Keep the current session's in-memory history if browser storage is unavailable.
     }
-    fetch(`/api/customer-history/${encodeURIComponent(customer.wallet)}`, {
+    fetch(`/api/customer-history/${encodeURIComponent(userId)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ wallet: customer.wallet, ...record }),
