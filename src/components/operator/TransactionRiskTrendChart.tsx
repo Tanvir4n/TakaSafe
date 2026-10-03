@@ -74,23 +74,24 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
   return (
     <div className="bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 space-y-4 text-slate-900 dark:text-slate-100">
       {/* Top Header & Interactive Toggles */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
+      <div className="flex flex-col gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+        {/* Title, Badge & Subtitle */}
+        <div className="flex items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0 border border-rose-200 dark:border-rose-900/50">
               <Activity className="w-4 h-4" />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 flex-wrap">
-                <span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   {lang === 'BN' ? 'লেনদেনের ঝুঁকি সূচকের গতিধারা' : 'Transaction Risk & Anomaly Trends Over Time'}
-                </span>
+                </h3>
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span>LIVE STREAM</span>
                 </span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {lang === 'BN'
                   ? 'প্রতি ঘণ্টার গড় ঝুঁকি স্কোর (০-১০০), ক্রিটিক্যাল অ্যালার্ট ভলিউম এবং অস্বাভাবিক গতিবিধি মনিটরিং'
                   : 'Fused risk score (0-100), critical alert surges & multi-factor velocity progression'}
@@ -99,11 +100,12 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
           </div>
         </div>
 
-        {/* Range Selectors & Filter Toggles */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
+        {/* Range Selectors & Filter Toggles Toolbar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-0.5">
           {/* Time range segmented control */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs font-semibold border border-slate-200/60 dark:border-slate-700/60">
+          <div className="inline-flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs font-semibold border border-slate-200/60 dark:border-slate-700/60 shadow-2xs">
             <button
+              type="button"
               onClick={() => setTimeRange('24H')}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === '24H'
@@ -114,6 +116,7 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               24-Hour View
             </button>
             <button
+              type="button"
               onClick={() => setTimeRange('BURST')}
               className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 timeRange === 'BURST'
@@ -125,6 +128,7 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
               <span>Attack Burst (02:00–05:00)</span>
             </button>
             <button
+              type="button"
               onClick={() => setTimeRange('ACTIVE')}
               className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 timeRange === 'ACTIVE'
@@ -136,29 +140,52 @@ export const TransactionRiskTrendChart: React.FC<TransactionRiskTrendChartProps>
             </button>
           </div>
 
-          {/* Metric Visibility Toggles */}
-          <div className="flex items-center gap-1.5">
+          {/* Metric Visibility Toggles (Enhanced Part Boxed in Red) */}
+          <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setShowAlerts(!showAlerts)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+              title={showAlerts ? 'Click to hide critical alerts line' : 'Click to show critical alerts line'}
+              className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all duration-150 cursor-pointer select-none ${
                 showAlerts
-                  ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-bold shadow-2xs'
-                  : 'bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+                  ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700/80 shadow-xs ring-1 ring-amber-400/20'
+                  : 'bg-slate-50 dark:bg-slate-900/60 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${showAlerts ? 'bg-amber-500' : 'bg-slate-300'}`}></span>
-              <span>Critical Alerts</span>
+              <span className="relative flex h-2 w-2 shrink-0">
+                {showAlerts && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                )}
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    showAlerts ? 'bg-amber-500 shadow-xs' : 'bg-slate-300 dark:bg-slate-600'
+                  }`}
+                />
+              </span>
+              <span className={showAlerts ? '' : 'line-through opacity-70'}>Critical Alerts</span>
             </button>
+
             <button
+              type="button"
               onClick={() => setShowVelocity(!showVelocity)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+              title={showVelocity ? 'Click to hide velocity index line' : 'Click to show velocity index line'}
+              className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all duration-150 cursor-pointer select-none ${
                 showVelocity
-                  ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-900 dark:text-sky-300 border-sky-300 dark:border-sky-800 font-bold shadow-2xs'
-                  : 'bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+                  ? 'bg-sky-50 dark:bg-sky-950/50 text-sky-900 dark:text-sky-200 border-sky-300 dark:border-sky-700/80 shadow-xs ring-1 ring-sky-400/20'
+                  : 'bg-slate-50 dark:bg-slate-900/60 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${showVelocity ? 'bg-sky-500' : 'bg-slate-300'}`}></span>
-              <span>Velocity Index</span>
+              <span className="relative flex h-2 w-2 shrink-0">
+                {showVelocity && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
+                )}
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    showVelocity ? 'bg-sky-500 shadow-xs' : 'bg-slate-300 dark:bg-slate-600'
+                  }`}
+                />
+              </span>
+              <span className={showVelocity ? '' : 'line-through opacity-70'}>Velocity Index</span>
             </button>
           </div>
         </div>
