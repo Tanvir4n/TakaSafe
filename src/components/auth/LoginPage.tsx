@@ -406,28 +406,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onCancel, lang })
           <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-2">
             Quick 1-Click Demo Logins for Evaluators
           </span>
-          <div className="flex flex-col items-center justify-center gap-2">
-            {ADMIN_ACCOUNTS.map((account) => (
-              <button
-                key={account.id}
-                type="button"
-                onClick={() => {
-                  handleSelectRole('ADMIN');
-                  onLogin(account);
-                }}
-                className="w-full text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
-                <span>{account.name} · Admin</span>
-              </button>
-            ))}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                handleSelectRole('ADMIN');
+                onLogin(DEMO_ACCOUNTS.ADMIN);
+              }}
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0054A6]" />
+              <span>Demo Admin</span>
+            </button>
             <button
               type="button"
               onClick={() => {
                 handleSelectRole('USER');
                 onLogin(DEMO_ACCOUNTS.USER);
               }}
-              className="w-full text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+              className="w-full sm:w-auto text-[11px] font-bold text-slate-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
             >
               <User className="w-3.5 h-3.5 text-emerald-600" />
               <span>Demo User</span>
