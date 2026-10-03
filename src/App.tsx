@@ -12,7 +12,7 @@ import { CustomerAppView } from './components/customer/CustomerAppView';
 import { StorylineRunner } from './components/storyline/StorylineRunner';
 import { InvestigationModal } from './components/investigation/InvestigationModal';
 import { UpayInfoModal } from './components/common/UpayInfoModal';
-import { LoginPage, DEMO_ACCOUNTS } from './components/auth/LoginPage';
+import { LoginPage, DEMO_ACCOUNTS, DEMO_PROFILES } from './components/auth/LoginPage';
 import { AccessRestrictedGate } from './components/common/AccessRestrictedGate';
 import {
   MOCK_TRANSACTIONS,
@@ -26,27 +26,44 @@ import {
 import { Transaction, MuleCluster, AgentLiquidityNode, RegionalRiskMetric, StorylineStep, AuthUser } from './types';
 import { ShieldCheck, Info } from 'lucide-react';
 
+const APP_SESSION_KEY = 'takasafe-app-session';
+type AppView = 'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN';
+
 export default function App() {
-  const [activeView, setActiveView] = useState<'OPERATOR' | 'CUSTOMER' | 'STORYLINE' | 'LOGIN'>('OPERATOR');
+  const [initialSession] = useState(() => {
+    try {
+      const rawSession = localStorage.getItem(APP_SESSION_KEY);
+      if (!rawSession) return null;
+      const saved = JSON.parse(rawSession) as { userId?: string | null; activeView?: AppView };
+      const user = DEMO_PROFILES.find((profile) => profile.id === saved.userId) || null;
+      const validViews: AppView[] = ['OPERATOR', 'CUSTOMER', 'STORYLINE', 'LOGIN'];
+      const view = user?.role === 'USER'
+        ? 'CUSTOMER'
+        : user
+          ? (validViews.includes(saved.activeView as AppView) ? saved.activeView! : 'OPERATOR')
+          : 'LOGIN';
+      return { user, view };
+    } catch {
+      return null;
+    }
+  });
+  const [activeView, setActiveView] = useState<AppView>(initialSession?.view || 'OPERATOR');
   const [operatorTab, setOperatorTab] = useState<string>('OVERVIEW');
   const [lang, setLang] = useState<'EN' | 'BN'>('EN');
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>({
-    id: 'USR-ADM-01',
-    name: 'Md. Tanvir Hasan',
-    email: 'tanvir.hasan@takasafe.upay.bd',
-    phone: '+880 1712-401920',
-    role: 'ADMIN',
-    designation: 'Chief Risk Analyst & AML Supervisor',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-    permissions: {
-      canViewOperatorDashboard: true,
-      canFreezeWallets: true,
-      canDispatchLiquidity: true,
-      canTunePolicyWeights: true,
-      canExportAuditLogs: true,
-      canPerformInvestigationActions: true,
-    },
-  });
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() =>
+    initialSession ? initialSession.user : DEMO_ACCOUNTS.ADMIN
+  );
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(APP_SESSION_KEY, JSON.stringify({
+        userId: currentUser?.id || null,
+        activeView: currentUser?.role === 'USER' ? 'CUSTOMER' : activeView,
+      }));
+    } catch {
+      // Keep the in-memory session active if browser storage is unavailable.
+    }
+  }, [activeView, currentUser]);
 
   // Dark/Light Theme state with localStorage persistence
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -364,6 +381,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         onLogout={() => {
           setCurrentUser(null);
+          setActiveView('LOGIN');
           showToast('Signed out of TakaSafe.');
         }}
         onSwitchUserRole={(newRole) => {
@@ -416,6 +434,7 @@ export default function App() {
                 if (currentUser) {
                   setActiveView(currentUser.role === 'ADMIN' ? 'OPERATOR' : 'CUSTOMER');
                 } else {
+                  setCurrentUser(DEMO_ACCOUNTS.ADMIN);
                   setActiveView('OPERATOR');
                 }
               }}
