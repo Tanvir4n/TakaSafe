@@ -77,6 +77,11 @@ const WALLET_SERVICES: Record<string, {
   Business: { title: 'Business Payment', type: 'BUSINESS_PAYMENT', direction: 'OUT', targetLabel: 'Business or merchant', targets: ['Supplier Payment', 'Merchant Settlement', 'Business Invoice'], feeRate: 0 },
 };
 
+const getServiceFee = (service: string, target: string, amount: number): number => {
+  if (service === 'Cash Out' && target === 'ATM') return 0;
+  return Math.round(amount * (WALLET_SERVICES[service]?.feeRate || 0));
+};
+
 const loadTransferHistory = (userId: string, wallet: string): CustomerTransfer[] => {
   try {
     const saved = window.localStorage.getItem(`takasafe-transfers:${userId}:${wallet}`)
@@ -280,7 +285,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       setServiceError('Enter an amount greater than ৳0.');
       return;
     }
-    const fee = Math.round(value * config.feeRate);
+    const fee = getServiceFee(activeWalletService, serviceTarget, value);
     const totalDebit = value + fee;
     if (config.direction === 'OUT' && totalDebit > availableBalance) {
       setServiceError(`Insufficient balance. This service needs ৳${totalDebit.toLocaleString()} including fees; ৳${availableBalance.toLocaleString()} is available.`);
@@ -952,11 +957,11 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 </label>
                 {serviceError && <p role="alert" className="text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3">{serviceError}</p>}
                 <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600 flex justify-between gap-4">
-                  <span>{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Balance after deposit' : `Charge (${(WALLET_SERVICES[activeWalletService].feeRate * 100).toFixed(1)}%)`}</span>
+                  <span>{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Balance after deposit' : `Charge${activeWalletService === 'Cash Out' && serviceTarget === 'ATM' ? ' (ATM rate)' : ` (${(WALLET_SERVICES[activeWalletService].feeRate * 100).toFixed(1)}%)`}`}</span>
                   <strong className="text-slate-900">
                     {WALLET_SERVICES[activeWalletService].direction === 'IN'
                       ? `৳${(availableBalance + (Number(serviceAmount) || 0)).toLocaleString()}`
-                      : `৳${Math.round((Number(serviceAmount) || 0) * WALLET_SERVICES[activeWalletService].feeRate).toLocaleString()}`}
+                      : `৳${getServiceFee(activeWalletService, serviceTarget, Number(serviceAmount) || 0).toLocaleString()}`}
                   </strong>
                 </div>
                 <button type="submit" className="w-full py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">

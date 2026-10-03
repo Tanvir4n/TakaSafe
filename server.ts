@@ -162,7 +162,7 @@ app.get('/api/recipient-risk/:recipient', async (req: Request, res: Response) =>
     const lines = csv.split(/\r?\n/).filter(Boolean);
     const headers = lines.length ? parseCsvLine(lines.shift()!) : customerTransactionHeaders;
     const history = lines.map(parseCsvLine).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ''])))
-      .filter((row) => ['COMPLETED', 'PROCEEDED'].includes(row.status) && Number.isFinite(Date.parse(row.timestamp)) && Date.now() - Date.parse(row.timestamp) <= 24 * 60 * 60 * 1000);
+      .filter((row) => ['COMPLETED', 'PROCEEDED'].includes(row.status) && (!row.service_type || row.service_type === 'SEND_MONEY') && (row.direction || 'OUT') === 'OUT' && Number.isFinite(Date.parse(row.timestamp)) && Date.now() - Date.parse(row.timestamp) <= 24 * 60 * 60 * 1000);
     const inbound = history.filter((row) => String(row.recipient || '').replace(/\D/g, '') === recipient);
     const outbound = history.filter((row) => String(row.wallet || '').replace(/\D/g, '') === recipient);
     const senderCount = new Set(inbound.map((row) => row.wallet)).size;
