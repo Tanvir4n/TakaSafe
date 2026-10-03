@@ -75,6 +75,14 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   const [latestTickerTxn, setLatestTickerTxn] = useState<Transaction | null>(transactions[0] || null);
   const [isTickerFlashing, setIsTickerFlashing] = useState<boolean>(false);
   const [isComplianceModalOpen, setIsComplianceModalOpen] = useState<boolean>(false);
+  const [alertFeedback, setAlertFeedback] = useState<Array<{ outcome: string }>>([]);
+
+  useEffect(() => {
+    fetch('/api/alert-feedback')
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('Alert feedback unavailable')))
+      .then((data) => { if (Array.isArray(data.feedback)) setAlertFeedback(data.feedback); })
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     if (initialTab && initialTab !== activeTab) {
@@ -664,6 +672,20 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
                 </button>
               )}
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border-b border-slate-200 dark:border-slate-800">
+            {[
+              { label: 'Analyst Labels', count: alertFeedback.length, style: 'text-slate-700 dark:text-slate-200' },
+              { label: 'Confirmed Fraud', count: alertFeedback.filter((item) => item.outcome === 'CONFIRMED_FRAUD').length, style: 'text-rose-700 dark:text-rose-300' },
+              { label: 'False Positives', count: alertFeedback.filter((item) => item.outcome === 'FALSE_POSITIVE').length, style: 'text-amber-700 dark:text-amber-300' },
+              { label: 'Needs Review', count: alertFeedback.filter((item) => item.outcome === 'NEEDS_REVIEW').length, style: 'text-blue-700 dark:text-blue-300' },
+            ].map((metric) => (
+              <div key={metric.label} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{metric.label}</div>
+                <div className={`text-lg font-black font-mono ${metric.style}`}>{metric.count}</div>
+              </div>
+            ))}
           </div>
 
           {/* Filter & Search Bar */}

@@ -59,13 +59,42 @@ app.post('/api/customer-logins/:userId', async (req: Request, res: Response) => 
   }
   try {
     await fs.mkdir(path.dirname(customerLoginsCsv), { recursive: true });
-    let needsHeader = false;
-    try { needsHeader = (await fs.stat(customerLoginsCsv)).size === 0; }
-    catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
     const headers = ['user_id', 'wallet', 'timestamp', 'device'];
+    let needsHeader = false;
+    try {
+      if ((await fs.stat(customerLoginsCsv)).size === 0) needsHeader = true;
+      else {
+        const existing = await fs.readFile(customerLoginsCsv, 'utf8');
+        const [headerLine, ...oldLines] = existing.split(/\r?\n/).filter(Boolean);
+        const oldHeaders = parseCsvLine(headerLine);
+        if (!oldHeaders.includes('device')) {
+          const migrated = oldLines.map((line) => {
+            const oldCells = parseCsvLine(line);
+            const oldRow = Object.fromEntries(oldHeaders.map((header, index) => [header, oldCells[index] || '']));
+            return [oldRow.user_id, oldRow.wallet, oldRow.timestamp, ''].map(toCsvCell).join(',');
+          });
+          await fs.writeFile(customerLoginsCsv, `${headers.join(',')}\r\n${migrated.join('\r\n')}${migrated.length ? '\r\n' : ''}`, 'utf8');
+        }
+      }
+    } catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
     const values = [userId, wallet.trim(), date.toISOString(), device];
     await fs.appendFile(customerLoginsCsv, `${needsHeader ? `${headers.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`, 'utf8');
     res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/alert-feedback', async (_req: Request, res: Response) => {
+  try {
+    const csv = await fs.readFile(alertFeedbackCsv, 'utf8').catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return '';
+      throw error;
+    });
+    const lines = csv.split(/\r?\n/).filter(Boolean);
+    const headers = lines.length ? parseCsvLine(lines.shift()!) : [];
+    const feedback = lines.map(parseCsvLine).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ''])));
+    res.json({ success: true, feedback });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
