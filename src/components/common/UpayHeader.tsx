@@ -235,6 +235,13 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
                     Explore TakaSafe
                   </div>
                   <button
+                    onClick={() => handleNavClick('ABSTRACT')}
+                    className="w-full px-3 py-2 text-left text-xs bg-amber-50/70 hover:bg-amber-100/80 flex items-center gap-2.5 transition-colors cursor-pointer text-[#0054A6] font-bold"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Project Abstract & SDGs</span>
+                  </button>
+                  <button
                     onClick={() => handleNavClick('ABOUT_US')}
                     className="w-full px-3 py-2 text-left text-xs hover:bg-blue-50 flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
@@ -569,6 +576,15 @@ export const UpayHeader: React.FC<UpayHeaderProps> = ({
               Services &amp; Directory
             </div>
             <div className="grid grid-cols-2 gap-1.5 text-xs">
+              <button
+                onClick={() => {
+                  handleNavClick('ABSTRACT');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="p-2.5 rounded-xl bg-amber-400 text-blue-950 text-left font-bold"
+              >
+                ✨ Abstract &amp; SDGs
+              </button>
               <button
                 onClick={() => {
                   handleNavClick('ABOUT_US');
