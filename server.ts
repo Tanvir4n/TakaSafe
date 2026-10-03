@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 const customerTransactionsCsv = path.resolve(process.cwd(), 'dataset', 'customer_transactions.csv');
+const customerLoginsCsv = path.resolve(process.cwd(), 'dataset', 'customer_logins.csv');
 const customerTransactionHeaders = ['user_id', 'wallet', 'amount', 'recipient', 'timestamp', 'reference', 'status', 'risk_score'];
 const toCsvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 const parseCsvLine = (line: string): string[] => {
@@ -28,6 +29,46 @@ const parseCsvLine = (line: string): string[] => {
   cells.push(cell);
   return cells;
 };
+
+app.get('/api/customer-logins/:userId', async (req: Request, res: Response) => {
+  const userId = String(req.params.userId || '').trim();
+  if (!userId || userId.length > 64) return res.status(400).json({ error: 'Invalid user ID' });
+  try {
+    const csv = await fs.readFile(customerLoginsCsv, 'utf8').catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return '';
+      throw error;
+    });
+    const lines = csv.split(/\r?\n/).filter(Boolean);
+    const headers = lines.length ? parseCsvLine(lines.shift()!) : ['user_id', 'wallet', 'timestamp'];
+    const logins = lines.map(parseCsvLine).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ''])))
+      .filter((row) => row.user_id === userId)
+      .map((row) => ({ timestamp: row.timestamp }));
+    res.json({ success: true, logins });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/customer-logins/:userId', async (req: Request, res: Response) => {
+  const userId = String(req.params.userId || '').trim();
+  const { wallet, timestamp } = req.body || {};
+  const date = new Date(timestamp);
+  if (!userId || userId.length > 64 || typeof wallet !== 'string' || !wallet.trim() || wallet.length > 64 || !Number.isFinite(date.getTime())) {
+    return res.status(400).json({ error: 'Invalid customer login record' });
+  }
+  try {
+    await fs.mkdir(path.dirname(customerLoginsCsv), { recursive: true });
+    let needsHeader = false;
+    try { needsHeader = (await fs.stat(customerLoginsCsv)).size === 0; }
+    catch (error: any) { if (error.code === 'ENOENT') needsHeader = true; else throw error; }
+    const headers = ['user_id', 'wallet', 'timestamp'];
+    const values = [userId, wallet.trim(), date.toISOString()];
+    await fs.appendFile(customerLoginsCsv, `${needsHeader ? `${headers.join(',')}\r\n` : ''}${values.map(toCsvCell).join(',')}\r\n`, 'utf8');
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.get('/api/customer-history/:wallet', async (req: Request, res: Response) => {
   const wallet = String(req.params.wallet || '').trim();
