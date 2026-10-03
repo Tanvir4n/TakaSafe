@@ -322,7 +322,10 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
       return;
     }
 
-    recordTransfer(value, serviceTarget, 0, 'COMPLETED', config.type, config.direction, fee, serviceNote.trim());
+    const isAgentTransaction = (activeWalletService === 'Cash In' && serviceTarget === 'Agent Deposit') || (activeWalletService === 'Cash Out' && serviceTarget === 'Agent Cash Out');
+    const historyCounterparty = isAgentTransaction ? serviceNote.trim() : serviceTarget;
+    const historyReference = isAgentTransaction ? `${serviceTarget} · ${serviceNote.trim()}` : serviceNote.trim();
+    recordTransfer(value, historyCounterparty, 0, 'COMPLETED', config.type, config.direction, fee, historyReference);
     const balanceAfter = availableBalance + (config.direction === 'IN' ? value : -totalDebit);
     setServiceReceipt(`${config.title} completed for BDT ${value.toLocaleString()}${fee ? ` (BDT ${fee.toLocaleString()} fee)` : ''}. New available balance: BDT ${balanceAfter.toLocaleString()}.`);
     setIsServiceReview(false);
@@ -1000,6 +1003,22 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 <div role="status" className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800">{serviceReceipt}</div>
                 <button type="button" onClick={closeWalletService} className="w-full py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">Done</button>
               </div>
+            ) : isServiceReview ? (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-slate-200 divide-y divide-slate-100 text-sm">
+                  <div className="p-3 flex justify-between gap-4"><span className="text-slate-500">Service</span><strong className="text-right">{WALLET_SERVICES[activeWalletService].title}</strong></div>
+                  <div className="p-3 flex justify-between gap-4"><span className="text-slate-500">{WALLET_SERVICES[activeWalletService].targetLabel}</span><strong className="text-right">{serviceTarget}</strong></div>
+                  {serviceNote && <div className="p-3 flex justify-between gap-4"><span className="text-slate-500">Reference</span><strong className="text-right break-all">{serviceNote}</strong></div>}
+                  <div className="p-3 flex justify-between gap-4"><span className="text-slate-500">Amount</span><strong>BDT {Number(serviceAmount).toLocaleString()}</strong></div>
+                  <div className="p-3 flex justify-between gap-4"><span className="text-slate-500">Fee</span><strong>BDT {getServiceFee(activeWalletService, serviceTarget, Number(serviceAmount)).toLocaleString()}</strong></div>
+                  <div className="p-3 flex justify-between gap-4 bg-slate-50 rounded-b-2xl"><span className="font-bold text-slate-700">{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'You will receive' : 'Total debit'}</span><strong className="text-slate-900">BDT {(Number(serviceAmount) + (WALLET_SERVICES[activeWalletService].direction === 'IN' ? 0 : getServiceFee(activeWalletService, serviceTarget, Number(serviceAmount)))).toLocaleString()}</strong></div>
+                </div>
+                <p className="text-[11px] text-slate-500">Review the recipient and amount before confirming this simulated transaction.</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button type="button" onClick={() => setIsServiceReview(false)} className="py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-sm cursor-pointer">Edit details</button>
+                  <button type="button" onClick={confirmWalletService} className="py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">Confirm</button>
+                </div>
+              </div>
             ) : (
               <form onSubmit={handleWalletServiceSubmit} className="space-y-4">
                 <label className="block text-xs font-semibold text-slate-700">
@@ -1035,7 +1054,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                 </label>
                 {serviceError && <p role="alert" className="text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3">{serviceError}</p>}
                 <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600 flex justify-between gap-4">
-                  <span>{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Balance after deposit' : `Charge${activeWalletService === 'Cash Out' && serviceTarget === 'ATM' ? ' (ATM rate)' : ` (${(WALLET_SERVICES[activeWalletService].feeRate * 100).toFixed(1)}%)`}`}</span>
+                  <span>{WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Balance after deposit' : `Charge${activeWalletService === 'Cash Out' && serviceTarget === 'ATM Cash Out' ? ' (ATM rate)' : ` (${(WALLET_SERVICES[activeWalletService].feeRate * 100).toFixed(1)}%)`}`}</span>
                   <strong className="text-slate-900">
                     {WALLET_SERVICES[activeWalletService].direction === 'IN'
                       ? `৳${(availableBalance + (Number(serviceAmount) || 0)).toLocaleString()}`
@@ -1043,7 +1062,7 @@ export const CustomerAppView: React.FC<CustomerAppViewProps> = ({
                   </strong>
                 </div>
                 <button type="submit" className="w-full py-3 rounded-xl bg-[#0054A6] hover:bg-[#004080] text-white font-bold text-sm cursor-pointer">
-                  {WALLET_SERVICES[activeWalletService].direction === 'IN' ? 'Confirm Deposit' : 'Confirm Payment'}
+                  Review Transaction
                 </button>
               </form>
             )}
